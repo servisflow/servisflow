@@ -15,7 +15,7 @@
 ## 2. Use case'ler — Her üye kendi cümlesi
 
 **UC-01 — Kimlik Doğrulama ve Güvenli Oturum Yönetimi**
-> “Kullanıcı girişini OWASP'ın önerdiği **Argon2id** algoritmasıyla parolayı özetleyerek yapıyoruz; veritabanında düz metin parola yok. Yanlış kullanıcı adı ve yanlış parola için aynı mesajı veriyoruz ki saldırgan hangi kullanıcı adının var olduğunu öğrenemesin. Oturum açılmadan hiçbir ekran görüntülenemiyor.”
+> “Kullanıcı girişini OWASP'ın önerdiği **Argon2id** algoritmasıyla parolayı özetleyerek yapıyoruz; veritabanında düz metin parola yok. Yanlış kullanıcı adı ve yanlış parola için aynı mesajı veriyoruz ki saldırgan hangi kullanıcı adının var olduğunu öğrenemesin. Oturum açılmadan hiçbir ekran görüntülenemiyor. Üç kez yanlış parola girilirse robot doğrulaması çıkıyor, ve işletme sahibi giriş yaptığında hesabına yapılan hatalı denemeleri tarih-saatiyle görüyor; böylece biri parolasını denemişse haberi oluyor.”
 
 **UC-02 — Müşteri Kaydı, Girdi Doğrulama ve Arama**
 > “Müşteri kaydında her alanı **sunucu tarafında doğruluyoruz**: zorunlu alan, uzunluk sınırı, telefon formatı. Türkçe karakterli isimlerde büyük/küçük harf duyarsız arama yapıyoruz. Bu use case'i **sınır değer analizi** ile test edeceğiz: 0, 1, 100 ve 101 karakterlik isimler.”

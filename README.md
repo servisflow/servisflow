@@ -1,7 +1,7 @@
 # ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 
 > **Durum:** Faz 1 tamamlandı — ekip ve öğretim elemanı tarafından onaylandı.  
-> **Ders:** Yazılım Kalite Standartları · **Ekip:** 7 kişi · **Sürüm:** v1.3 (11.11.2026) · Faz 2 taslağı hazır
+> **Ders:** Yazılım Kalite Standartları · **Ekip:** 7 kişi · **Sürüm:** v1.3 (11.11.2026) · Faz 2 ekipçe onaylandı
 
 **ServisFlow**, küçük bir oto serviste her araç için **To-Do uygulaması mantığında yapılacak işler listesi** tutan, işler **✓** ile tamamlandığında tutarlarını tamamlanma gününe yazan ve **günlük / haftalık / aylık / yıllık brüt iş bedelini** raporlayan sade bir web uygulamasıdır.
 
@@ -150,7 +150,7 @@ pytest --cov                                             # testler + satır/dal 
 
 Her push ve pull request'te bu adımlar [GitHub Actions](.github/workflows/ci.yml) tarafından otomatik çalıştırılır.
 
-📄 Faz 1 raporu: [`docs/Faz1_Raporu.md`](docs/Faz1_Raporu.md) · Faz 2 raporu (taslak): [`docs/Faz2_Raporu.md`](docs/Faz2_Raporu.md)
+📄 Faz 1 raporu: [`docs/Faz1_Raporu.md`](docs/Faz1_Raporu.md) · Faz 2 raporu: [`docs/Faz2_Raporu.md`](docs/Faz2_Raporu.md)
 
 ## 🗓️ Ders fazları
 

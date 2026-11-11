@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.1 — ekip incelemesi bekleniyor
+- **Doküman Durumu:** v1.0 — ekip tarafından incelendi ve onaylandı (11.11.2026)
 - **Hazırlanma Tarihi:** 11.11.2026 · **Teslim:** Hafta 7 (izlence)
 - **Koordinasyon:** Üye 7 (Ahmet Selim Dostabakan, QA/Test Lideri) · Üye 5 (Kerem Erden, DevSecOps)
 
@@ -33,7 +33,7 @@
 | **RV-04** | UC-02 | “Geçersiz telefon formatı” tanımlı değil. | Tek anlamlı, doğrulanabilir | Orta | Telefon isteğe bağlı. Girilirse boşluk, tire ve parantez temizlenir, baştaki `0` atılır ve sonuç `5` ile başlayan 10 haneli sayı olmalıdır (BR-09). |
 | **RV-05** | BR-01, UC-05 | Tutarın hangi biçimde girileceği belirsiz: `1.600,50` mi, `1600.50` mi? İkiden fazla ondalık (`10,005`) ne olacak? | Tek anlamlı | Orta | Tutar sayısal alanla (TL, en fazla 2 ondalık) alınır; serbest metin ayrıştırılmaz. İkiden fazla ondalık reddedilir (BR-01). |
 | **RV-06** | BR-08 | “`DONE` iş içeren ziyaret ve araç silinemez” deniyor, ancak hiçbir FR'de silme işlevi tanımlı değil. Silme kapsamda mı belirsiz. | Eksiksiz, tutarlı | Orta | MVP'de müşteri, araç ve ziyaret **silme yoktur**. Yalnızca `TODO` iş silinebilir (BR-08). |
-| **RV-07** | FR-01, UC-01 | Kullanıcı hesaplarının nasıl oluşturulacağı ve tekrarlanan hatalı girişlere karşı ne yapılacağı tanımlı değil. | Eksiksiz | Yüksek | İlk kullanıcı kurulum betiğiyle oluşturulur, arayüzden kayıt yoktur. Aynı kullanıcı adıyla **5 ardışık hatalı girişte hesap 5 dakika kilitlenir** (FR-01). |
+| **RV-07** | FR-01, UC-01 | Kullanıcı hesaplarının nasıl oluşturulacağı ve tekrarlanan hatalı girişlere karşı ne yapılacağı tanımlı değil. | Eksiksiz | Yüksek | İlk kullanıcı kurulum betiğiyle oluşturulur, arayüzden kayıt yoktur. **3 ardışık hatalı girişten sonra** giriş formuna robot doğrulama (CAPTCHA) eklenir; doğrulama geçilmeden parola denenmez. Her hatalı giriş tarih ve saatiyle kaydedilir; **başarılı girişten sonra** kullanıcıya son başarılı girişinden bu yana yapılan hatalı denemelerin listesi gösterilir. CAPTCHA uygulamanın kendi sunucusunda üretilir (dış servis kullanılmaz, veri üçüncü tarafa gitmez). (FR-01) *İlk öneri olan “5 hatalı girişte 5 dk kilit” ekip incelemesinde bu kararla değiştirildi.* |
 | **RV-08** | Aktörler, UC'ler | Aktör “Servis Personeli” olarak tanımlı; sisteme kimin giriş yaptığı (her usta mı, işletme sahibi mi) belirsiz. Bu belirsizlik hesap sayısını, yetkiyi ve “işi kim tamamladı” bilgisini doğrudan etkiliyor. | Tek anlamlı | Yüksek | Ekip kararı: sistemin **tek kullanıcısı işletme sorumlusudur**. Ustalar sisteme giriş yapmaz, yaptıkları işi sorumluya bildirir ve kaydı sorumlu girer. Usta başına hesap ve “kim tamamladı” alanı gerekmez. |
 | **RV-09** | NFR-04 | “Çift istek tek tamamlama üretir” hedefi var ama nasıl sağlanacağı yok. | Doğrulanabilir | Orta | Tasarım kararı: tamamlama tek bir koşullu güncelleme ile yapılır (`... WHERE id = ? AND status = 'TODO'`). Etkilenen satır 0 ise işlem değişiklik yapmadan başarılı sayılır. |
 | **RV-10** | UC-04, UC-06, test | `opened_at` ve `completed_at` sistem saatinden alınıyor; gece yarısı sınırı testleri (TC-12) gerçek saate bağlı kalırsa tekrarlanamaz. | Doğrulanabilir | Orta | Tasarım kararı: servis fonksiyonları zamanı dışarıdan verilen bir **saat sağlayıcısından** (`clock`) alır. Testlerde saat sabitlenir. |
@@ -41,6 +41,8 @@
 | **RV-12** | UC-07 | “Geçersiz tarih seçimi” tanımlı değil. Tarih seçici kullanıldığında biçim hatası oluşamaz; gelecekteki bir dönemin ne döndüreceği belirsiz. | Tek anlamlı | Düşük | Tarih takvim bileşeniyle seçilir. Gelecekteki dönem seçilebilir ve `0,00 TL` döner. |
 | **RV-13** | NFR-02, CI | NFR-02 kapsamayı “`services` katmanı” için tanımlıyor; CI ise `ui` hariç tüm paketi ölçüyor. | Tutarlı | Düşük | NFR-02 CI ile hizalandı: “`ui` hariç tüm kod (`services` + `repository`)”. |
 | **RV-14** | Sunum, UC-01 | Streamlit varsayılan olarak hata ayrıntılarını (yığın izi) tarayıcıda gösterir; bu, iç yapı bilgisini sızdırır. Gereksinimlerde ele alınmamış. | Eksiksiz | Orta | Yeni NFR-08: kullanıcıya yalnızca genel hata mesajı gösterilir (`client.showErrorDetails = false`). |
+
+**İnceleme sonucu (11.11.2026):** Bulgular ekip toplantısında tek tek ele alındı; her use case sahibi kendi bölümüne ait bulguları ayrıntılı inceleyip onayladı. **14 bulgunun 14'ü kabul edildi.** RV-07'nin kararı ekip tarafından değiştirildi: önerilen “5 hatalı girişte 5 dk kilit” yerine “3 hatalı girişten sonra CAPTCHA ve hatalı giriş kaydının kullanıcıya gösterilmesi” seçildi. Bu sayede saldırı denemesi hem yavaşlatılıyor hem de hesap sahibine görünür hale geliyor.
 
 ### 1.3. Güncellenen Gereksinimler
 
@@ -53,10 +55,10 @@ Kabul edilen bulgular Faz 1 Raporu'na **v1.3** olarak işlenmiştir. Değişen v
 | **BR-07** | Plaka boşluklar kaldırılıp **Latin büyük harfe** çevrilerek normalize edilir. Biçim: il kodu `01`–`81`, ardından 1–3 harf (Ç, Ğ, İ, Ö, Ş, Ü hariç), ardından 2–4 rakam. Normalize plaka sistemde tekildir. |
 | **BR-08** | MVP'de müşteri, araç ve ziyaret kayıtları silinmez. Yalnızca `TODO` durumundaki iş silinebilir. |
 | **BR-09** *(yeni)* | Telefon isteğe bağlıdır. Girilirse boşluk, tire ve parantez temizlenir, baştaki `0` atılır; sonuç `5` ile başlayan 10 haneli sayı olmalıdır. |
-| **FR-01** | (eklenen) Sistemde yalnızca işletme sorumlusu hesabı vardır; hesap kurulum betiğiyle oluşturulur. Aynı kullanıcı adıyla 5 ardışık hatalı girişte hesap 5 dakika kilitlenir. |
+| **FR-01** | (eklenen) Sistemde yalnızca işletme sorumlusu hesabı vardır; hesap kurulum betiğiyle oluşturulur. **3 ardışık hatalı girişten sonra** giriş formuna robot doğrulama (CAPTCHA) eklenir; doğrulama geçilmeden parola denenmez. Her hatalı giriş tarih ve saatiyle kaydedilir; **başarılı girişten sonra** kullanıcıya son başarılı girişinden bu yana yapılan hatalı denemelerin listesi gösterilir. CAPTCHA uygulamanın kendi sunucusunda üretilir (dış servis kullanılmaz, veri üçüncü tarafa gitmez). |
 | **NFR-02** | `ui` hariç tüm kodda (`services` + `repository`) ≥ %80 satır kapsama. |
 | **NFR-08** *(yeni)* | Hata durumunda kullanıcıya yalnızca genel mesaj gösterilir; yığın izi ve iç yapı bilgisi arayüze yansımaz. |
-| **Aktörler** | “Servis Personeli” yerine **İşletme Sorumlusu** (tek kullanıcı). Usta sistem dışı bir paydaştır. `User` tablosuna kilit için `failed_attempts` ve `locked_until` alanları eklendi. |
+| **Aktörler** | “Servis Personeli” yerine **İşletme Sorumlusu** (tek kullanıcı). Usta sistem dışı bir paydaştır. `User` tablosuna `failed_attempts` ve `last_login_at` alanları; hatalı denemeler için `LoginAttempt` (`id`, `attempted_at`, `success`) tablosu eklendi. |
 
 ---
 
@@ -172,7 +174,7 @@ Faz 1'deki 13 senaryo genişletilmiş ve yeniden numaralandırılmıştır. Faz 
 | TC-01 (01) | UC-01 | Denklik | Doğru kullanıcı, yanlış parola | Reddedilir, genel hata mesajı | Birim |
 | TC-02 (02) | UC-01 | Beyaz kutu | Kayıtlı kullanıcının veritabanı satırı | `password_hash` `$argon2id$` ile başlar, düz metin yok | Entegrasyon |
 | TC-03 | UC-01 | Kara kutu | Oturum açmadan rapor sayfası | Giriş ekranına yönlendirilir | Sistem |
-| TC-04 | UC-01, FR-01 | Sınır değer | 4 / 5 ardışık hatalı giriş, 5. denemeden sonra doğru parola | 4'te açık; 5'te kilitli; 5 dk sonra açılır | Birim |
+| TC-04 | UC-01, FR-01 | Sınır değer | 2 / 3 ardışık hatalı giriş; ardından CAPTCHA yanlış + parola doğru | 2'den sonra CAPTCHA yok; 3'ten sonra CAPTCHA istenir; CAPTCHA yanlışsa doğru parola da kabul edilmez | Birim |
 | TC-05 | UC-01 | Denklik | Var olmayan kullanıcı adı | TC-01 ile **aynı** mesaj | Birim |
 | TC-06 (03) | UC-02 | Denklik | “Can GPT” kaydı, “can” araması | Kayıt bulunur | Entegrasyon |
 | TC-07 | UC-02 | Sınır değer | Ad uzunluğu 0 / 1 / 100 / 101 | Red / kabul / kabul / red | Birim |
@@ -199,6 +201,7 @@ Faz 1'deki 13 senaryo genişletilmiş ve yeniden numaralandırılmıştır. Faz 
 | TC-28 | UC-07, FR-07 | Kara kutu | Üç ziyareti olan araç | Ziyaretler yeniden eskiye, işleriyle birlikte listelenir | Sistem |
 | TC-29 | UC-07, BR-06 | Sınır değer | 31 Aralık 23:59:59 ve 29 Şubat 2028 | Doğru yıl ve ay | Birim |
 | TC-30 | NFR-08 | Hata tahmini | Veritabanı bağlantısı kesilmişken işlem | Genel hata mesajı; yığın izi görünmez | Sistem |
+| TC-32 | UC-01, FR-01 | Kara kutu | 3 hatalı deneme, ardından başarılı giriş; sonra tekrar çıkış ve başarılı giriş | İlk girişte 3 hatalı denemenin tarih-saati listelenir; ikinci girişte liste boştur | Entegrasyon |
 | TC-31 | NFR-06 | UAT | İşletme sahibi profilindeki kişi, ustanın bildirdiği bir işi baştan sona kaydeder | ≤ 3 dakika, yardımsız | UAT |
 
 ### 3.8. Hata Yönetimi
@@ -215,7 +218,7 @@ Faz 1'deki 13 senaryo genişletilmiş ve yeniden numaralandırılmıştır. Faz 
 | Her UC sahibi | Kendi UC'sinin birim testleri; kendi TC'lerinin Faz 4'te çalıştırılması |
 | Üye 7 — QA lideri | Test planı, sistem testleri, UAT yönetimi, test sonuç raporu, KK-1 ve KK-3 |
 | Üye 6 — Beyaz kutu | Entegrasyon testleri, kapsama ve McCabe ölçümleri ve yorumu |
-| Üye 5 — DevSecOps | Güvenlik test senaryoları (TC-01 – TC-05, TC-22, TC-23, TC-30), CI ve KK-4 |
+| Üye 5 — DevSecOps | Güvenlik test senaryoları (TC-01 – TC-05, TC-22, TC-23, TC-30, TC-32), CI ve KK-4 |
 | Üye 4 — UI/UX | UAT senaryosunun yürütülmesi ve kullanılabilirlik gözlemi |
 
 ### 3.10. Takvim ve Ölçülecek Metrikler
@@ -268,32 +271,32 @@ flowchart LR
 
 | ID | STRIDE | Tehdit | O | E | Risk | OWASP 2021 | Tasarım önlemi | Doğrulama |
 | :--- | :---: | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
-| **R-01** | S | Parola tahmini / kaba kuvvet ile başkasının hesabına giriş | 2 | 3 | **6 Yüksek** | A07 | Argon2id; 5 hatalı denemede 5 dk kilit (FR-01) | TC-04 |
+| **R-01** | S | Parola tahmini / kaba kuvvet ile başkasının hesabına giriş | 2 | 3 | **6 Yüksek** | A07 | Argon2id; 3 hatalı denemeden sonra CAPTCHA; hatalı denemeler kaydedilip başarılı girişte kullanıcıya gösterilir (FR-01) | TC-04, TC-32 |
 | **R-02** | I | Hata mesajından kullanıcı adının var olup olmadığının öğrenilmesi | 2 | 1 | 2 Düşük | A07 | Var olmayan kullanıcı ve yanlış parola için aynı mesaj | TC-05 |
-| **R-03** | S/E | Oturum açmadan bir sayfaya doğrudan erişim | 2 | 3 | **6 Yüksek** | A01 | Her sayfanın başında oturum denetimi (ortak `require_login` fonksiyonu) | TC-03 |
+| **R-03** | S/E | Oturum açmadan bir sayfaya doğrudan erişim | 1 | 3 | 3 Orta | A01 | Her sayfanın başında oturum denetimi (ortak `require_login` fonksiyonu) | TC-03 |
 | **R-04** | T | Arama kutusu üzerinden SQL enjeksiyonu | 2 | 3 | **6 Yüksek** | A03 | Yalnızca ORM / parametreli sorgu; string birleştirmeyle SQL yasak | bandit (B608), kod inceleme listesi, enjeksiyon girdili test |
-| **R-05** | T | ✓ geri alınarak geçmiş günün tutarının sessizce değiştirilmesi | 2 | 3 | **6 Yüksek** | A04 | Geri alma yalnızca aynı gün (BR-04) | TC-20 |
-| **R-06** | R | Tek hesabın parolasının ustalarla paylaşılması; bir işlemi kimin yaptığının ayırt edilememesi | 2 | 2 | 4 Orta | A07 | Tek hesap politikası: parola yalnızca işletme sorumlusundadır ve paylaşılmaz (kullanım kılavuzunda yazılı); tam audit log kapsam dışı, kalan risk kabul edildi | UAT sırasında kılavuz kontrolü |
+| **R-05** | T | ✓ geri alınarak geçmiş günün tutarının sessizce değiştirilmesi | 1 | 3 | 3 Orta | A04 | Geri alma yalnızca aynı gün (BR-04) | TC-20 |
+| **R-06** | R | Tek hesabın parolasının ustalarla paylaşılması; bir işlemi kimin yaptığının ayırt edilememesi | 1 | 1 | 1 Düşük | A07 | Tek hesap politikası: parola yalnızca işletme sorumlusundadır ve paylaşılmaz (kullanım kılavuzunda yazılı); tam audit log kapsam dışı, kalan risk kabul edildi | UAT sırasında kılavuz kontrolü |
 | **R-07** | T | Aynı anda iki ✓ isteğiyle çift sayım | 2 | 3 | **6 Yüksek** | A04 | Koşullu güncelleme (RV-09); toplamın sorgudan hesaplanması | TC-18, TC-23 |
 | **R-08** | I | Hata ekranında yığın izi ve dosya yollarının görünmesi | 3 | 2 | **6 Yüksek** | A05 | `client.showErrorDetails = false` (NFR-08) | TC-30 |
-| **R-09** | I | Müşteri verisinin depoya veya ekran görüntülerine sızması | 2 | 2 | 4 Orta | A02 | Yalnızca sentetik veri; `*.db` `.gitignore`'da; teslim belgeleri depo dışında | Veri seti incelemesi |
+| **R-09** | I | Müşteri verisinin depoya veya ekran görüntülerine sızması | 1 | 2 | 2 Düşük | A02 | Yalnızca sentetik veri; `*.db` `.gitignore`'da; teslim belgeleri depo dışında | Veri seti incelemesi |
 | **R-10** | I | Parola veya gizli anahtarın depoya commit edilmesi | 1 | 3 | 3 Orta | A05 | Depoda gizli bilgi tutulmaz; `.env` `.gitignore`'da; GitHub secret scanning ve push protection | KK-4 |
 | **R-11** | D | Çok uzun metinlerle veritabanının şişirilmesi veya arayüzün kilitlenmesi | 1 | 2 | 2 Düşük | A04 | Tüm metin alanlarında uzunluk sınırı (ad 100, açıklama 500, başlık 100) | TC-07 |
-| **R-12** | T | Bilinen açığı olan bir bağımlılığın kullanılması | 3 | 3 | **9 Yüksek** | A06 | Sabitlenmiş sürümler; CI'da `pip-audit` (KK-2, kontrol 4) | CI; 11.11.2026 taraması (aşağıda) |
-| **R-13** | T | `main` dalına incelenmemiş kodun girmesi | 2 | 2 | 4 Orta | A08 | Dal koruma kuralı, zorunlu PR ve onay (Bölüm 2.4) | GitHub ayarı |
+| **R-12** | T | Bilinen açığı olan bir bağımlılığın kullanılması | 2 | 3 | **6 Yüksek** | A06 | Sabitlenmiş sürümler; CI'da `pip-audit` (KK-2, kontrol 4) | CI; 11.11.2026 taraması (aşağıda) |
+| **R-13** | T | `main` dalına incelenmemiş kodun girmesi | 1 | 2 | 2 Düşük | A08 | Dal koruma kuralı, zorunlu PR ve onay (Bölüm 2.4) | GitHub ayarı |
 | **R-14** | I | YZ aracına kişisel veya gizli veri verilmesi | 2 | 2 | 4 Orta | — | DIR A7: istemlere kişisel veri konmaz; sentetik örnekler kullanılır | DIR beyanları |
 
-**R-12 için gerçekleşen bulgu (11.11.2026):** Faz 1'de sabitlenen bağımlılıklar `pip-audit` ile tarandı. Streamlit 1.39.0'ın çektiği **Pillow 10.4.0**'da 67, Streamlit'te 4, black'te 4 ve pytest'te 2 bilinen güvenlik kaydı bulundu. Tüm bağımlılıklar güncel sürümlere yükseltildi (Streamlit 1.67.0, Pillow 13.0.0 vb.). Tarama tekrarlandığında açık kalmadı ve tüm kalite kapıları yeni sürümlerle yeniden geçti. Bu bulgu, olasılığın 2'den 3'e çıkarılmasının gerekçesidir: sürümleri sabitlemek tek başına yeterli değildir, sabitlenen sürüm zamanla açık barındırır. Bu nedenle tarama her PR'da tekrarlanır.
+**R-12 için gerçekleşen bulgu (11.11.2026):** Faz 1'de sabitlenen bağımlılıklar `pip-audit` ile tarandı. Streamlit 1.39.0'ın çektiği **Pillow 10.4.0**'da 67, Streamlit'te 4, black'te 4 ve pytest'te 2 bilinen güvenlik kaydı bulundu. Tüm bağımlılıklar güncel sürümlere yükseltildi (Streamlit 1.67.0, Pillow 13.0.0 vb.). Tarama tekrarlandığında açık kalmadı ve tüm kalite kapıları yeni sürümlerle yeniden geçti. Bulgu, sürümleri sabitlemenin tek başına yeterli olmadığını, sabitlenen sürümün zamanla açık barındırdığını göstermiştir. Açıklar kapatıldığı ve tarama artık her PR'da tekrarlandığı için olasılık ekip değerlendirmesinde 2 olarak bırakılmıştır.
 
 ### 4.5. Risk Matrisi
 
 | Olasılık ↓ / Etki → | 1 Düşük | 2 Orta | 3 Yüksek |
 | :--- | :--- | :--- | :--- |
-| **3 Yüksek** | | R-08 | R-12 |
-| **2 Orta** | R-02 | R-06, R-09, R-13, R-14 | R-01, R-03, R-04, R-05, R-07 |
-| **1 Düşük** | | R-11 | R-10 |
+| **3 Yüksek** | | R-08 | |
+| **2 Orta** | R-02 | R-14 | R-01, R-04, R-07, R-12 |
+| **1 Düşük** | R-06 | R-09, R-11, R-13 | R-03, R-05, R-10 |
 
-Yüksek riskli 7 tehdidin tamamı için tasarım aşamasında önlem belirlenmiş ve her önlem bir test senaryosuna ya da otomatik CI kontrolüne bağlanmıştır.
+Olasılık ve etki puanları Üye 5 (Kerem Erden, DevSecOps) tarafından verilmiş ve ekip toplantısında onaylanmıştır. Yüksek riskli 5 tehdidin (R-01, R-04, R-07, R-08, R-12) tamamı için tasarım aşamasında önlem belirlenmiş ve her önlem bir test senaryosuna ya da otomatik CI kontrolüne bağlanmıştır. R-03 ve R-05 gibi etkisi yüksek ama olasılığı düşük tehditlerin önlemleri de test senaryolarıyla doğrulanacaktır.
 
 ### 4.6. Kabul Edilen Kalan Riskler
 
@@ -312,28 +315,34 @@ Yüksek riskli 7 tehdidin tamamı için tasarım aşamasında önlem belirlenmi�
 
 ---
 
-## 5. Faz 2 İçin DIR Beyanı (Taslak)
+## 5. Faz 2 İçin DIR Beyanı
 
-### 5.1. İş Paketi 3 — Faz 2 Raporu Taslağı
+### 5.1. İş Paketi 3 — Faz 2 Raporu ve Kalite Altyapısı
 
 | Alan | İçerik |
 | :--- | :--- |
 | **Tarih** | 11.11.2026 |
-| **YZ aracı** | Anthropic Claude (Claude Code) |
-| **İlgili üyeler** | Ahmet Selim Dostabakan (yönlendirme); inceleme: `[ekip toplantısından sonra yazılacak]` |
-| **Görevin YZ kullanım sınırı** | Yeşil (teknik dokümantasyon). Bulguların kabulü, risk puanları ve kalite eşikleri ekip kararıdır. |
+| **YZ aracı** | Anthropic Claude (Claude Code, ajan tabanlı; proje klasörü ve GitHub üzerinde dosya düzenleme yetkisiyle) |
+| **İlgili üyeler** | Ahmet Selim Dostabakan (yönlendirme); inceleme ve onay: tüm ekip, yaklaşık 2 saatlik toplantı (her use case sahibi kendi bölümünü inceledi); risk puanları: Kerem Erden |
+| **Görevin YZ kullanım sınırı** | Yeşil (teknik dokümantasyon ve araç yapılandırması). Bulguların kabulü, risk puanları, kalite eşikleri ve DIR puanları ekip kararıdır. |
+| **Üretilen çıktı** | Faz 2 Raporu; Faz 1 Raporu v1.3; CI'a `pip-audit` adımı ve dal kapsaması; PR şablonu; güncellenmiş bağımlılık sürümleri |
 
-**Süreç özeti:** YZ'ye ders yönergesindeki Faz 2 maddeleri, onaylanmış Faz 1 Raporu (v1.2), Faz 1 DIR beyanı ve ekibin daha önce belirlediği kalite hedefleri bağlam olarak verildi. YZ, Faz 1 gereksinimlerini ISO/IEC/IEEE 29148 ölçütleriyle inceleyerek bulgu listesi, kalite kapıları, test planı ve STRIDE tabanlı risk tablosu taslağı üretti. Bağımlılıkların bilinen açıkları `pip-audit` aracıyla tarandı; bulunan açıklar sürüm yükseltmesiyle kapatıldı ve kalite kapıları yeni sürümlerle yerelde yeniden çalıştırıldı. YZ ayrıca CI'a `pip-audit` adımını, dal kapsamasını ve PR şablonunu ekledi.
+**Süreç özeti:** YZ'ye ders yönergesindeki Faz 2 maddeleri, onaylanmış Faz 1 Raporu, Faz 1 DIR beyanı ve ekibin kalite hedefleri bağlam olarak verildi. YZ, Faz 1 gereksinimlerini ISO/IEC/IEEE 29148 ölçütleriyle inceleyerek bulgu listesi, kalite kapıları, test planı ve STRIDE tabanlı risk tablosu taslağı üretti; bağımlılıkları `pip-audit` ile tarayıp bulunan açıkları sürüm yükseltmesiyle kapattı. Taslak ekip toplantısında incelendi: aktör tanımı düzeltildi, bir bulgunun kararı değiştirildi, risk puanlarının altısı yeniden verildi ve kaynaklar doğrulandı.
 
-| Boyut | Puan | Gerekçe |
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | |
-| **I** | `[ekip]` | |
-| **R** | `[ekip]` | Ekip incelemesinde her bulgu (RV-01 – RV-14) ve her risk puanı (R-01 – R-14) tek tek kabul, değişiklik veya ret olarak işaretlenecek; sonuç buraya yazılacak. |
+| **D** | 4 | Görev, çıktı türü ve bağlam açıkça verildi: yönerge maddeleri, onaylı Faz 1 Raporu, önceki DIR beyanı (A1, A2, A3). Negatif yönergeler korundu: yapılmamış test yapılmış gibi gösterilmeyecek, puanları ve kararları YZ vermeyecek, kapsam genişletilmeyecek (A4). Kabul kriterleri olarak önceden belirlenmiş kalite hedefleri kullanıldı (A6). Bu fazda YZ'ye kişisel veri verilmedi (A7). Bulguların kabulü ve risk puanları insanda kaldı (A8). |
+| **I** | 4 | Taslak çok turda yönlendirildi (B1, B2). YZ'nin önerileri gerekçeyle değiştirildi veya reddedildi: aktör “Servis Personeli” yerine tek kullanıcı “İşletme Sorumlusu” yapıldı ve bu nedenle önerilen `completed_by` alanı kaldırıldı; “5 hatalı girişte kilit” önerisi yerine CAPTCHA ve hatalı giriş kaydı seçildi; YZ'nin verdiği risk puanlarından altısı düşürüldü (B3). Kalıcı işlemler insan onayına bağlandı; YZ'nin dal koruma kuralını açma önerisi Faz 3'e ertelendi (B6). Farklı modeller karşılaştırılmadı (B4 eksik). |
+| **R** | 4 | Faz 2 kaynakları ekip tarafından birincil kaynağından doğrulandı (C1, C2). Her use case sahibi kendi bölümüne ait bulguları ayrıntılı inceleyip onayladı ve kendi kısmını sözlü olarak savunabilecek durumda (C6). Bağımlılık taraması ve kalite kapılarının sonucu GitHub Actions çıktısında görülebilir (C3). **Kalan sınırlılık:** Rapor metni büyük ölçüde YZ'nin cümleleriyle kaldı, ekibin kendi üslubuyla yeniden yazılmadı (C5 kısmen). İş kuralları gerçek bir servis işletmesine okutulmadı. |
 
-**Skor:** `[ekip incelemesinden sonra hesaplanacak]`
+**Skor:** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3 (Etkin ve Dengeli Yönetişim)**.
 
----
+### 5.2. Özet Beyan Tablosu
+
+| Üretilen artifact & YZ aracı | Kullanım amacı | İnsan müdahalesi ve düzeltme | Doğrulama yöntemi |
+| :--- | :--- | :--- | :--- |
+| Faz 2 Raporu / Claude Code | İnceleme bulguları, kalite kapıları, test planı, risk tablosu taslağı | Aktör tanımı düzeltildi; RV-07 kararı değiştirildi; 6 risk puanı yeniden verildi | 2 saatlik ekip toplantısı, kaynakların birincil kaynaktan doğrulanması |
+| Bağımlılık güncellemesi ve CI / Claude Code | Açık taraması, sürüm yükseltme, `pip-audit` adımı, PR şablonu | Dal koruma kuralı ekip kararıyla Faz 3'e ertelendi | `pip-audit` ve tüm kalite kapıları yerelde ve GitHub Actions'ta çalıştırıldı |
 
 ## 6. Kaynaklar (Faz 2)
 
@@ -347,4 +356,4 @@ Yüksek riskli 7 tehdidin tamamı için tasarım aşamasında önlem belirlenmi�
 8. **pip-audit**, PyPA, <https://github.com/pypa/pip-audit>.
 9. **Anthropic Claude (Claude Code)**, 11.11.2026; kullanım Bölüm 5'te beyan edilmiştir.
 
-> **Not:** Kaynakların künyeleri ekip tarafından birincil kaynağından doğrulanmalıdır (DIR C1). Doğrulanana kadar Bölüm 5'teki R puanı 4'e çıkarılmamalıdır.
+> Kaynakların künyeleri ekip tarafından birincil kaynağından doğrulanmıştır (11.11.2026).

@@ -3,7 +3,7 @@
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları
 - **Ekip Büyüklüğü:** 7 kişi
-- **Doküman Durumu:** v1.3 — Faz 2 incelemesi sonrası iyileştirildi (değişiklikler ekip onayı bekliyor)
+- **Doküman Durumu:** v1.3 — Faz 2 incelemesi sonrası iyileştirildi ve ekipçe onaylandı
 - **Hazırlanma Tarihi:** 22.10.2026 · **Son güncelleme:** 11.11.2026
 
 > **Kapsam kararı (v0.4):** v0.3 taslağındaki stok yönetimi, parça bazlı fiyat satırları, üç rollü yetki matrisi, iş emri durum makinesi ve audit log, ders süresi içinde **her özelliği test edilmiş ve ölçülmüş biçimde teslim edebilmek** amacıyla kapsamdan çıkarılmıştır. Proje, araç bazlı **To-Do tarzı iş takibi** ve **tamamlanma tarihine dayalı dönemsel raporlama** çekirdeğine indirgenmiştir. Bu karar, kalite yönetiminde bilinen *“kapsamı sınırla, derinliği artır”* ilkesine dayanır: daha az özellik, daha yüksek test kapsamı ve daha düşük teknik risk.
@@ -144,7 +144,7 @@ Küçük oto servislerinde yapılan işler çoğunlukla deftere veya kâğıt i�
 
 | Kod | Gereksinim | Kabul ölçütü |
 | :--- | :--- | :--- |
-| **FR-01** | Kullanıcı adı ve parola ile giriş; parolalar Argon2id ile özetlenir; giriş yapılmadan hiçbir ekran açılmaz. Sistemde yalnızca **işletme sorumlusu** hesabı vardır; ustalar sisteme giriş yapmaz. Hesap kurulum betiğiyle oluşturulur. Aynı kullanıcı adıyla 5 ardışık hatalı girişte hesap 5 dakika kilitlenir. *(v1.3, RV-07)* | Yanlış parola reddedilir; veritabanında düz metin parola bulunmaz; 5. hatalı denemeden sonra doğru parola da 5 dk reddedilir. |
+| **FR-01** | Kullanıcı adı ve parola ile giriş; parolalar Argon2id ile özetlenir; giriş yapılmadan hiçbir ekran açılmaz. Sistemde yalnızca **işletme sorumlusu** hesabı vardır; ustalar sisteme giriş yapmaz. Hesap kurulum betiğiyle oluşturulur. 3 ardışık hatalı girişten sonra giriş formuna uygulamanın kendi ürettiği robot doğrulama (CAPTCHA) eklenir. Hatalı girişler kaydedilir ve başarılı girişten sonra kullanıcıya listelenir. *(v1.3, RV-07)* | Yanlış parola reddedilir; veritabanında düz metin parola bulunmaz; 3. hatalı denemeden sonra CAPTCHA istenir; başarılı girişte önceki hatalı denemeler görünür. |
 | **FR-02** | Müşteri oluşturma, güncelleme ve ad/telefon ile arama. | “Can GPT” kaydedilir ve “can” aramasıyla bulunur. |
 | **FR-03** | Bir müşteriye birden çok araç; normalize edilmiş plaka tekilliği. | `34 bjk 321` ikinci kez eklenmek istendiğinde reddedilir. |
 | **FR-04** | Araca her gelişinde yeni servis ziyareti; açılış zamanı otomatik. | Aynı araca farklı günlerde birden çok ziyaret açılabilir. |
@@ -196,10 +196,10 @@ flowchart LR
 | **Aktör** | İşletme Sorumlusu |
 | **Ön koşul** | Kullanıcı hesabı tanımlı ve aktif. |
 | **Ana akış** | Kullanıcı adı ve parola girilir → sistem Argon2id özetini doğrular → oturum açılır → ana ekrana yönlendirilir. Çıkış yapıldığında oturum sonlanır. |
-| **Alternatif / hata akışı** | Yanlış kullanıcı adı veya parola için **aynı genel hata mesajı** gösterilir (kullanıcı adı sızdırılmaz). Oturum yokken herhangi bir ekrana erişim giriş ekranına yönlendirir. |
+| **Alternatif / hata akışı** | Yanlış kullanıcı adı veya parola için **aynı genel hata mesajı** gösterilir (kullanıcı adı sızdırılmaz). Oturum yokken herhangi bir ekrana erişim giriş ekranına yönlendirir. 3 ardışık hatalı girişten sonra CAPTCHA istenir. Başarılı girişte, son başarılı girişten bu yana yapılan hatalı denemeler tarih ve saatiyle gösterilir. |
 | **Son koşul** | Yetkili oturum açık. |
 | **Kalite odağı** | Güvenlik (gizlilik, kimlik doğrulama). |
-| **Test** | Doğru/yanlış parola, boş alanlar, veritabanında düz metin parola olmaması, oturumsuz erişim. |
+| **Test** | Doğru/yanlış parola, boş alanlar, veritabanında düz metin parola olmaması, oturumsuz erişim, 3. hatalı denemede CAPTCHA, hatalı deneme listesi. |
 
 #### UC-02 — Müşteri Kaydı, Girdi Doğrulama ve Arama (Üye 2)
 | Alan | İçerik |
@@ -283,7 +283,8 @@ stateDiagram-v2
 
 | Varlık | Temel alanlar | İlişki |
 | :--- | :--- | :--- |
-| `User` | `id`, `username`, `password_hash`, `failed_attempts`, `locked_until` | Tek kayıt: işletme sorumlusu |
+| `User` | `id`, `username`, `password_hash`, `failed_attempts`, `last_login_at` | Tek kayıt: işletme sorumlusu |
+| `LoginAttempt` | `id`, `attempted_at`, `success` | Giriş denemeleri; başarılı girişte son hatalı denemeler listelenir |
 | `Customer` | `id`, `full_name`, `phone`, `created_at` | 1 müşteri → N araç |
 | `Vehicle` | `id`, `customer_id`, `plate_normalized` (tekil), `brand`, `model` | 1 araç → N ziyaret |
 | `ServiceVisit` | `id`, `vehicle_id`, `opened_at`, `complaint` | 1 ziyaret → N iş |
@@ -331,7 +332,7 @@ Toplam bir “sayaç” olarak tutulmaz, **her seferinde sorgudan hesaplanır**.
 | TC-12 | Sınır değer | ✓ 23:59:59 ve 00:00:00 İstanbul saati | Doğru takvim gününe düşer |
 | TC-13 | Kara kutu | Açık iş + boş dönem | Açık iş sayılmaz; boş dönem 0,00 TL |
 
-**Test sonuçları henüz mevcut değildir; bunlar planlanan senaryolardır.** Bu liste Faz 2 Raporu'nun 3.7. bölümünde 31 senaryoya genişletilmiş ve yeniden numaralandırılmıştır; güncel liste oradadır.
+**Test sonuçları henüz mevcut değildir; bunlar planlanan senaryolardır.** Bu liste Faz 2 Raporu'nun 3.7. bölümünde 32 senaryoya genişletilmiş ve yeniden numaralandırılmıştır; güncel liste oradadır.
 
 ### 3.12. Ön Risk Listesi (Faz 2'de genişletilecek)
 
