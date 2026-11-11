@@ -77,7 +77,7 @@ Faz 1'in “ortamların oluşturulması” çıktısı kapsamında aşağıdaki 
 | **Araç ayarları** | `pyproject.toml` (pytest, coverage ≥ %80, black), `.flake8` |
 | **CI** | `.github/workflows/ci.yml`: her push ve PR'da black → flake8 → bandit (yüksek önem) → radon/xenon (McCabe ≤ 10) → pytest + kapsama |
 | **Ortam testi** | `tests/test_smoke.py`: paketin ve üç katmanın içe aktarılabildiğini doğrular |
-| **İş takibi** | GitHub Projects panosu — `[kurulacak]` |
+| **İş takibi** | GitHub Projects panosu: <https://github.com/orgs/servisflow/projects/3> (Backlog → Ready → In Progress → Review → Done; repoya bağlı) |
 
 **Kurulum ve test:** `pip install -r requirements.txt -r requirements-dev.txt` ardından `pytest --cov`. Tüm komutlar README'nin “Kurulum” bölümündedir.
 
@@ -419,7 +419,7 @@ Toplam bir “sayaç” olarak tutulmaz, **her seferinde sorgudan hesaplanır**.
 - [x] İş kuralları (BR-01 – BR-08) ekipçe okundu ve onaylandı.
 - [x] Kalite hedefleri (kapsama, McCabe, bandit) kabul edildi.
 - [x] GitHub reposu oluşturuldu: <https://github.com/servisflow/servisflow>
-- [ ] GitHub Projects panosu oluşturuldu.
+- [x] GitHub Projects panosu oluşturuldu ve repoya bağlandı.
 - [x] Geliştirme ortamı ve CI iskeleti kuruldu (Bölüm 2.3).
 - [x] DIR puanları dersin resmi yöntemine (İSTÜN DIR Rehberi V2) göre verildi.
 - [ ] Her üye DIR öğrenme sorularını yanıtladı ve taahhütnameyi imzaladı.
