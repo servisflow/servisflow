@@ -1,7 +1,7 @@
 # ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 
-> **Durum:** Faz 1 tamamlandı — ekip tarafından onaylandı, öğretim elemanı onayı bekleniyor.  
-> **Ders:** Yazılım Kalite Standartları · **Ekip:** 7 kişi · **Sürüm:** v1.1 (31.10.2026)
+> **Durum:** Faz 1 tamamlandı — ekip ve öğretim elemanı tarafından onaylandı.  
+> **Ders:** Yazılım Kalite Standartları · **Ekip:** 7 kişi · **Sürüm:** v1.2 (11.11.2026)
 
 **ServisFlow**, küçük bir oto serviste her araç için **To-Do uygulaması mantığında yapılacak işler listesi** tutan, işler **✓** ile tamamlandığında tutarlarını tamamlanma gününe yazan ve **günlük / haftalık / aylık / yıllık brüt iş bedelini** raporlayan sade bir web uygulamasıdır.
 

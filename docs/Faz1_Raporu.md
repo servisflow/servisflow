@@ -3,8 +3,8 @@
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları
 - **Ekip Büyüklüğü:** 7 kişi
-- **Doküman Durumu:** v1.1 — ekip tarafından onaylandı, öğretim elemanı onayı bekleniyor
-- **Hazırlanma Tarihi:** 22.10.2026 · **Son güncelleme:** 31.10.2026
+- **Doküman Durumu:** v1.2 — ekip ve öğretim elemanı tarafından onaylandı
+- **Hazırlanma Tarihi:** 22.10.2026 · **Son güncelleme:** 11.11.2026
 
 > **Kapsam kararı (v0.4):** v0.3 taslağındaki stok yönetimi, parça bazlı fiyat satırları, üç rollü yetki matrisi, iş emri durum makinesi ve audit log, ders süresi içinde **her özelliği test edilmiş ve ölçülmüş biçimde teslim edebilmek** amacıyla kapsamdan çıkarılmıştır. Proje, araç bazlı **To-Do tarzı iş takibi** ve **tamamlanma tarihine dayalı dönemsel raporlama** çekirdeğine indirgenmiştir. Bu karar, kalite yönetiminde bilinen *“kapsamı sınırla, derinliği artır”* ilkesine dayanır: daha az özellik, daha yüksek test kapsamı ve daha düşük teknik risk.
 
@@ -366,7 +366,7 @@ Toplam bir “sayaç” olarak tutulmaz, **her seferinde sorgudan hesaplanır**.
 | :--- | :--- |
 | **Tarih** | 22.10.2026 |
 | **YZ aracı** | OpenAI ChatGPT (GPT-6) |
-| **İlgili üyeler** | `[Taslağı hazırlayan üye(ler) yazılacak]` |
+| **İlgili üyeler** | Kerem Erden |
 | **Üretilen çıktı** | README ve Faz 1 raporu taslağı (v0.3) |
 
 **Süreç özeti:** YZ'ye ders yönergesindeki Faz 1 maddeleri, 7 kişilik ekip ve kişi başı en az bir use case koşulu, proje türü (araç servis yönetimi) ve biçim örneği olarak önceki Q-Task deposu verildi. İlk taslağın ardından iki ek turda stok kartı ve minimum stok uyarısı ile günlük/dönemsel brüt iş bedeli istendi. Sonra işlerin To-Do mantığında ✓ ile tamamlanması ve tamamlanma tarihine göre raporlanması tarif edildi; taslak her turda bu girdilere göre revize edildi.
@@ -413,7 +413,7 @@ Toplam bir “sayaç” olarak tutulmaz, **her seferinde sorgudan hesaplanır**.
 ### 4.4. Ekipçe Yapılması Gereken Doğrulamalar
 
 - [x] Proje adı ve daraltılmış kapsam ekip toplantısında onaylandı.
-- [ ] Proje adı ve daraltılmış kapsam ders hocasıyla kesinleştirildi.
+- [x] Proje adı ve daraltılmış kapsam ders hocasıyla kesinleştirildi.
 - [x] Use case atamaları onaylandı.
 - [ ] Yedi üyenin öğrenci numaraları toplandı (6/7).
 - [x] İş kuralları (BR-01 – BR-08) ekipçe okundu ve onaylandı.
