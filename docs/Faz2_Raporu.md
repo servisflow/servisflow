@@ -333,7 +333,7 @@ Olasılık ve etki puanları Üye 5 (Kerem Erden, DevSecOps) tarafından verilmi
 | :--- | :---: | :--- |
 | **D** | 4 | Görev, çıktı türü ve bağlam açıkça verildi: yönerge maddeleri, onaylı Faz 1 Raporu, önceki DIR beyanı (A1, A2, A3). Negatif yönergeler korundu: yapılmamış test yapılmış gibi gösterilmeyecek, puanları ve kararları YZ vermeyecek, kapsam genişletilmeyecek (A4). Kabul kriterleri olarak önceden belirlenmiş kalite hedefleri kullanıldı (A6). Bu fazda YZ'ye kişisel veri verilmedi (A7). Bulguların kabulü ve risk puanları insanda kaldı (A8). |
 | **I** | 4 | Taslak çok turda yönlendirildi (B1, B2). YZ'nin önerileri gerekçeyle değiştirildi veya reddedildi: aktör “Servis Personeli” yerine tek kullanıcı “İşletme Sorumlusu” yapıldı ve bu nedenle önerilen `completed_by` alanı kaldırıldı; “5 hatalı girişte kilit” önerisi yerine CAPTCHA ve hatalı giriş kaydı seçildi; YZ'nin verdiği risk puanlarından altısı düşürüldü (B3). Kalıcı işlemler insan onayına bağlandı; YZ'nin dal koruma kuralını açma önerisi Faz 3'e ertelendi (B6). Farklı modeller karşılaştırılmadı (B4 eksik). |
-| **R** | 4 | Faz 2 kaynakları ekip tarafından birincil kaynağından doğrulandı (C1, C2). Her use case sahibi kendi bölümüne ait bulguları ayrıntılı inceleyip onayladı ve kendi kısmını sözlü olarak savunabilecek durumda (C6). Bağımlılık taraması ve kalite kapılarının sonucu GitHub Actions çıktısında görülebilir (C3). **Kalan sınırlılık:** Rapor metni büyük ölçüde YZ'nin cümleleriyle kaldı, ekibin kendi üslubuyla yeniden yazılmadı (C5 kısmen). İş kuralları gerçek bir servis işletmesine okutulmadı. |
+| **R** | 4 | Faz 2 kaynakları ekip tarafından birincil kaynağından doğrulandı (C1, C2). Her use case sahibi kendi bölümüne ait bulguları ayrıntılı inceleyip onayladı ve kendi kısmını sözlü olarak savunabilecek durumda (C6). Bağımlılık taraması ve kalite kapılarının sonucu GitHub Actions çıktısında görülebilir (C3). İş kuralları Kerem Erden tarafından gerçek bir oto servis işletmesiyle birlikte değerlendirildi (C3, alana özgü doğrulama). **Kalan sınırlılık:** Rapor metni büyük ölçüde YZ'nin cümleleriyle kaldı, ekibin kendi üslubuyla yeniden yazılmadı (C5 kısmen). |
 
 **Skor:** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3 (Etkin ve Dengeli Yönetişim)**.
 
@@ -341,7 +341,7 @@ Olasılık ve etki puanları Üye 5 (Kerem Erden, DevSecOps) tarafından verilmi
 
 | Üretilen artifact & YZ aracı | Kullanım amacı | İnsan müdahalesi ve düzeltme | Doğrulama yöntemi |
 | :--- | :--- | :--- | :--- |
-| Faz 2 Raporu / Claude Code | İnceleme bulguları, kalite kapıları, test planı, risk tablosu taslağı | Aktör tanımı düzeltildi; RV-07 kararı değiştirildi; 6 risk puanı yeniden verildi | 2 saatlik ekip toplantısı, kaynakların birincil kaynaktan doğrulanması |
+| Faz 2 Raporu / Claude Code | İnceleme bulguları, kalite kapıları, test planı, risk tablosu taslağı | Aktör tanımı düzeltildi; RV-07 kararı değiştirildi; 6 risk puanı yeniden verildi | 2 saatlik ekip toplantısı, kaynakların birincil kaynaktan doğrulanması, iş kurallarının gerçek bir oto serviste değerlendirilmesi |
 | Bağımlılık güncellemesi ve CI / Claude Code | Açık taraması, sürüm yükseltme, `pip-audit` adımı, PR şablonu | Dal koruma kuralı ekip kararıyla Faz 3'e ertelendi | `pip-audit` ve tüm kalite kapıları yerelde ve GitHub Actions'ta çalıştırıldı |
 
 ## 6. Kaynaklar (Faz 2)
