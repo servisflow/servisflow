@@ -3,7 +3,7 @@
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları
 - **Ekip Büyüklüğü:** 7 kişi
-- **Doküman Durumu:** v1.2 — ekip ve öğretim elemanı tarafından onaylandı
+- **Doküman Durumu:** v1.3 — Faz 2 incelemesi sonrası iyileştirildi (değişiklikler ekip onayı bekliyor)
 - **Hazırlanma Tarihi:** 22.10.2026 · **Son güncelleme:** 11.11.2026
 
 > **Kapsam kararı (v0.4):** v0.3 taslağındaki stok yönetimi, parça bazlı fiyat satırları, üç rollü yetki matrisi, iş emri durum makinesi ve audit log, ders süresi içinde **her özelliği test edilmiş ve ölçülmüş biçimde teslim edebilmek** amacıyla kapsamdan çıkarılmıştır. Proje, araç bazlı **To-Do tarzı iş takibi** ve **tamamlanma tarihine dayalı dönemsel raporlama** çekirdeğine indirgenmiştir. Bu karar, kalite yönetiminde bilinen *“kapsamı sınırla, derinliği artır”* ilkesine dayanır: daha az özellik, daha yüksek test kapsamı ve daha düşük teknik risk.
@@ -128,14 +128,15 @@ Küçük oto servislerinde yapılan işler çoğunlukla deftere veya kâğıt i�
 
 | Kod | Kural |
 | :--- | :--- |
-| **BR-01** | Bir işin tutarı **0'dan büyük** olmalı ve en fazla 1.000.000 TL olabilir; kuruş cinsinden tamsayı saklanır. |
+| **BR-01** | Tutar sayısal alanla TL cinsinden, en fazla 2 ondalık basamakla girilir; 0,01 TL ile 1.000.000,00 TL arasında olmalıdır. Kuruş cinsinden tamsayı saklanır. *(v1.3, RV-05)* |
 | **BR-02** | ✓ ile tamamlanan işin durumu `DONE` olur, `completed_at` sistemce atanır ve tutar/başlık düzenlemeye kapanır. |
 | **BR-03** | Zaten `DONE` olan işe tekrar ✓ isteği gelirse **hiçbir şey değişmez** (idempotent); `completed_at` ve tutar korunur. |
-| **BR-04** | ✓ geri alınırsa iş `TODO`'ya döner, `completed_at` temizlenir ve iş rapordan düşer; yeniden ✓ yapılırsa yeni tamamlanma zamanı alır. |
+| **BR-04** | ✓ yalnızca işin tamamlandığı **İstanbul takvim günü içinde** geri alınabilir. Geri alındığında iş `TODO`'ya döner, `completed_at` ve `completed_by` temizlenir, iş rapordan düşer; yeniden ✓ yapılırsa yeni tamamlanma zamanı alır. Gün geçtikten sonra `DONE` kesindir. *(v1.3, RV-01)* |
 | **BR-05** | Raporlar yalnızca `DONE` işlerin tutarlarını `completed_at` tarihine göre toplar; `opened_at` veya raporun görüntülendiği gün esas alınmaz. |
 | **BR-06** | Gün sınırları `Europe/Istanbul` saatine göre belirlenir (23:59:59 → o gün, 00:00:00 → ertesi gün). Hafta Pazartesi başlar. |
-| **BR-07** | Plaka; boşluklar kaldırılıp büyük harfe çevrilerek (Türkçe karakter kurallarıyla) normalize edilir ve sistemde tekildir. |
-| **BR-08** | `DONE` iş içeren bir ziyaret ve araç silinemez (geçmiş verinin korunması). |
+| **BR-07** | Plaka boşluklar kaldırılıp **Latin büyük harfe** çevrilerek normalize edilir. Biçim: il kodu `01`–`81`, ardından 1–3 harf (Ç, Ğ, İ, Ö, Ş, Ü hariç), ardından 2–4 rakam. Normalize plaka sistemde tekildir. *(v1.3, RV-02, RV-03)* |
+| **BR-08** | MVP'de müşteri, araç ve ziyaret kayıtları silinmez (geçmiş verinin korunması). Yalnızca `TODO` durumundaki iş silinebilir. *(v1.3, RV-06)* |
+| **BR-09** | Telefon isteğe bağlıdır. Girilirse boşluk, tire ve parantez temizlenir, baştaki `0` atılır; sonuç `5` ile başlayan 10 haneli sayı olmalıdır. *(v1.3, RV-04)* |
 
 > **Finansal tanım:** Rapor metriği **“tamamlanan işlerin brüt bedeli”**dir; tahsilat, net kâr veya muhasebe geliri değildir.
 
@@ -143,7 +144,7 @@ Küçük oto servislerinde yapılan işler çoğunlukla deftere veya kâğıt i�
 
 | Kod | Gereksinim | Kabul ölçütü |
 | :--- | :--- | :--- |
-| **FR-01** | Kullanıcı adı ve parola ile giriş; parolalar Argon2id ile özetlenir; giriş yapılmadan hiçbir ekran açılmaz. | Yanlış parola reddedilir; veritabanında düz metin parola bulunmaz. |
+| **FR-01** | Kullanıcı adı ve parola ile giriş; parolalar Argon2id ile özetlenir; giriş yapılmadan hiçbir ekran açılmaz. Kullanıcılar kurulum betiğiyle oluşturulur. Aynı kullanıcı adıyla 5 ardışık hatalı girişte hesap 5 dakika kilitlenir. *(v1.3, RV-07)* | Yanlış parola reddedilir; veritabanında düz metin parola bulunmaz; 5. hatalı denemeden sonra doğru parola da 5 dk reddedilir. |
 | **FR-02** | Müşteri oluşturma, güncelleme ve ad/telefon ile arama. | “Can GPT” kaydedilir ve “can” aramasıyla bulunur. |
 | **FR-03** | Bir müşteriye birden çok araç; normalize edilmiş plaka tekilliği. | `34 bjk 321` ikinci kez eklenmek istendiğinde reddedilir. |
 | **FR-04** | Araca her gelişinde yeni servis ziyareti; açılış zamanı otomatik. | Aynı araca farklı günlerde birden çok ziyaret açılabilir. |
@@ -157,12 +158,13 @@ Küçük oto servislerinde yapılan işler çoğunlukla deftere veya kâğıt i�
 | Kod | ISO/IEC 25010 özelliği | Ölçülebilir hedef | Ölçüm aracı |
 | :--- | :--- | :--- | :--- |
 | **NFR-01** | Bakım yapılabilirlik | Fonksiyon başına McCabe ≤ 10 (hedef ≤ 7) | `radon cc` |
-| **NFR-02** | Bakım yapılabilirlik / test edilebilirlik | `services` katmanında ≥ %80 satır kapsama | `pytest-cov` |
+| **NFR-02** | Bakım yapılabilirlik / test edilebilirlik | `ui` hariç tüm kodda (`services` + `repository`) ≥ %80 kapsama *(v1.3, RV-13)* | `pytest-cov` |
 | **NFR-03** | Güvenlik | Parolalar Argon2id; bandit yüksek önemli bulgu = 0 | `bandit`, kod incelemesi |
 | **NFR-04** | Güvenilirlik | ✓ işlemi tek veritabanı işleminde (transaction) yapılır; çift istek tek tamamlama üretir | Tekrar istek testi |
 | **NFR-05** | Fonksiyonel doğruluk | Para hesabında yuvarlama hatası 0 (tamsayı kuruş) | Birim testleri |
 | **NFR-06** | Kullanılabilirlik | Müşteri → araç → ziyaret → iş → ✓ akışı yeni kullanıcı tarafından yardımsız ≤ 3 dakikada tamamlanır | UAT gözlemi |
 | **NFR-07** | Gizlilik | Demo ve testlerde yalnız sentetik veri | Veri seti incelemesi |
+| **NFR-08** | Güvenlik | Hata durumunda kullanıcıya yalnızca genel mesaj gösterilir; yığın izi ve iç yapı bilgisi arayüze yansımaz *(v1.3, RV-14)* | Hata senaryosu testi |
 
 > Bu eşikler ekibin önerisidir; ders yönergesindeki zorunlu sayısal sınırlar değildir.
 
@@ -204,7 +206,7 @@ flowchart LR
 | **Aktör** | Servis Personeli |
 | **Ön koşul** | Oturum açık. |
 | **Ana akış** | `Müşteri ekle` → ad soyad (zorunlu) ve telefon (isteğe bağlı) girilir → kaydedilir. Müşteri listesinde ad veya telefonla arama yapılır; kayıt güncellenebilir. |
-| **Alternatif / hata akışı** | Boş ad, 100 karakteri aşan ad veya geçersiz telefon formatı reddedilir; kullanıcıya alan bazında hata gösterilir. |
+| **Alternatif / hata akışı** | Boş ad, 100 karakteri aşan ad veya BR-09'a uymayan telefon reddedilir; kullanıcıya alan bazında hata gösterilir. |
 | **Son koşul** | Müşteri benzersiz ID ile saklanır. |
 | **Kalite odağı** | Fonksiyonel uygunluk, girdi doğrulama. |
 | **Test** | Türkçe karakterli isimler (Çağrı, Işıl, Şükrü), büyük/küçük harf duyarsız arama, aynı adlı iki farklı müşteri, sınır değerler (0, 1, 100, 101 karakter). |
@@ -215,7 +217,7 @@ flowchart LR
 | **Aktör** | Servis Personeli |
 | **Ön koşul** | Müşteri kayıtlı. |
 | **Ana akış** | Müşteri seçilir → `Araç ekle` → plaka, marka, model girilir → sistem plakayı normalize eder (`34 bjk 321` → `34BJK321`) → kaydedilir. Plaka ile araç aranabilir. |
-| **Alternatif / hata akışı** | Normalize edilmiş plaka zaten kayıtlıysa reddedilir; geçersiz plaka formatı reddedilir. |
+| **Alternatif / hata akışı** | Normalize edilmiş plaka zaten kayıtlıysa reddedilir; BR-07 biçimine uymayan plaka reddedilir. |
 | **Son koşul** | Araç ilgili müşteri altında listelenir. |
 | **Kalite odağı** | Veri bütünlüğü. |
 | **Test** | Aynı plakanın farklı yazımları (`34BJK321`, `34 bjk 321`), aynı müşteriye iki araç, geçersiz format, Türkçe karakterli büyük harf dönüşümü. |
@@ -247,8 +249,8 @@ flowchart LR
 | :--- | :--- |
 | **Aktör** | Servis Personeli, Sistem |
 | **Ön koşul** | İş `TODO` durumunda. |
-| **Ana akış** | (1) Kullanıcı işin ✓ kutusunu işaretler. (2) Sistem tek bir veritabanı işlemi içinde işi `DONE` yapar, `completed_at` atar ve tutarı kilitler. (3) İş, tamamlandığı günün toplamına dahil olur. |
-| **Alternatif akış** | **Tekrar ✓:** İş zaten `DONE` ise hiçbir alan değişmez (idempotent). **Geri alma:** Kullanıcı ✓'yi kaldırırsa iş `TODO`'ya döner, `completed_at` temizlenir, iş rapordan düşer (BR-04). |
+| **Ana akış** | (1) Kullanıcı işin ✓ kutusunu işaretler. (2) Sistem tek bir koşullu güncelleme ile (`status = 'TODO'` ise) işi `DONE` yapar, `completed_at` ve `completed_by` atar ve tutarı kilitler. (3) İş, tamamlandığı günün toplamına dahil olur. |
+| **Alternatif akış** | **Tekrar ✓:** İş zaten `DONE` ise hiçbir alan değişmez (idempotent). **Geri alma:** Kullanıcı ✓'yi kaldırırsa ve iş bugün tamamlanmışsa iş `TODO`'ya döner, `completed_at` temizlenir, iş rapordan düşer. Önceki bir gün tamamlanmış iş geri alınamaz (BR-04). |
 | **Son koşul** | Her iş raporda en fazla bir kez ve doğru günde sayılır. |
 | **Kalite odağı** | Güvenilirlik, tutarlılık. |
 | **Test** | Çift ✓ → tek tamamlama; ✓ → geri al → ✓ akışında yeni `completed_at`; dün açılıp bugün ✓ yapılan iş bugünün toplamında; durum geçiş tablosunun tüm dalları. |
@@ -261,7 +263,7 @@ stateDiagram-v2
     TODO --> TODO: Düzenle
     TODO --> DONE: ✓ (completed_at atanır, tutar kilitlenir)
     DONE --> DONE: Tekrar ✓ (değişiklik yok)
-    DONE --> TODO: ✓ geri al (completed_at temizlenir)
+    DONE --> TODO: ✓ geri al (yalnızca aynı gün; completed_at temizlenir)
     TODO --> [*]: Sil
 ```
 
@@ -284,7 +286,7 @@ stateDiagram-v2
 | `Customer` | `id`, `full_name`, `phone`, `created_at` | 1 müşteri → N araç |
 | `Vehicle` | `id`, `customer_id`, `plate_normalized` (tekil), `brand`, `model` | 1 araç → N ziyaret |
 | `ServiceVisit` | `id`, `vehicle_id`, `opened_at`, `complaint` | 1 ziyaret → N iş |
-| `ServiceTask` | `id`, `visit_id`, `title`, `note`, `amount_kurus`, `status` (`TODO`/`DONE`), `created_at`, `completed_at` | ✓ ile tamamlanan iş |
+| `ServiceTask` | `id`, `visit_id`, `title`, `note`, `amount_kurus`, `status` (`TODO`/`DONE`), `created_at`, `completed_at`, `completed_by` | ✓ ile tamamlanan iş |
 
 **Rapor sorgusu (kavramsal):**
 
@@ -328,7 +330,7 @@ Toplam bir “sayaç” olarak tutulmaz, **her seferinde sorgudan hesaplanır**.
 | TC-12 | Sınır değer | ✓ 23:59:59 ve 00:00:00 İstanbul saati | Doğru takvim gününe düşer |
 | TC-13 | Kara kutu | Açık iş + boş dönem | Açık iş sayılmaz; boş dönem 0,00 TL |
 
-**Test sonuçları henüz mevcut değildir; bunlar planlanan senaryolardır.** Ayrıntılı test planı Faz 2'de hazırlanacaktır.
+**Test sonuçları henüz mevcut değildir; bunlar planlanan senaryolardır.** Bu liste Faz 2 Raporu'nun 3.7. bölümünde 31 senaryoya genişletilmiş ve yeniden numaralandırılmıştır; güncel liste oradadır.
 
 ### 3.12. Ön Risk Listesi (Faz 2'de genişletilecek)
 
@@ -424,7 +426,18 @@ Toplam bir “sayaç” olarak tutulmaz, **her seferinde sorgudan hesaplanır**.
 
 ---
 
-## 5. Kaynaklar (Faz 1)
+## 5. Değişiklik Geçmişi
+
+| Sürüm | Tarih | Değişiklik |
+| :--- | :--- | :--- |
+| v0.3 | 22.10.2026 | İlk taslak (geniş kapsam) |
+| v0.4 | 24.10.2026 | Kapsam daraltıldı: stok, parça satırları, çoklu rol, audit log çıkarıldı |
+| v1.0 | 27.10.2026 | Ekip onayı |
+| v1.1 | 31.10.2026 | DIR beyanı, izlence takvimi, geliştirme ortamı ve CI |
+| v1.2 | 11.11.2026 | Öğretim elemanı onayı, proje panosu |
+| v1.3 | 11.11.2026 | Faz 2 incelemesi (RV-01 – RV-14): BR-01, BR-04, BR-07, BR-08, FR-01, NFR-02 güncellendi; BR-09, NFR-08 ve `completed_by` eklendi |
+
+## 6. Kaynaklar (Faz 1)
 
 1. **Yazılım Kalite Standartları — Grup Projesi**, öğretim elemanı yönergesi (ders materyali).
 2. **ISO/IEC 25010:2023**, *Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE) — Product quality model*. NFR sınıflandırmasında kullanılmıştır.

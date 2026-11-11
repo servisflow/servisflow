@@ -29,10 +29,13 @@ jobs:
       - name: Güvenlik taraması (bandit, yüksek önem = 0)
         run: bandit -r src --severity-level high
 
+      - name: Bağımlılık açık taraması (pip-audit)
+        run: pip-audit -r requirements.txt -r requirements-dev.txt
+
       - name: McCabe karmaşıklığı (fonksiyon başına ≤ 10)
         run: |
           radon cc src -s -a
           xenon src --max-absolute B --max-modules B --max-average A
 
-      - name: Testler ve kapsama (≥ %80)
+      - name: Testler ve kapsama (≥ %80, satır + dal)
         run: pytest --cov --cov-report=term-missing

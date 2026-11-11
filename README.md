@@ -1,7 +1,7 @@
 # ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 
 > **Durum:** Faz 1 tamamlandı — ekip ve öğretim elemanı tarafından onaylandı.  
-> **Ders:** Yazılım Kalite Standartları · **Ekip:** 7 kişi · **Sürüm:** v1.2 (11.11.2026)
+> **Ders:** Yazılım Kalite Standartları · **Ekip:** 7 kişi · **Sürüm:** v1.3 (11.11.2026) · Faz 2 taslağı hazır
 
 **ServisFlow**, küçük bir oto serviste her araç için **To-Do uygulaması mantığında yapılacak işler listesi** tutan, işler **✓** ile tamamlandığında tutarlarını tamamlanma gününe yazan ve **günlük / haftalık / aylık / yıllık brüt iş bedelini** raporlayan sade bir web uygulamasıdır.
 
@@ -97,7 +97,7 @@ Stok/envanter, parça bazlı fiyat satırları, çoklu rol ve yetki matrisi, öd
 | Test / kapsama | pytest / pytest-cov |
 | Karmaşıklık | radon (McCabe) |
 | Stil / statik analiz | black / flake8 |
-| Güvenlik taraması | bandit |
+| Güvenlik taraması | bandit (kaynak kod), pip-audit (bağımlılıklar) |
 | Karmaşıklık eşiği (CI) | xenon (radon tabanlı) |
 | Süreç | GitHub Projects (Scrumban), PR + code review, GitHub Actions (CI) |
 
@@ -112,6 +112,7 @@ servisflow/
 ├── README.md
 ├── docs/
 │   ├── Faz1_Raporu.md
+│   ├── Faz2_Raporu.md
 │   └── Sunum_Notlari.md
 ├── src/servisflow/
 │   ├── ui/            # Streamlit ekranları
@@ -121,7 +122,7 @@ servisflow/
 ├── pyproject.toml     # pytest, coverage ve black ayarları
 ├── .flake8            # flake8 ayarları
 ├── requirements.txt / requirements-dev.txt
-└── .github/workflows/ # CI: black + flake8 + bandit + radon/xenon + pytest-cov
+└── .github/           # CI (black, flake8, bandit, pip-audit, radon/xenon, pytest-cov) ve PR şablonu
 ```
 
 ## 🚀 Kurulum
@@ -141,14 +142,15 @@ Kalite kapılarını yerelde çalıştırma (CI'daki adımların aynısı):
 ```bash
 black --check src tests                                  # biçim
 flake8 src tests                                         # stil
-bandit -r src --severity-level high                      # güvenlik
+bandit -r src --severity-level high                      # güvenlik (kod)
+pip-audit -r requirements.txt -r requirements-dev.txt    # güvenlik (bağımlılık)
 xenon src --max-absolute B --max-modules B --max-average A   # McCabe ≤ 10
-pytest --cov                                             # testler + kapsama ≥ %80
+pytest --cov                                             # testler + satır/dal kapsama ≥ %80
 ```
 
 Her push ve pull request'te bu adımlar [GitHub Actions](.github/workflows/ci.yml) tarafından otomatik çalıştırılır.
 
-📄 Faz 1 raporu: [`docs/Faz1_Raporu.md`](docs/Faz1_Raporu.md)
+📄 Faz 1 raporu: [`docs/Faz1_Raporu.md`](docs/Faz1_Raporu.md) · Faz 2 raporu (taslak): [`docs/Faz2_Raporu.md`](docs/Faz2_Raporu.md)
 
 ## 🗓️ Ders fazları
 
