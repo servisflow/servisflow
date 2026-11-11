@@ -34,7 +34,7 @@
 | **RV-05** | BR-01, UC-05 | Tutarın hangi biçimde girileceği belirsiz: `1.600,50` mi, `1600.50` mi? İkiden fazla ondalık (`10,005`) ne olacak? | Tek anlamlı | Orta | Tutar sayısal alanla (TL, en fazla 2 ondalık) alınır; serbest metin ayrıştırılmaz. İkiden fazla ondalık reddedilir (BR-01). |
 | **RV-06** | BR-08 | “`DONE` iş içeren ziyaret ve araç silinemez” deniyor, ancak hiçbir FR'de silme işlevi tanımlı değil. Silme kapsamda mı belirsiz. | Eksiksiz, tutarlı | Orta | MVP'de müşteri, araç ve ziyaret **silme yoktur**. Yalnızca `TODO` iş silinebilir (BR-08). |
 | **RV-07** | FR-01, UC-01 | Kullanıcı hesaplarının nasıl oluşturulacağı ve tekrarlanan hatalı girişlere karşı ne yapılacağı tanımlı değil. | Eksiksiz | Yüksek | İlk kullanıcı kurulum betiğiyle oluşturulur, arayüzden kayıt yoktur. Aynı kullanıcı adıyla **5 ardışık hatalı girişte hesap 5 dakika kilitlenir** (FR-01). |
-| **RV-08** | UC-06, veri modeli | ✓'yi kimin koyduğu kaydedilmiyor. Audit log kapsam dışı olsa da bir işin kim tarafından tamamlandığı en temel izlenebilirlik bilgisidir. | Eksiksiz | Orta | `ServiceTask.completed_by` (kullanıcı ID) alanı eklendi; ✓ ile birlikte atanır, geri almada temizlenir. |
+| **RV-08** | Aktörler, UC'ler | Aktör “Servis Personeli” olarak tanımlı; sisteme kimin giriş yaptığı (her usta mı, işletme sahibi mi) belirsiz. Bu belirsizlik hesap sayısını, yetkiyi ve “işi kim tamamladı” bilgisini doğrudan etkiliyor. | Tek anlamlı | Yüksek | Ekip kararı: sistemin **tek kullanıcısı işletme sorumlusudur**. Ustalar sisteme giriş yapmaz, yaptıkları işi sorumluya bildirir ve kaydı sorumlu girer. Usta başına hesap ve “kim tamamladı” alanı gerekmez. |
 | **RV-09** | NFR-04 | “Çift istek tek tamamlama üretir” hedefi var ama nasıl sağlanacağı yok. | Doğrulanabilir | Orta | Tasarım kararı: tamamlama tek bir koşullu güncelleme ile yapılır (`... WHERE id = ? AND status = 'TODO'`). Etkilenen satır 0 ise işlem değişiklik yapmadan başarılı sayılır. |
 | **RV-10** | UC-04, UC-06, test | `opened_at` ve `completed_at` sistem saatinden alınıyor; gece yarısı sınırı testleri (TC-12) gerçek saate bağlı kalırsa tekrarlanamaz. | Doğrulanabilir | Orta | Tasarım kararı: servis fonksiyonları zamanı dışarıdan verilen bir **saat sağlayıcısından** (`clock`) alır. Testlerde saat sabitlenir. |
 | **RV-11** | İzlenebilirlik matrisi | FR-07 (araç geçmişi) ve UC-01'in “oturumsuz erişim” davranışı hiçbir test senaryosuna bağlı değil. | İzlenebilir | Orta | Yeni test senaryoları eklendi (Bölüm 3.7: TC-03, TC-27, TC-28). |
@@ -49,14 +49,14 @@ Kabul edilen bulgular Faz 1 Raporu'na **v1.3** olarak işlenmiştir. Değişen v
 | Kod | Yeni metin |
 | :--- | :--- |
 | **BR-01** | Tutar sayısal alanla TL cinsinden, en fazla 2 ondalık basamakla girilir; 0,01 TL ile 1.000.000,00 TL arasında olmalıdır. Kuruş cinsinden tamsayı saklanır. |
-| **BR-04** | ✓ yalnızca işin tamamlandığı **İstanbul takvim günü içinde** geri alınabilir. Geri alındığında iş `TODO`'ya döner, `completed_at` ve `completed_by` temizlenir. Gün geçtikten sonra `DONE` kesindir. |
+| **BR-04** | ✓ yalnızca işin tamamlandığı **İstanbul takvim günü içinde** geri alınabilir. Geri alındığında iş `TODO`'ya döner, `completed_at` temizlenir. Gün geçtikten sonra `DONE` kesindir. |
 | **BR-07** | Plaka boşluklar kaldırılıp **Latin büyük harfe** çevrilerek normalize edilir. Biçim: il kodu `01`–`81`, ardından 1–3 harf (Ç, Ğ, İ, Ö, Ş, Ü hariç), ardından 2–4 rakam. Normalize plaka sistemde tekildir. |
 | **BR-08** | MVP'de müşteri, araç ve ziyaret kayıtları silinmez. Yalnızca `TODO` durumundaki iş silinebilir. |
 | **BR-09** *(yeni)* | Telefon isteğe bağlıdır. Girilirse boşluk, tire ve parantez temizlenir, baştaki `0` atılır; sonuç `5` ile başlayan 10 haneli sayı olmalıdır. |
-| **FR-01** | (eklenen) Kullanıcılar kurulum betiğiyle oluşturulur. Aynı kullanıcı adıyla 5 ardışık hatalı girişte hesap 5 dakika kilitlenir. |
+| **FR-01** | (eklenen) Sistemde yalnızca işletme sorumlusu hesabı vardır; hesap kurulum betiğiyle oluşturulur. Aynı kullanıcı adıyla 5 ardışık hatalı girişte hesap 5 dakika kilitlenir. |
 | **NFR-02** | `ui` hariç tüm kodda (`services` + `repository`) ≥ %80 satır kapsama. |
 | **NFR-08** *(yeni)* | Hata durumunda kullanıcıya yalnızca genel mesaj gösterilir; yığın izi ve iç yapı bilgisi arayüze yansımaz. |
-| **Veri modeli** | `ServiceTask` tablosuna `completed_by` alanı eklendi. |
+| **Aktörler** | “Servis Personeli” yerine **İşletme Sorumlusu** (tek kullanıcı). Usta sistem dışı bir paydaştır. `User` tablosuna kilit için `failed_attempts` ve `locked_until` alanları eklendi. |
 
 ---
 
@@ -126,7 +126,7 @@ Plan, ISO/IEC/IEEE 29119-3'teki test planı başlıkları esas alınarak sadele�
 | **Birim** | `services` fonksiyonları: doğrulama, normalizasyon, tutar dönüşümü, durum geçişleri, dönem hesabı | pytest; veritabanı ve saat sahte nesnelerle | Faz 3, kodla birlikte (her PR) |
 | **Entegrasyon** | `services` + `repository` birlikte: tekillik kısıtı, koşullu ✓ güncellemesi, rapor sorgusu | pytest; bellekte SQLite (`sqlite:///:memory:`) | Faz 3–4 |
 | **Sistem** | Uçtan uca akış: giriş → müşteri → araç → ziyaret → iş → ✓ → rapor | Streamlit `AppTest` ile otomatik + elle senaryo yürütme | Faz 4 |
-| **Kabul (UAT)** | Gerçek kullanıcıya yakın bir kişinin akışı yardımsız tamamlaması (NFR-06) | Gözlemli oturum, süre ölçümü, anket | Faz 4 |
+| **Kabul (UAT)** | İşletme sahibi profiline yakın bir kişinin, ustadan gelen bir iş bildirimini sisteme yardımsız kaydetmesi (NFR-06) | Gözlemli oturum, süre ölçümü, anket | Faz 4 |
 
 ### 3.3. Test Teknikleri
 
@@ -145,7 +145,7 @@ Plan, ISO/IEC/IEEE 29119-3'teki test planı başlıkları esas alınarak sadele�
 | :--- | :---: | :---: | :---: | :---: |
 | İş `DONE` mı? | E | E | H | H |
 | Tamamlandığı İstanbul günü bugün mü? | E | H | – | – |
-| **Sonuç** | `TODO`'ya döner, `completed_at` / `completed_by` temizlenir | Reddedilir, “Geçmiş günün işi geri alınamaz” | Değişiklik yok | Değişiklik yok |
+| **Sonuç** | `TODO`'ya döner, `completed_at` temizlenir | Reddedilir, “Geçmiş günün işi geri alınamaz” | Değişiklik yok | Değişiklik yok |
 | Test | TC-19 | TC-20 | TC-21 | TC-21 |
 
 ### 3.5. Test Ortamı ve Verisi
@@ -190,7 +190,7 @@ Faz 1'deki 13 senaryo genişletilmiş ve yeniden numaralandırılmıştır. Faz 
 | TC-19 (09) | UC-06, BR-04 | Karar tablosu K1 | Aynı gün ✓ → geri al → ✓ | Yeni `completed_at`, toplamda bir kez | Birim |
 | TC-20 | UC-06, BR-04 | Karar tablosu K2 | Dün ✓ yapılmış işi bugün geri alma | Reddedilir | Birim |
 | TC-21 | UC-06 | Karar tablosu K3–K4 | `TODO` işe geri al isteği | Değişiklik yok | Birim |
-| TC-22 | UC-06 | Beyaz kutu | ✓ sonrası kayıt | `completed_by` = oturumdaki kullanıcı | Entegrasyon |
+| TC-22 | UC-01 | Kara kutu | Çıkış yaptıktan sonra tarayıcının geri tuşuyla önceki sayfaya dönme | Sayfa açılmaz, giriş ekranı gelir | Sistem |
 | TC-23 | UC-06, NFR-04 | Hata tahmini | İki sekmeden aynı anda ✓ | Bir tamamlama; diğer istek değişiklik yapmaz | Entegrasyon |
 | TC-24 (10) | UC-07, BR-05 | Kara kutu | İş 22 Ekim'de açılır, 23 Ekim'de ✓ | Yalnız 23 Ekim toplamında | Entegrasyon |
 | TC-25 (11) | UC-07 | Kara kutu | 22 Ekim 1.600 TL, 23 Ekim 1.200 TL | Günlük 1.600 / 1.200; hafta 2.800 TL | Entegrasyon |
@@ -199,7 +199,7 @@ Faz 1'deki 13 senaryo genişletilmiş ve yeniden numaralandırılmıştır. Faz 
 | TC-28 | UC-07, FR-07 | Kara kutu | Üç ziyareti olan araç | Ziyaretler yeniden eskiye, işleriyle birlikte listelenir | Sistem |
 | TC-29 | UC-07, BR-06 | Sınır değer | 31 Aralık 23:59:59 ve 29 Şubat 2028 | Doğru yıl ve ay | Birim |
 | TC-30 | NFR-08 | Hata tahmini | Veritabanı bağlantısı kesilmişken işlem | Genel hata mesajı; yığın izi görünmez | Sistem |
-| TC-31 | NFR-06 | UAT | Yeni kullanıcı tam akışı yürütür | ≤ 3 dakika, yardımsız | UAT |
+| TC-31 | NFR-06 | UAT | İşletme sahibi profilindeki kişi, ustanın bildirdiği bir işi baştan sona kaydeder | ≤ 3 dakika, yardımsız | UAT |
 
 ### 3.8. Hata Yönetimi
 
@@ -215,7 +215,7 @@ Faz 1'deki 13 senaryo genişletilmiş ve yeniden numaralandırılmıştır. Faz 
 | Her UC sahibi | Kendi UC'sinin birim testleri; kendi TC'lerinin Faz 4'te çalıştırılması |
 | Üye 7 — QA lideri | Test planı, sistem testleri, UAT yönetimi, test sonuç raporu, KK-1 ve KK-3 |
 | Üye 6 — Beyaz kutu | Entegrasyon testleri, kapsama ve McCabe ölçümleri ve yorumu |
-| Üye 5 — DevSecOps | Güvenlik test senaryoları (TC-01 – TC-05, TC-23, TC-30), CI ve KK-4 |
+| Üye 5 — DevSecOps | Güvenlik test senaryoları (TC-01 – TC-05, TC-22, TC-23, TC-30), CI ve KK-4 |
 | Üye 4 — UI/UX | UAT senaryosunun yürütülmesi ve kullanılabilirlik gözlemi |
 
 ### 3.10. Takvim ve Ölçülecek Metrikler
@@ -244,7 +244,7 @@ Faz 1'deki 13 senaryo genişletilmiş ve yeniden numaralandırılmıştır. Faz 
 
 ```mermaid
 flowchart LR
-    U([Servis personeli<br/>tarayıcı]) -- "GS-1: ağ" --> UI[Streamlit arayüzü]
+    U([İşletme sorumlusu<br/>tarayıcı]) -- "GS-1: ağ" --> UI[Streamlit arayüzü]
     UI --> SV[services<br/>doğrulama, kurallar]
     SV --> RP[repository<br/>SQLAlchemy]
     RP -- "GS-2: dosya sistemi" --> DB[(SQLite dosyası)]
@@ -273,7 +273,7 @@ flowchart LR
 | **R-03** | S/E | Oturum açmadan bir sayfaya doğrudan erişim | 2 | 3 | **6 Yüksek** | A01 | Her sayfanın başında oturum denetimi (ortak `require_login` fonksiyonu) | TC-03 |
 | **R-04** | T | Arama kutusu üzerinden SQL enjeksiyonu | 2 | 3 | **6 Yüksek** | A03 | Yalnızca ORM / parametreli sorgu; string birleştirmeyle SQL yasak | bandit (B608), kod inceleme listesi, enjeksiyon girdili test |
 | **R-05** | T | ✓ geri alınarak geçmiş günün tutarının sessizce değiştirilmesi | 2 | 3 | **6 Yüksek** | A04 | Geri alma yalnızca aynı gün (BR-04) | TC-20 |
-| **R-06** | R | Bir işi kimin tamamladığının inkâr edilebilmesi | 2 | 2 | 4 Orta | A09 | `completed_by` alanı; tam audit log kapsam dışı, kalan risk kabul edildi | TC-22 |
+| **R-06** | R | Tek hesabın parolasının ustalarla paylaşılması; bir işlemi kimin yaptığının ayırt edilememesi | 2 | 2 | 4 Orta | A07 | Tek hesap politikası: parola yalnızca işletme sorumlusundadır ve paylaşılmaz (kullanım kılavuzunda yazılı); tam audit log kapsam dışı, kalan risk kabul edildi | UAT sırasında kılavuz kontrolü |
 | **R-07** | T | Aynı anda iki ✓ isteğiyle çift sayım | 2 | 3 | **6 Yüksek** | A04 | Koşullu güncelleme (RV-09); toplamın sorgudan hesaplanması | TC-18, TC-23 |
 | **R-08** | I | Hata ekranında yığın izi ve dosya yollarının görünmesi | 3 | 2 | **6 Yüksek** | A05 | `client.showErrorDetails = false` (NFR-08) | TC-30 |
 | **R-09** | I | Müşteri verisinin depoya veya ekran görüntülerine sızması | 2 | 2 | 4 Orta | A02 | Yalnızca sentetik veri; `*.db` `.gitignore`'da; teslim belgeleri depo dışında | Veri seti incelemesi |
@@ -297,7 +297,7 @@ Yüksek riskli 7 tehdidin tamamı için tasarım aşamasında önlem belirlenmi�
 
 ### 4.6. Kabul Edilen Kalan Riskler
 
-- **Tam denetim izi yok:** Audit log kapsam dışıdır. Yalnızca `completed_by` tutulur; bir işin düzenleme geçmişi saklanmaz.
+- **Tam denetim izi yok:** Audit log kapsam dışıdır; bir işin düzenleme geçmişi saklanmaz. Sistemde tek kullanıcı olduğundan işlemi kimin yaptığı ayrıca kaydedilmez.
 - **Veritabanı dosyasına doğrudan erişim:** Sunucuya erişimi olan biri SQLite dosyasını değiştirebilir. Ders kapsamında bu riske karşı kriptografik koruma uygulanmaz.
 - **HTTPS:** Yerel kurulumda trafik şifrelenmez. Devreye alma (Faz 4) bir bulut ortamında yapılırsa HTTPS zorunlu tutulacaktır.
 
