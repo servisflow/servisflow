@@ -113,6 +113,7 @@ servisflow/
 ├── docs/
 │   ├── Faz1_Raporu.md
 │   ├── Faz2_Raporu.md
+│   ├── Faz3_Raporu.md
 │   └── Sunum_Notlari.md
 ├── src/servisflow/
 │   ├── ui/            # Streamlit ekranları
@@ -127,7 +128,7 @@ servisflow/
 
 ## 🚀 Kurulum
 
-Uygulama kodu Faz 3'te yazılacaktır. Geliştirme ortamı ve kalite kapıları şimdiden kuruludur.
+Faz 3 sürüyor: kod iskeleti (veri modeli, saat sağlayıcısı, veritabanı katmanı, uygulama girişi) hazır; use case'ler kendi PR'larıyla ekleniyor.
 
 ```bash
 git clone https://github.com/servisflow/servisflow.git
@@ -135,6 +136,13 @@ cd servisflow
 python -m venv .venv
 source .venv/bin/activate            # Windows: .venv\Scripts\activate
 pip install -r requirements.txt -r requirements-dev.txt
+pip install -e .
+```
+
+Uygulamayı çalıştırma:
+
+```bash
+streamlit run src/servisflow/ui/app.py
 ```
 
 Kalite kapılarını yerelde çalıştırma (CI'daki adımların aynısı):
@@ -150,7 +158,7 @@ pytest --cov                                             # testler + satır/dal 
 
 Her push ve pull request'te bu adımlar [GitHub Actions](.github/workflows/ci.yml) tarafından otomatik çalıştırılır.
 
-📄 Faz 1 raporu: [`docs/Faz1_Raporu.md`](docs/Faz1_Raporu.md) · Faz 2 raporu: [`docs/Faz2_Raporu.md`](docs/Faz2_Raporu.md)
+📄 Faz 1 raporu: [`docs/Faz1_Raporu.md`](docs/Faz1_Raporu.md) · Faz 2 raporu: [`docs/Faz2_Raporu.md`](docs/Faz2_Raporu.md) · Faz 3 raporu (taslak): [`docs/Faz3_Raporu.md`](docs/Faz3_Raporu.md)
 
 ## 🗓️ Ders fazları
 
