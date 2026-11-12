@@ -3,6 +3,7 @@
 from datetime import date, datetime, timezone
 
 import pytest
+from sqlalchemy import event
 
 from servisflow.repository.models import (
     TASK_DONE,
@@ -178,3 +179,42 @@ def test_tc28_arac_gecmisi_yeniden_eskiye(session, vehicle):
 def test_olmayan_aracin_gecmisi_istenemez(session):
     with pytest.raises(NotFoundError):
         reports.vehicle_history(session, 999)
+
+
+def test_fr07_eski_ziyaretin_isleri_yeni_ziyaretle_karismaz(session, vehicle):
+    """PR #11 incelemesi (Kerem Erden): FR-07 kabul ölçütü."""
+    old = add_visit(session, vehicle, ist(2026, 10, 1, 9, 0))
+    new = add_visit(session, vehicle, ist(2026, 10, 2, 9, 0))
+    old_task = add_task(session, old, 100, ist(2026, 10, 1, 9, 0))
+    new_task = add_task(session, new, 200, ist(2026, 10, 2, 9, 0))
+    session.expire_all()
+
+    history = reports.vehicle_history(session, vehicle.id)
+
+    assert [v.id for v in history] == [new.id, old.id]
+    assert [t.id for t in history[0].tasks] == [new_task.id]
+    assert [t.id for t in history[1].tasks] == [old_task.id]
+
+
+def test_arac_gecmisi_sorgu_sayisi_ziyaret_sayisindan_bagimsiz(session, vehicle):
+    """PR #11 incelemesi: işler tek ek sorguyla gelir, N+1 oluşmaz."""
+    for day in range(1, 6):
+        visit = add_visit(session, vehicle, ist(2026, 10, day, 9, 0))
+        add_task(session, visit, 100, ist(2026, 10, day, 9, 0))
+    session.commit()
+    session.expire_all()
+
+    statements = []
+
+    def count(*_args):
+        statements.append(1)
+
+    event.listen(session.bind, "before_cursor_execute", count)
+    try:
+        for visit in reports.vehicle_history(session, vehicle.id):
+            assert len(visit.tasks) == 1
+    finally:
+        event.remove(session.bind, "before_cursor_execute", count)
+
+    # araç varlık kontrolü + ziyaretler + tüm işler
+    assert len(statements) == 3
