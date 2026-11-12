@@ -122,7 +122,7 @@ servisflow/
 ├── pyproject.toml     # pytest, coverage ve black ayarları
 ├── .flake8            # flake8 ayarları
 ├── requirements.txt / requirements-dev.txt
-└── .github/           # CI (black, flake8, bandit, pip-audit, radon/xenon, pytest-cov) ve PR şablonu
+└── .github/           # CI (black, flake8, bandit, pip-audit, radon/xenon, pytest-cov)
 ```
 
 ## 🚀 Kurulum

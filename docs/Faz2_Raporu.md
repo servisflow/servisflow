@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** v1.0 — ekip tarafından incelendi ve onaylandı (11.11.2026)
+- **Doküman Durumu:** v1.1 — ekip tarafından incelendi ve onaylandı (11.11.2026); PR şablonu ekip kararıyla kaldırıldı (12.11.2026)
 - **Hazırlanma Tarihi:** 11.11.2026 · **Teslim:** Hafta 7 (izlence)
 - **Koordinasyon:** Üye 7 (Ahmet Selim Dostabakan, QA/Test Lideri) · Üye 5 (Kerem Erden, DevSecOps)
 
@@ -64,14 +64,14 @@ Kabul edilen bulgular Faz 1 Raporu'na **v1.3** olarak işlenmiştir. Değişen v
 
 ## 2. Kalite Kapıları (Faz 2 - ii)
 
-Kalite kapısı, bir çıktının bir sonraki aşamaya geçmesi için sağlaması gereken **ölçülebilir** koşullar kümesidir. Kapıların çoğu GitHub Actions ile otomatik denetlenir; otomatikleştirilemeyen koşullar PR şablonu ve faz kontrol listesiyle insan tarafından denetlenir.
+Kalite kapısı, bir çıktının bir sonraki aşamaya geçmesi için sağlaması gereken **ölçülebilir** koşullar kümesidir. Kapıların çoğu GitHub Actions ile otomatik denetlenir; otomatikleştirilemeyen koşullar kod incelemesi ve faz kontrol listesiyle insan tarafından denetlenir.
 
 ### 2.1. Kapı Tanımları
 
 | Kapı | Ne zaman | Geçiş koşulları | Denetim | Kapıyı kim açar |
 | :--- | :--- | :--- | :--- | :--- |
 | **KK-1 Gereksinim kapısı** | Bir faz kapanmadan önce | Tüm “Yüksek” inceleme bulguları kapatılmış · her FR en az bir UC'ye ve bir test senaryosuna bağlı · açık sorular listesi boş | Faz kontrol listesi, izlenebilirlik matrisi | QA lideri + ilgili UC sahibi |
-| **KK-2 Birleştirme (PR) kapısı** | Her PR, `main`'e birleştirmeden önce | CI'daki 7 otomatik kontrolün tamamı geçer (Bölüm 2.2) · en az 1 ekip üyesinin onayı · PR şablonundaki kontrol listesi işaretli · ilgili issue bağlı | GitHub Actions + dal koruma kuralı + PR şablonu | PR'ı açan dışındaki bir üye |
+| **KK-2 Birleştirme (PR) kapısı** | Her PR, `main`'e birleştirmeden önce | CI'daki 7 otomatik kontrolün tamamı geçer (Bölüm 2.2) · en az 1 ekip üyesinin onayı · ilgili issue bağlı | GitHub Actions + dal koruma kuralı | PR'ı açan dışındaki bir üye |
 | **KK-3 Test tamamlama kapısı** | Faz 4 sonu | Planlanan tüm test senaryoları çalıştırılmış · Kritik/Yüksek açık hata = 0 · UAT başarı oranı ≥ %90 · McCabe raporu yorumlanmış | Test sonuç tablosu, GitHub Issues, radon raporu | QA lideri |
 | **KK-4 Devreye alma kapısı** | Faz 4, yayından önce | KK-3 geçilmiş · `main` CI yeşil · kurulum adımları temiz bir makinede README'ye göre denenmiş · gizli bilgi (parola, anahtar) depoda yok | Kurulum denemesi, GitHub secret scanning | Mimar (Üye 5) + QA lideri |
 
@@ -89,18 +89,17 @@ Kalite kapısı, bir çıktının bir sonraki aşamaya geçmesi için sağlamas�
 
 Kontrollerden biri başarısız olursa PR birleştirilemez. Eşiğin geçici olarak düşürülmesi yalnızca ekip kararıyla ve gerekçesi PR'a yazılarak yapılabilir.
 
-### 2.3. Kod İnceleme Kontrol Listesi (PR şablonu)
+### 2.3. Kod İncelemesinde Dikkat Edilecek Noktalar
 
-İnceleyen üye PR'ı onaylamadan önce şu soruları yanıtlar:
+PR şablonu kullanılmaz (ekip kararı, 12.11.2026); PR açıklamasında hangi issue ve FR/UC'nin karşılandığı yazılır. İnceleyen üye onay vermeden önce şu noktalara bakar:
 
-- [ ] PR bir issue'ya bağlı ve hangi FR/UC'yi karşıladığı yazılı mı?
-- [ ] Yeni iş kuralı için birim testi var mı? Sınır değerler test edilmiş mi?
-- [ ] Zaman `clock` sağlayıcısından mı alınıyor (doğrudan `datetime.now()` yok)?
-- [ ] Para tamsayı kuruş olarak mı işleniyor (float yok)?
-- [ ] Veritabanı erişimi ORM ile mi (string birleştirmeyle SQL yok)?
-- [ ] Kullanıcı girdisi `services` katmanında doğrulanıyor mu?
-- [ ] Hata mesajları iç bilgi sızdırmıyor mu?
-- [ ] YZ ile üretilen kod varsa PR açıklamasında belirtilmiş ve DIR kaydına eklenmiş mi?
+- Yeni iş kuralı için birim testi var mı, sınır değerler test edilmiş mi?
+- Zaman `clock` sağlayıcısından mı alınıyor (doğrudan `datetime.now()` yok)?
+- Para tamsayı kuruş olarak mı işleniyor (float yok)?
+- Veritabanı erişimi ORM ile mi (string birleştirmeyle SQL yok)?
+- Kullanıcı girdisi `services` katmanında doğrulanıyor mu?
+- Hata mesajları iç bilgi sızdırmıyor mu?
+- YZ ile üretilen kod varsa PR açıklamasında belirtilmiş ve DIR kaydına eklenmiş mi?
 
 ### 2.4. Dal Koruma Kuralı
 
@@ -274,7 +273,7 @@ flowchart LR
 | **R-01** | S | Parola tahmini / kaba kuvvet ile başkasının hesabına giriş | 2 | 3 | **6 Yüksek** | A07 | Argon2id; 3 hatalı denemeden sonra CAPTCHA; hatalı denemeler kaydedilip başarılı girişte kullanıcıya gösterilir (FR-01) | TC-04, TC-32 |
 | **R-02** | I | Hata mesajından kullanıcı adının var olup olmadığının öğrenilmesi | 2 | 1 | 2 Düşük | A07 | Var olmayan kullanıcı ve yanlış parola için aynı mesaj | TC-05 |
 | **R-03** | S/E | Oturum açmadan bir sayfaya doğrudan erişim | 1 | 3 | 3 Orta | A01 | Her sayfanın başında oturum denetimi (ortak `require_login` fonksiyonu) | TC-03 |
-| **R-04** | T | Arama kutusu üzerinden SQL enjeksiyonu | 2 | 3 | **6 Yüksek** | A03 | Yalnızca ORM / parametreli sorgu; string birleştirmeyle SQL yasak | bandit (B608), kod inceleme listesi, enjeksiyon girdili test |
+| **R-04** | T | Arama kutusu üzerinden SQL enjeksiyonu | 2 | 3 | **6 Yüksek** | A03 | Yalnızca ORM / parametreli sorgu; string birleştirmeyle SQL yasak | bandit (B608), kod incelemesi, enjeksiyon girdili test |
 | **R-05** | T | ✓ geri alınarak geçmiş günün tutarının sessizce değiştirilmesi | 1 | 3 | 3 Orta | A04 | Geri alma yalnızca aynı gün (BR-04) | TC-20 |
 | **R-06** | R | Tek hesabın parolasının ustalarla paylaşılması; bir işlemi kimin yaptığının ayırt edilememesi | 1 | 1 | 1 Düşük | A07 | Tek hesap politikası: parola yalnızca işletme sorumlusundadır ve paylaşılmaz (kullanım kılavuzunda yazılı); tam audit log kapsam dışı, kalan risk kabul edildi | UAT sırasında kılavuz kontrolü |
 | **R-07** | T | Aynı anda iki ✓ isteğiyle çift sayım | 2 | 3 | **6 Yüksek** | A04 | Koşullu güncelleme (RV-09); toplamın sorgudan hesaplanması | TC-18, TC-23 |
@@ -311,7 +310,7 @@ Olasılık ve etki puanları Üye 5 (Kerem Erden, DevSecOps) tarafından verilmi
 | Faz 3'ün (kodlama) vize haftalarına denk gelmesi | 3 | 2 | Kod iskeleti ve servis imzaları Faz 2 sonunda hazır olacak |
 | Ekip içi iş yükü dengesizliği | 2 | 2 | UC başına PR, haftalık 15 dk toplantı, panoda görünür iş takibi |
 | Streamlit'te sistem testinin otomatikleştirilmesinin zor olması | 2 | 2 | İş mantığı `services` katmanında; sistem testinin bir kısmı elle senaryo olarak |
-| YZ ile üretilen kodun doğrulanmadan birleştirilmesi | 2 | 3 | Kod inceleme listesindeki YZ maddesi, CI kapıları, DIR beyanı |
+| YZ ile üretilen kodun doğrulanmadan birleştirilmesi | 2 | 3 | Kod incelemesinde YZ beyanının kontrolü (Bölüm 2.3), CI kapıları, DIR beyanı |
 
 ---
 
@@ -325,7 +324,7 @@ Olasılık ve etki puanları Üye 5 (Kerem Erden, DevSecOps) tarafından verilmi
 | **YZ aracı** | Anthropic Claude (Claude Code, ajan tabanlı; proje klasörü ve GitHub üzerinde dosya düzenleme yetkisiyle) |
 | **İlgili üyeler** | Ahmet Selim Dostabakan (yönlendirme); inceleme ve onay: tüm ekip, yaklaşık 2 saatlik toplantı (her use case sahibi kendi bölümünü inceledi); risk puanları: Kerem Erden |
 | **Görevin YZ kullanım sınırı** | Yeşil (teknik dokümantasyon ve araç yapılandırması). Bulguların kabulü, risk puanları, kalite eşikleri ve DIR puanları ekip kararıdır. |
-| **Üretilen çıktı** | Faz 2 Raporu; Faz 1 Raporu v1.3; CI'a `pip-audit` adımı ve dal kapsaması; PR şablonu; güncellenmiş bağımlılık sürümleri |
+| **Üretilen çıktı** | Faz 2 Raporu; Faz 1 Raporu v1.3; CI'a `pip-audit` adımı ve dal kapsaması; PR şablonu (12.11.2026'da ekip kararıyla kaldırıldı); güncellenmiş bağımlılık sürümleri |
 
 **Süreç özeti:** YZ'ye ders yönergesindeki Faz 2 maddeleri, onaylanmış Faz 1 Raporu, Faz 1 DIR beyanı ve ekibin kalite hedefleri bağlam olarak verildi. YZ, Faz 1 gereksinimlerini ISO/IEC/IEEE 29148 ölçütleriyle inceleyerek bulgu listesi, kalite kapıları, test planı ve STRIDE tabanlı risk tablosu taslağı üretti; bağımlılıkları `pip-audit` ile tarayıp bulunan açıkları sürüm yükseltmesiyle kapattı. Taslak ekip toplantısında incelendi: aktör tanımı düzeltildi, bir bulgunun kararı değiştirildi, risk puanlarının altısı yeniden verildi ve kaynaklar doğrulandı.
 
@@ -342,7 +341,7 @@ Olasılık ve etki puanları Üye 5 (Kerem Erden, DevSecOps) tarafından verilmi
 | Üretilen artifact & YZ aracı | Kullanım amacı | İnsan müdahalesi ve düzeltme | Doğrulama yöntemi |
 | :--- | :--- | :--- | :--- |
 | Faz 2 Raporu / Claude Code | İnceleme bulguları, kalite kapıları, test planı, risk tablosu taslağı | Aktör tanımı düzeltildi; RV-07 kararı değiştirildi; 6 risk puanı yeniden verildi | 2 saatlik ekip toplantısı, kaynakların birincil kaynaktan doğrulanması, iş kurallarının gerçek bir oto serviste değerlendirilmesi |
-| Bağımlılık güncellemesi ve CI / Claude Code | Açık taraması, sürüm yükseltme, `pip-audit` adımı, PR şablonu | Dal koruma kuralı ekip kararıyla Faz 3'e ertelendi | `pip-audit` ve tüm kalite kapıları yerelde ve GitHub Actions'ta çalıştırıldı |
+| Bağımlılık güncellemesi ve CI / Claude Code | Açık taraması, sürüm yükseltme, `pip-audit` adımı, PR şablonu | Dal koruma kuralı ekip kararıyla Faz 3'e ertelendi; PR şablonu ekip kararıyla kaldırıldı | `pip-audit` ve tüm kalite kapıları yerelde ve GitHub Actions'ta çalıştırıldı |
 
 ## 6. Kaynaklar (Faz 2)
 
