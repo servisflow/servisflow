@@ -7,13 +7,12 @@ tamamlanır. Tamamlanan iş düzenlenemez ve silinemez (BR-02); ✓ yalnızca ay
 
 import streamlit as st
 
-from servisflow.services import completion, tasks, visits
+from servisflow.services import completion, tasks, vehicles, visits
 from servisflow.services.clock import ISTANBUL, SystemClock
 from servisflow.services.reports import vehicle_history
 from servisflow.ui.common import (
     act,
     amount_from_input,
-    plate_matches,
     run,
     show_flash,
     tl,
@@ -24,6 +23,14 @@ DONE = "DONE"
 
 def _when(moment) -> str:
     return f"{moment.astimezone(ISTANBUL):%d.%m.%Y %H:%M}"
+
+
+def _vehicle_labels(session) -> dict[int, str]:
+    return {
+        v.id: f"{vehicles.format_plate(v.plate_normalized)} · {v.brand} {v.model}"
+        f" · {v.customer.full_name}"
+        for v in vehicles.list_vehicles(session)
+    }
 
 
 def _history(session, vehicle_id: int) -> list[dict]:
@@ -149,27 +156,25 @@ def _visit_block(visit: dict, latest: bool) -> None:
 def render() -> None:
     st.header("Servis ve işler")
     show_flash()
-    plate = st.text_input(
-        "Araç plakası (ilk karakterler yeterli, ör. 06 b)", key="ziyaret_plaka"
+    labels = run(_vehicle_labels) or {}
+    # Liste yazdıkça tarayıcıda süzülür; "prefix" kipi etiketin başına bakar.
+    # Etiket boşluklu plakayla başladığı için "06 b" yazınca 06 BA… ve 06 BUM…
+    # önerilir. Seçim yapılana kadar hiçbir araç açılmaz (KR-09).
+    vehicle_id = st.selectbox(
+        "Araç plakası",
+        list(labels),
+        index=None,
+        format_func=labels.get,
+        placeholder="Plakayı boşluklu yazın (ör. 06 b) ve listeden seçin",
+        filter_mode="prefix",
+        key="ziyaret_arac",
     )
-    if not plate.strip():
-        st.caption("Plaka girin; araç Müşteriler ve araçlar ekranından eklenir.")
+    if vehicle_id is None:
+        st.caption("Araç Müşteriler ve araçlar ekranından eklenir.")
         return
-    matches = plate_matches(plate)
-    if not matches:
-        st.warning("Bu başlangıçla kayıtlı plaka yok (en az 2 karakter girin).")
-        return
-    vehicle = matches[0]
-    if len(matches) > 1:
-        vehicle = st.selectbox(
-            f"Eşleşen {len(matches)} araç",
-            matches,
-            format_func=lambda m: m["label"],
-            key="ziyaret_secim",
-        )
-    st.subheader(vehicle["label"])
-    _new_visit_form(vehicle["id"])
-    history = run(lambda s: _history(s, vehicle["id"])) or []
+    st.subheader(labels[vehicle_id])
+    _new_visit_form(vehicle_id)
+    history = run(lambda s: _history(s, vehicle_id)) or []
     if not history:
         st.caption("Bu araç için henüz ziyaret yok.")
     for index, visit in enumerate(history):

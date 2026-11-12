@@ -149,3 +149,32 @@ def test_oneri_sayisi_sinirli(session, customer):
     for n in range(15):
         vehicles.register_vehicle(session, customer.id, f"06AB{100 + n}", "F", "T")
     assert len(vehicles.suggest_plates(session, "06")) == vehicles.SUGGEST_LIMIT
+
+
+# --- Plaka seçim listesi: arayüzde yazdıkça süzülen liste (KR-09 devamı) ------
+
+
+@pytest.mark.parametrize(
+    "plate, shown",
+    [
+        ("06BUM00", "06 BUM 00"),
+        ("06BA1234", "06 BA 1234"),
+        ("01A1234", "01 A 1234"),
+        ("34BJK321", "34 BJK 321"),
+    ],
+)
+def test_plaka_bosluklu_gosterilir(plate, shown):
+    assert vehicles.format_plate(plate) == shown
+
+
+def test_bicime_uymayan_plaka_oldugu_gibi_gosterilir():
+    assert vehicles.format_plate("ESKI-KAYIT") == "ESKI-KAYIT"
+
+
+def test_araclar_plakaya_gore_sirali(session, plakalar):
+    assert _plates(vehicles.list_vehicles(session)) == [
+        "06AB123",
+        "06BA1234",
+        "06BUM00",
+        "34BJK321",
+    ]
