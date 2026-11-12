@@ -124,7 +124,7 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 | UC-03 | Mehmet Kenan Dilberoğlu | #5 | `uc-03-arac` | Servis katmanı PR'da (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
 | UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Servis katmanı PR'da (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
 | UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Servis katmanı PR'da; arayüz UC-01 sonrası |
-| UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Bekliyor |
+| UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Servis katmanı PR'da (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
 | UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Servis katmanı PR’da; arayüz UC-01 sonrası |
 
 ### 3.4. Kod İnceleme Kayıtları
