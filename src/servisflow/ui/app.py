@@ -5,13 +5,12 @@ ekranı dışında hiçbir ekran çizilmez (FR-01, TC-03).
 """
 
 import streamlit as st
-from sqlalchemy import Engine
 
-from servisflow.repository.db import default_url, init_db, make_engine
-from servisflow.repository.db import make_session_factory
 from servisflow.services import auth
 from servisflow.services.clock import ISTANBUL, SystemClock
 from servisflow.services.errors import ServisFlowError
+from servisflow.ui import customers_page, reports_page, visits_page
+from servisflow.ui.common import new_session, session_scope
 
 USER_KEY = "user_id"
 CAPTCHA_KEY = "captcha"
@@ -19,17 +18,12 @@ FAILED_KEY = "failed_attempts"
 LAST_NAME_KEY = "last_username"
 ERROR_KEY = "login_error"
 
-
-@st.cache_resource
-def get_engine(url: str) -> Engine:
-    engine = make_engine(url)
-    init_db(engine)
-    return engine
-
-
-def session_scope():
-    """Her işlem kendi veritabanı işleminde: başarıda commit, hatada rollback."""
-    return make_session_factory(get_engine(default_url())).begin()
+PAGES = {
+    "Ana sayfa": None,
+    "Müşteriler ve araçlar": customers_page.render,
+    "Servis ve işler": visits_page.render,
+    "Rapor": reports_page.render,
+}
 
 
 def _captcha_needed() -> bool:
@@ -69,7 +63,7 @@ def _try_login(username: str, password: str, answer: str | None) -> None:
     # `begin()` hata görünce rollback yapar; ama başarısız deneme kaydı
     # (LoginAttempt) kalmalı (FR-01). Bu yüzden oturum elle yönetilir ve
     # hata durumunda da commit edilir.
-    session = make_session_factory(get_engine(default_url()))()
+    session = new_session()
     try:
         user = auth.authenticate(session, SystemClock(), username, password, passed)
         failed = auth.failed_attempts_since_last_login(session, username)
@@ -96,15 +90,24 @@ def logout() -> None:
 
 def home_page() -> None:
     st.title("ServisFlow")
-    with st.sidebar:
-        st.button("Çıkış yap", on_click=logout)
     failed = st.session_state.pop(FAILED_KEY, [])
     if failed:
         lines = "\n".join(
             f"- {t.astimezone(ISTANBUL):%d.%m.%Y %H:%M:%S}" for t in failed
         )
         st.warning(f"Son girişinizden bu yana {len(failed)} hatalı deneme:\n{lines}")
-    st.info("Giriş yapıldı. Diğer ekranlar sonraki PR'larla eklenecek.")
+    st.info("Soldaki menüden bir ekran seçin.")
+
+
+def app_page() -> None:
+    with st.sidebar:
+        page = st.radio("Menü", list(PAGES), key="menu")
+        st.button("Çıkış yap", on_click=logout)
+    render = PAGES[page]
+    if render is None:
+        home_page()
+    else:
+        render()
 
 
 def main() -> None:
@@ -115,7 +118,7 @@ def main() -> None:
     if st.session_state.get(USER_KEY) is None:
         login_page()
     else:
-        home_page()
+        app_page()
 
 
 main()

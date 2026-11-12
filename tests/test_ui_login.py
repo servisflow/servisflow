@@ -58,14 +58,14 @@ def test_tc03_oturumsuz_yalnizca_giris_ekrani(db_url):
     assert not at.exception
     assert [s.value for s in at.subheader] == ["Giriş"]
     assert len(at.text_input) == 2  # kullanıcı adı + parola, CAPTCHA yok
-    assert "Giriş yapıldı" not in [i.value for i in at.info][:1]
+    assert not at.sidebar.radio
 
 
 def test_dogru_giris_ana_ekrana_gecer(db_url):
     at = _login(_app())
     assert not at.exception
     assert at.session_state["user_id"] is not None
-    assert "Giriş yapıldı" in at.info[0].value
+    assert "menüden" in at.info[0].value
 
 
 def test_yanlis_parola_genel_mesaj_ve_tek_kayit(db_url):
