@@ -3,7 +3,7 @@
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları
 - **Ekip Büyüklüğü:** 7 kişi
-- **Doküman Durumu:** v1.4 — Faz 3 kod incelemesi sonrası BR-01 güncellendi (KR-08)
+- **Doküman Durumu:** v1.5 — Faz 3 itibarıyla gerçekleşen use case sorumlulukları eklendi
 - **Hazırlanma Tarihi:** 22.10.2026 · **Son güncelleme:** 13.11.2026
 
 > **Kapsam kararı (v0.4):** v0.3 taslağındaki stok yönetimi, parça bazlı fiyat satırları, üç rollü yetki matrisi, iş emri durum makinesi ve audit log, ders süresi içinde **her özelliği test edilmiş ve ölçülmüş biçimde teslim edebilmek** amacıyla kapsamdan çıkarılmıştır. Proje, araç bazlı **To-Do tarzı iş takibi** ve **tamamlanma tarihine dayalı dönemsel raporlama** çekirdeğine indirgenmiştir. Bu karar, kalite yönetiminde bilinen *“kapsamı sınırla, derinliği artır”* ilkesine dayanır: daha az özellik, daha yüksek test kapsamı ve daha düşük teknik risk.
@@ -25,6 +25,18 @@ Yönergede ekiplerin **6 veya 7 kişi** olması ve her üyenin **en az bir use c
 | **Üye 7** | **Ahmet Selim Dostabakan** / `[No]` | Ekip Lideri & Kalite Güvence (QA) / Test Lideri | Ekip koordinasyonu ve PR onayları, Faz 2 test planı ve kalite kapıları, Faz 4 kara kutu ve UAT testleri, final rapor birleştirme | **UC-07:** Araç Servis Geçmişi ve Dönemsel Raporlama |
 
 **Ortak çalışma ilkesi:** Use case sahibi, o modülün ilk geliştiricisi ve testlerinin sorumlusudur. Katkı yalnızca use case sayısıyla değil, **commit, PR, review ve dokümantasyon kayıtlarıyla** izlenir.
+
+**Gerçekleşen sorumluluk (v1.5, Faz 3 itibarıyla).** Her use case'in bir sahibi vardır ve sahiplik değişmedi. Kodu fiilen yazan ve inceleyen üyeler ayrıca gösterilir; ayrıntılı kayıt Faz 3 Raporu 3.3 ve 3.4'tedir. UC-01 – UC-04 sahipleri Faz 3 sırasında GitHub organizasyonuna eklenmediği, UC-06 sahibi de bu dönemde ulaşılamadığı için bu use case'leri Kerem Erden geliştirdi (YZ destekli).
+
+| Use case | Sahibi (yönerge: kişi başı en az 1 UC) | Geliştiren | İnceleyen (PR onayı) |
+| :--- | :--- | :--- | :--- |
+| UC-01 | Ahmet Karavuş | Kerem Erden (servis #15, giriş ekranı #18) | Ahmet Selim Dostabakan (#15, #18) |
+| UC-02 | Alperhan Karşı | Kerem Erden (servis #15, ekran #19) | Ahmet Selim Dostabakan (#15, #19) |
+| UC-03 | Mehmet Kenan Dilberoğlu | Kerem Erden (servis #15, ekran #19, plaka önerisi #20) | Ahmet Selim Dostabakan (#15, #19, #20) |
+| UC-04 | Ilgın Çutok | Kerem Erden (servis #15, ekran #19) | Ahmet Selim Dostabakan (#15, #19) |
+| UC-05 | Kerem Erden | Kerem Erden (servis #15, ekran #19, tam TL #20) | Ahmet Selim Dostabakan (#15, #19, #20) |
+| UC-06 | Mehmet Ünsalan | Kerem Erden (servis #16, ekran #19) | Ahmet Selim Dostabakan (#16, #19) |
+| UC-07 | Ahmet Selim Dostabakan | Ahmet Selim Dostabakan (servis #11, #17); Kerem Erden (rapor ekranı #19) | Kerem Erden (#11, #17); Ahmet Selim Dostabakan (#19) |
 
 ---
 
@@ -190,7 +202,7 @@ flowchart LR
 
 ### 3.8. Ayrıntılı Kullanım Durumları
 
-#### UC-01 — Kimlik Doğrulama ve Güvenli Oturum Yönetimi (Üye 1)
+#### UC-01 — Kimlik Doğrulama ve Güvenli Oturum Yönetimi (Sahip: Üye 1 · Geliştiren: Üye 5)
 | Alan | İçerik |
 | :--- | :--- |
 | **Aktör** | İşletme Sorumlusu |
@@ -201,7 +213,7 @@ flowchart LR
 | **Kalite odağı** | Güvenlik (gizlilik, kimlik doğrulama). |
 | **Test** | Doğru/yanlış parola, boş alanlar, veritabanında düz metin parola olmaması, oturumsuz erişim, 3. hatalı denemede CAPTCHA, hatalı deneme listesi. |
 
-#### UC-02 — Müşteri Kaydı, Girdi Doğrulama ve Arama (Üye 2)
+#### UC-02 — Müşteri Kaydı, Girdi Doğrulama ve Arama (Sahip: Üye 2 · Geliştiren: Üye 5)
 | Alan | İçerik |
 | :--- | :--- |
 | **Aktör** | İşletme Sorumlusu |
@@ -212,7 +224,7 @@ flowchart LR
 | **Kalite odağı** | Fonksiyonel uygunluk, girdi doğrulama. |
 | **Test** | Türkçe karakterli isimler (Çağrı, Işıl, Şükrü), büyük/küçük harf duyarsız arama, aynı adlı iki farklı müşteri, sınır değerler (0, 1, 100, 101 karakter). |
 
-#### UC-03 — Araç Kaydı, Plaka Normalizasyonu ve Tekillik Denetimi (Üye 3)
+#### UC-03 — Araç Kaydı, Plaka Normalizasyonu ve Tekillik Denetimi (Sahip: Üye 3 · Geliştiren: Üye 5)
 | Alan | İçerik |
 | :--- | :--- |
 | **Aktör** | İşletme Sorumlusu |
@@ -223,7 +235,7 @@ flowchart LR
 | **Kalite odağı** | Veri bütünlüğü. |
 | **Test** | Aynı plakanın farklı yazımları (`34BJK321`, `34 bjk 321`), aynı müşteriye iki araç, geçersiz format, Türkçe karakterli büyük harf dönüşümü. |
 
-#### UC-04 — Servis Ziyareti (İş Emri) Açılışı ve Otomatik Zaman Damgalama (Üye 4)
+#### UC-04 — Servis Ziyareti (İş Emri) Açılışı ve Otomatik Zaman Damgalama (Sahip: Üye 4 · Geliştiren: Üye 5)
 | Alan | İçerik |
 | :--- | :--- |
 | **Aktör** | İşletme Sorumlusu, Sistem |
@@ -234,7 +246,7 @@ flowchart LR
 | **Kalite odağı** | İşlemsel doğruluk, veri bütünlüğü. |
 | **Test** | Aynı araca farklı günlerde ayrı ziyaretler, zaman damgasının sistemce atanması (test için sabitlenmiş saat), olmayan araç ID'si. |
 
-#### UC-05 — Görev Tabanlı İş Listesi Yönetimi (Üye 5)
+#### UC-05 — Görev Tabanlı İş Listesi Yönetimi (Sahip ve Geliştiren: Üye 5)
 | Alan | İçerik |
 | :--- | :--- |
 | **Aktör** | İşletme Sorumlusu |
@@ -245,7 +257,7 @@ flowchart LR
 | **Kalite odağı** | Fonksiyonel doğruluk, kullanılabilirlik. |
 | **Test** | Sınır değerler (0, 1, 1.000.000, 1.000.001 TL), kuruşlu tutarın reddi (`1.600,50`; v1.4), `DONE` işe düzenleme denemesi. |
 
-#### UC-06 — İdempotent Görev Tamamlama (✓) ve Tutar Kilitleme (Üye 6)
+#### UC-06 — İdempotent Görev Tamamlama (✓) ve Tutar Kilitleme (Sahip: Üye 6 · Geliştiren: Üye 5)
 | Alan | İçerik |
 | :--- | :--- |
 | **Aktör** | İşletme Sorumlusu, Sistem |
@@ -268,7 +280,7 @@ stateDiagram-v2
     TODO --> [*]: Sil
 ```
 
-#### UC-07 — Araç Servis Geçmişi ve Zaman Dilimi Duyarlı Dönemsel Raporlama (Üye 7)
+#### UC-07 — Araç Servis Geçmişi ve Zaman Dilimi Duyarlı Dönemsel Raporlama (Sahip ve Geliştiren: Üye 7 · Rapor ekranı: Üye 5)
 | Alan | İçerik |
 | :--- | :--- |
 | **Aktör** | İşletme Sorumlusu, Sistem |
@@ -304,15 +316,15 @@ Toplam bir “sayaç” olarak tutulmaz, **her seferinde sorgudan hesaplanır**.
 
 ### 3.10. İzlenebilirlik Matrisi
 
-| UC | Sorumlu | FR | İş kuralı | ISO/IEC 25010 | Test senaryoları |
+| UC | Sahip / Geliştiren | FR | İş kuralı | ISO/IEC 25010 | Test senaryoları |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| UC-01 | Üye 1 | FR-01 | — | Güvenlik | TC-01, TC-02 |
-| UC-02 | Üye 2 | FR-02 | — | Fonksiyonel uygunluk | TC-03 |
-| UC-03 | Üye 3 | FR-03 | BR-07 | Veri bütünlüğü | TC-04 |
-| UC-04 | Üye 4 | FR-04 | — | İşlemsel doğruluk | TC-05 |
+| UC-01 | Üye 1 / Üye 5 | FR-01 | — | Güvenlik | TC-01, TC-02 |
+| UC-02 | Üye 2 / Üye 5 | FR-02 | — | Fonksiyonel uygunluk | TC-03 |
+| UC-03 | Üye 3 / Üye 5 | FR-03 | BR-07 | Veri bütünlüğü | TC-04 |
+| UC-04 | Üye 4 / Üye 5 | FR-04 | — | İşlemsel doğruluk | TC-05 |
 | UC-05 | Üye 5 | FR-05 | BR-01, BR-02 | Fonksiyonel doğruluk | TC-06, TC-07 |
-| UC-06 | Üye 6 | FR-06 | BR-02, BR-03, BR-04 | Güvenilirlik | TC-08, TC-09, TC-10 |
-| UC-07 | Üye 7 | FR-07, FR-08 | BR-05, BR-06 | Doğruluk | TC-11, TC-12, TC-13 |
+| UC-06 | Üye 6 / Üye 5 | FR-06 | BR-02, BR-03, BR-04 | Güvenilirlik | TC-08, TC-09, TC-10 |
+| UC-07 | Üye 7 / Üye 7, Üye 5 (ekran) | FR-07, FR-08 | BR-05, BR-06 | Doğruluk | TC-11, TC-12, TC-13 |
 
 ### 3.11. Kritik Test Senaryoları (Plan)
 
@@ -439,6 +451,7 @@ Toplam bir “sayaç” olarak tutulmaz, **her seferinde sorgudan hesaplanır**.
 | v1.2 | 11.11.2026 | Öğretim elemanı onayı, proje panosu |
 | v1.3 | 11.11.2026 | Faz 2 incelemesi (RV-01 – RV-14): BR-01, BR-04, BR-07, BR-08, FR-01, NFR-02 güncellendi; BR-09 ve NFR-08 eklendi; aktör “İşletme Sorumlusu” olarak netleştirildi (tek kullanıcı hesabı, ustalar sisteme girmez) |
 | v1.4 | 13.11.2026 | Faz 3 kod incelemesi (KR-08): BR-01 tam TL olarak değiştirildi; TC-06 ve UC-05 test satırı buna göre güncellendi |
+| v1.5 | 13.11.2026 | Use case sahipliği korunarak geliştiren ve inceleyen üyeler eklendi (Bölüm 1, use case başlıkları, izlenebilirlik matrisi) |
 
 ## 6. Kaynaklar (Faz 1)
 

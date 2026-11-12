@@ -117,15 +117,17 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 ### 3.3. Use Case Geliştirme Planı
 
-| UC | Sahibi | Issue | Dal | Durum |
-| :--- | :--- | :--- | :--- | :--- |
-| UC-01 | Ahmet Karavuş | #3 | `uc-01-oturum` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); giriş ekranı ayrı PR'da |
-| UC-02 | Alperhan Karşı | #4 | `uc-02-musteri` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-03 | Mehmet Kenan Dilberoğlu | #5 | `uc-03-arac` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Servis katmanı #15 ile birleşti; arayüz UC-01 sonrası |
-| UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Servis katmanı #16 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Servis katmanı #11 ile birleşti; KR-05 – KR-07 düzeltmeleri ayrı PR'la; arayüz UC-01 sonrası |
+| UC | Sahibi | Geliştiren | İnceleyen | Issue | Durum (main'de) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| UC-01 | Ahmet Karavuş | Kerem Erden | Ahmet Selim Dostabakan | #3 | Servis #15, giriş ekranı #18 |
+| UC-02 | Alperhan Karşı | Kerem Erden | Ahmet Selim Dostabakan | #4 | Servis #15, ekran #19 |
+| UC-03 | Mehmet Kenan Dilberoğlu | Kerem Erden | Ahmet Selim Dostabakan | #5 | Servis #15, ekran #19, plaka önerisi #20 (KR-09) |
+| UC-04 | Ilgın Çutok | Kerem Erden | Ahmet Selim Dostabakan | #6 | Servis #15, ekran #19 |
+| UC-05 | Kerem Erden | Kerem Erden | Ahmet Selim Dostabakan | #7 | Servis #15, ekran #19, tam TL #20 (KR-08) |
+| UC-06 | Mehmet Ünsalan | Kerem Erden | Ahmet Selim Dostabakan | #8 | Servis #16, ekran #19 |
+| UC-07 | Ahmet Selim Dostabakan | Ahmet Selim Dostabakan; Kerem Erden (rapor ekranı) | Kerem Erden; Ahmet Selim Dostabakan (rapor ekranı) | #9 | Servis #11, KR-05 – KR-07 #17, rapor ekranı #19 |
+
+Use case sahiplikleri değişmedi (kişi başı en az bir UC). Geliştiren sütunundaki “Kerem Erden” kayıtları YZ desteklidir (Bölüm 4, İP-6 ve İP-7). Dal adları `CLAUDE.md`'deki `uc-0X-...` biçimi yerine oturumun çalışma dalıdır.
 
 ### 3.4. Kod İnceleme Kayıtları
 
