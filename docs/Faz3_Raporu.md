@@ -119,29 +119,44 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 | UC | Sahibi | Issue | Dal | Durum |
 | :--- | :--- | :--- | :--- | :--- |
-| UC-01 | Ahmet Karavuş | #3 | `uc-01-oturum` | Servis katmanı PR'da (Kerem Erden, YZ destekli); giriş ekranı ayrı PR'da |
-| UC-02 | Alperhan Karşı | #4 | `uc-02-musteri` | Servis katmanı PR'da (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-03 | Mehmet Kenan Dilberoğlu | #5 | `uc-03-arac` | Servis katmanı PR'da (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Servis katmanı PR'da (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Servis katmanı PR'da; arayüz UC-01 sonrası |
-| UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Servis katmanı PR'da (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Servis katmanı PR’da; arayüz UC-01 sonrası |
+| UC-01 | Ahmet Karavuş | #3 | `uc-01-oturum` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); giriş ekranı ayrı PR'da |
+| UC-02 | Alperhan Karşı | #4 | `uc-02-musteri` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
+| UC-03 | Mehmet Kenan Dilberoğlu | #5 | `uc-03-arac` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
+| UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
+| UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Servis katmanı #15 ile birleşti; arayüz UC-01 sonrası |
+| UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Servis katmanı #16 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
+| UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Servis katmanı #11 ile birleşti; KR-05 – KR-07 düzeltmeleri ayrı PR'la; arayüz UC-01 sonrası |
 
 ### 3.4. Kod İnceleme Kayıtları
 
 | PR | Konu | Yazan | İnceleyen | Bulgular | Düzeltme |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| #10 | İskelet (#2) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | Onaylandı; birleştirmeyi engellemeyen 4 bulgu (KR-01 – KR-04, aşağıda) | Düzeltme PR'ı: `iskelet-inceleme-duzeltmeleri` |
-| #11 | UC-07 servis katmanı (#9) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | `[İnceleme sürüyor]` | |
+| #10 | İskelet (#2) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | Onaylandı; birleştirmeyi engellemeyen 4 bulgu (KR-01 – KR-04, aşağıda) | Düzeltme: PR #12 |
+| #11 | UC-07 servis katmanı (#9) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | Olumlu; birleştirmeyi engellemeyen 3 öneri (KR-05 – KR-07, aşağıda) | Düzeltme commit'i #11 birleştikten sonra dala geldiği için main'e girmedi; PR #17 ile taşındı. **Süreç notu:** Birleştirmeyi inceleyen yaptı; sonraki PR'larda birleştirmeyi PR'ı açan yapıyor. |
+| #12 | KR-01 – KR-04 düzeltmeleri | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | Onaylandı ve birleştirildi. **Süreç notu:** Onay metni önce yanlışlıkla UC-07 (#11) incelemesini taşıyordu; #12'nin kendi incelemesiyle değiştirildi ve PR'a düzenleme notu eklendi. Engellemeyen notlar: KR-02 test sayısı 13 (14 değil), `create_all` var olan veritabanına kısıt eklemez, SQLite `trim()` yalnızca boşluğu kırpar, telefon kısıtı “5 ile başlar” kuralını denetlemez. | Test sayısı bu tabloda düzeltildi; `trim` sorunu #15'te `str.strip()` ile giderildi; telefon kuralı servis katmanında (#15). Eski veritabanı notu açık. |
+| #13 | `CLAUDE.md` (Claude oturumları için proje kılavuzu) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | Onaylandı. Bulgu: `pip install -e .` ile oluşan `*.egg-info/` `.gitignore`'da yok. **Süreç notu:** Onay metni neyin kontrol edildiğini belirtmiyordu. | PR #14 |
+| #14 | `.gitignore`: `*.egg-info/` | Kerem Erden (YZ destekli) | Ahmet Selim Dostabakan | Onaylandı | — |
+| #15 | UC-01 – UC-05 servis katmanı (#3 – #7) | Kerem Erden (YZ destekli) | Ahmet Selim Dostabakan | İlk inceleme onay değil yorum olarak gönderildi ve yalnızca UC-05'i kapsıyordu (**süreç notu**). Son haldeki onay: 178 test, plaka ve telefon normalizasyonu elle denendi, CAPTCHA sayımı ve DONE kilidi kodda incelendi. Engellemeyen not: ADR-006'daki CAPTCHA biçimi UC-01 sahibiyle ekipçe teyit edilmeli. | CAPTCHA biçimi teyidi açık |
+| #16 | UC-06 servis katmanı (#8) | Kerem Erden (YZ destekli) | Ahmet Selim Dostabakan | Onaylandı: 188 test; koşullu UPDATE, İstanbul gün sınırı ve K1 – K4 karar tablosu incelendi. | — |
 
 **PR #10 inceleme bulguları (Kerem Erden).** İnceleyen, iskeleti yerelde çalıştırıp kalite kapılarını kendisi tekrarladı ve `showErrorDetails` değerini kurulu Streamlit'in kaynağından doğruladı. Bulgular yazar tarafından yerelde yeniden üretilerek doğrulandı:
 
 | No | Bulgu | Etki | Düzeltme |
 | :--- | :--- | :--- | :--- |
 | **KR-01** | SQLite tür dayatmıyor: `amount_kurus = 1600.5` kabul edildi ve `real` olarak saklandı. | ADR-003 ve NFR-05'in “son savunma hattı” iddiası geçersizdi. | `typeof(amount_kurus) = 'integer'` kısıtı ve testi. |
-| **KR-02** | `String(n)` uzunlukları uygulanmıyor: 300 karakterlik ad, 21 karakterlik plaka ve boş başlık kaydedildi. | R-11'deki uzunluk sınırları yalnızca servis katmanına kalıyordu. | Ad, başlık, plaka, telefon, açıklama ve not için CHECK kısıtları ve 14 test. |
+| **KR-02** | `String(n)` uzunlukları uygulanmıyor: 300 karakterlik ad, 21 karakterlik plaka ve boş başlık kaydedildi. | R-11'deki uzunluk sınırları yalnızca servis katmanına kalıyordu. | Ad, başlık, plaka, telefon, açıklama ve not için CHECK kısıtları ve 13 test. |
 | **KR-03** | Hatalı giriş sayısı hem `User.failed_attempts` hem `LoginAttempt` içinde tutuluyor; `failed_attempts` kullanılırsa CAPTCHA yalnızca gerçek kullanıcı adında çıkar. | Kullanıcı adının var olup olmadığı sızar (R-02). | `failed_attempts` kaldırıldı; sayım kuralı ADR-006'ya yazıldı. |
 | **KR-04** | Veritabanı yolu ve `.streamlit/config.toml` çalışma dizinine bağlı. | Uygulama proje kökü dışından başlatılırsa NFR-08 devre dışı kalır, veritabanı başka yerde oluşur. | Veritabanı yolu proje köküne sabitlendi (ortam değişkeniyle değiştirilebilir); hata ayarı koddan da veriliyor. Uygulama başka bir dizinden başlatılarak doğrulandı. |
+
+**PR #11 inceleme bulguları (Kerem Erden).** İnceleyen UC-07'yi yerelde çalıştırdı, kalite kapılarını tekrarladı ve test planında olmayan bir durumu da denedi: yıl geçişindeki hafta (31.12.2026 → 28.12.2026 – 04.01.2027), doğru çalışıyor.
+
+| No | Bulgu | Etki | Düzeltme |
+| :--- | :--- | :--- | :--- |
+| **KR-05** | FR-07'nin “eski ziyaretteki işler yeni ziyaretle karışmaz” kabul ölçütü testte doğrulanmıyor; TC-28 yalnızca ziyaret sırasına bakıyor. | Bir kabul ölçütü testsiz kalıyordu (izlenebilirlik). | Her ziyaretin yalnızca kendi işlerini içerdiğini doğrulayan test eklendi. |
+| **KR-06** | `vehicle_history` sonrasında her ziyaretin işlerine erişmek ziyaret başına ayrı sorgu üretiyor (N+1): 3 ziyarette 5 sorgu. | Bu ölçekte performans sorunu değil; ziyaret sayısıyla büyür. | Yazar ölçümü yineledi (3 ziyarette 5 sorgu). İşler `selectinload` ile tek ek sorguda yükleniyor. Ziyaret sayısından bağımsız olarak 3 sorgu olduğunu doğrulayan test eklendi; düzeltme geri alındığında test 7 sorgu görüp başarısız oluyor. |
+| **KR-07** | Bu PR'ın inceleme kaydı rapora eklenmemiş. | Kod incelemesinin izlenebilirliği. | Bu tablo. |
+
+**#15 ve #16 inceleme metinleri hakkında.** İki onayın metin taslağı YZ ile hazırlandı; taslak, inceleyenin çalıştıracağı komutları ve bakacağı kod yerlerini içeriyordu. Kontrollerin yapıldığı inceleyenin beyanına dayanır.
 
 ---
 
