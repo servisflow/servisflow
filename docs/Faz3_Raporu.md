@@ -52,7 +52,7 @@ Karar kayıtları Nygard'ın ADR biçiminin sadeleştirilmiş hâliyle yazılmı
 *Bağlam:* İş kurallarının arayüzden bağımsız test edilmesi gerekiyor (NFR-02). *Karar:* `ui → services → repository` katmanları; `ui` yalnızca `services`'i çağırır, `services` Streamlit'i içe aktarmaz, `repository` iş kuralı içermez. *Reddedilen:* İş kurallarını Streamlit sayfalarına yazmak (test edilemez). *Sonuç:* Kapsama ölçümü `ui` hariç yapılır.
 
 **ADR-002 — SQLite + SQLAlchemy 2 ORM.**
-*Bağlam:* Tek şube, tek kullanıcı; SQL enjeksiyonu yüksek risk (R-04). *Karar:* SQLite dosyası, SQLAlchemy ORM ile parametreli erişim; yabancı anahtar denetimi bağlantı başında açılır. Veritabanı kısıtları (tekil plaka, tutar aralığı, durum–tamamlanma tutarlılığı) iş kurallarının **son savunma hattı**dır. *Reddedilen:* Elle yazılmış SQL (enjeksiyon riski), PostgreSQL (kurulum yükü). *Sonuç:* Testler bellekte SQLite ile çalışır.
+*Bağlam:* Tek şube, tek kullanıcı; SQL enjeksiyonu yüksek risk (R-04). *Karar:* SQLite dosyası, SQLAlchemy ORM ile parametreli erişim; yabancı anahtar denetimi bağlantı başında açılır. Veritabanı kısıtları (tekil plaka, tutar aralığı, durum–tamamlanma tutarlılığı) iş kurallarının **son savunma hattı**dır. *Reddedilen:* Elle yazılmış SQL (enjeksiyon riski), PostgreSQL (kurulum yükü). *Sonuç:* Testler bellekte SQLite ile çalışır. *İnceleme sonrası ek (PR #10):* SQLite sütun türünü ve `String(n)` uzunluğunu dayatmaz; tutarın tamsayı olması (`typeof(amount_kurus) = 'integer'`), metin uzunlukları, boş başlık/ad ve telefon biçimi açık CHECK kısıtlarıyla yazıldı. Veritabanı adresi çalışma dizininden bağımsızdır: varsayılan olarak proje kökündeki `servisflow.db`, `SERVISFLOW_DB_URL` ortam değişkeniyle değiştirilebilir.
 
 **ADR-003 — Para tamsayı kuruş.**
 *Bağlam:* Ondalık sayılarda yuvarlama hatası (NFR-05). *Karar:* Tutar `amount_kurus` tamsayısı; arayüzden en fazla 2 ondalıklı değer alınır, `Decimal` ile kuruşa çevrilir. Veritabanında 1 – 100.000.000 kuruş aralığı kısıtı vardır. *Reddedilen:* `float` (0,1 + 0,2 ≠ 0,3).
@@ -64,10 +64,10 @@ Karar kayıtları Nygard'ın ADR biçiminin sadeleştirilmiş hâliyle yazılmı
 *Bağlam:* Çift tıklamada çift sayım (R-07). *Karar:* Tamamlama tek koşullu güncellemedir: `UPDATE ... SET status='DONE', completed_at=:now WHERE id=:id AND status='TODO'`. Etkilenen satır 0 ise işlem değişiklik yapmadan başarılı sayılır. Dönem toplamı bir sayaçta tutulmaz, her seferinde sorgudan hesaplanır. *Reddedilen:* Önce oku sonra yaz (iki istek arasında yarış durumu), toplam sayacı (geri almada tutarsızlık).
 
 **ADR-006 — Kimlik doğrulama.**
-*Karar:* Parolalar `argon2-cffi` ile Argon2id özetlenir. 3 hatalı girişten sonra CAPTCHA istenir; CAPTCHA uygulamanın kendi sunucusunda üretilir. *Açık konu:* CAPTCHA'nın biçimi (görsel metin mi, basit işlem sorusu mu) UC-01 PR'ında Ahmet Karavuş tarafından seçilip bu kayda eklenecek. *Reddedilen:* Dış CAPTCHA servisi (veri üçüncü tarafa gider, internet gerekir).
+*Karar:* Parolalar `argon2-cffi` ile Argon2id özetlenir. 3 hatalı girişten sonra CAPTCHA istenir; CAPTCHA uygulamanın kendi sunucusunda üretilir. Hatalı deneme sayısı yalnızca `LoginAttempt` tablosundan, kullanıcı adına göre hesaplanır; var olan ve olmayan kullanıcı adları aynı şekilde sayılır. Böylece CAPTCHA'nın çıkması kullanıcı adının var olup olmadığını sızdırmaz (R-02; PR #10 incelemesi). *Açık konu:* CAPTCHA'nın biçimi (görsel metin mi, basit işlem sorusu mu) UC-01 PR'ında Ahmet Karavuş tarafından seçilip bu kayda eklenecek. *Reddedilen:* Dış CAPTCHA servisi (veri üçüncü tarafa gider, internet gerekir).
 
 **ADR-007 — Hata gösterimi.**
-*Karar:* Servis katmanı yalnızca `ServisFlowError` türevlerini (`ValidationError`, `NotFoundError`, `ConflictError`) kullanıcıya gösterilebilir mesajla fırlatır; arayüz bunları kullanıcıya gösterir. Diğer tüm hatalarda tarayıcıda genel mesaj görünür (`showErrorDetails = "none"`, RV3-01), ayrıntı yalnızca sunucu konsoluna yazılır.
+*Karar:* Servis katmanı yalnızca `ServisFlowError` türevlerini (`ValidationError`, `NotFoundError`, `ConflictError`) kullanıcıya gösterilebilir mesajla fırlatır; arayüz bunları kullanıcıya gösterir. Diğer tüm hatalarda tarayıcıda genel mesaj görünür (`showErrorDetails = "none"`, RV3-01), ayrıntı yalnızca sunucu konsoluna yazılır. Ayar hem `.streamlit/config.toml` dosyasında hem de uygulama kodunda (`st.set_option`) verilir; böylece uygulama proje kökü dışından başlatılsa da geçerlidir (PR #10 incelemesi).
 
 **ADR-008 — Geliştirme süreci.**
 *Karar:* `main` dalı korumalıdır: değişiklik yalnızca PR ile, CI'daki 7 kontrol geçtikten ve PR'ı açan dışında bir üyenin onayından sonra girer. Kural yöneticilere de uygulanır. Her use case kendi dalında (`uc-0X-...`) ve kendi PR'ında geliştirilir.
@@ -88,7 +88,7 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 ### 2.4. Veri Modeli (uygulanan)
 
-`src/servisflow/repository/models.py` dosyasında Faz 1 v1.3 veri modeli uygulanmıştır. Faz 2 sonrası değişiklikler: `User.failed_attempts`, `User.last_login_at`, `LoginAttempt (username, attempted_at, success)` (RV3-03). Veritabanı kısıtları: `vehicle.plate_normalized` tekil, `service_task.amount_kurus` 1 – 100.000.000 aralığında, `status = 'DONE'` ⇔ `completed_at` dolu.
+`src/servisflow/repository/models.py` dosyasında Faz 1 v1.3 veri modeli uygulanmıştır. Faz 2 sonrası değişiklikler: `User.last_login_at`, `LoginAttempt (username, attempted_at, success)` (RV3-03). `User.failed_attempts` alanı, aynı bilgiyi `LoginAttempt` ile iki yerde tuttuğu ve kullanıcı adı sızıntısına yol açabileceği için PR #10 incelemesinde kaldırıldı. Veritabanı kısıtları: `vehicle.plate_normalized` tekil ve 5–9 karakter, `service_task.amount_kurus` tamsayı ve 1 – 100.000.000 aralığında, `status = 'DONE'` ⇔ `completed_at` dolu, iş başlığı ve müşteri adı boş olamaz ve en fazla 100 karakter, açıklama ve not en fazla 500 karakter, telefon boş ya da 10 rakam.
 
 ---
 
@@ -131,7 +131,17 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 | PR | Konu | Yazan | İnceleyen | Bulgular | Düzeltme |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `[#]` | İskelet (#2) | Ahmet Selim Dostabakan (YZ destekli) | `[ ]` | `[ ]` | `[ ]` |
+| #10 | İskelet (#2) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | Onaylandı; birleştirmeyi engellemeyen 4 bulgu (KR-01 – KR-04, aşağıda) | Düzeltme PR'ı: `iskelet-inceleme-duzeltmeleri` |
+| #11 | UC-07 servis katmanı (#9) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | `[İnceleme sürüyor]` | |
+
+**PR #10 inceleme bulguları (Kerem Erden).** İnceleyen, iskeleti yerelde çalıştırıp kalite kapılarını kendisi tekrarladı ve `showErrorDetails` değerini kurulu Streamlit'in kaynağından doğruladı. Bulgular yazar tarafından yerelde yeniden üretilerek doğrulandı:
+
+| No | Bulgu | Etki | Düzeltme |
+| :--- | :--- | :--- | :--- |
+| **KR-01** | SQLite tür dayatmıyor: `amount_kurus = 1600.5` kabul edildi ve `real` olarak saklandı. | ADR-003 ve NFR-05'in “son savunma hattı” iddiası geçersizdi. | `typeof(amount_kurus) = 'integer'` kısıtı ve testi. |
+| **KR-02** | `String(n)` uzunlukları uygulanmıyor: 300 karakterlik ad, 21 karakterlik plaka ve boş başlık kaydedildi. | R-11'deki uzunluk sınırları yalnızca servis katmanına kalıyordu. | Ad, başlık, plaka, telefon, açıklama ve not için CHECK kısıtları ve 14 test. |
+| **KR-03** | Hatalı giriş sayısı hem `User.failed_attempts` hem `LoginAttempt` içinde tutuluyor; `failed_attempts` kullanılırsa CAPTCHA yalnızca gerçek kullanıcı adında çıkar. | Kullanıcı adının var olup olmadığı sızar (R-02). | `failed_attempts` kaldırıldı; sayım kuralı ADR-006'ya yazıldı. |
+| **KR-04** | Veritabanı yolu ve `.streamlit/config.toml` çalışma dizinine bağlı. | Uygulama proje kökü dışından başlatılırsa NFR-08 devre dışı kalır, veritabanı başka yerde oluşur. | Veritabanı yolu proje köküne sabitlendi (ortam değişkeniyle değiştirilebilir); hata ayarı koddan da veriliyor. Uygulama başka bir dizinden başlatılarak doğrulandı. |
 
 ---
 

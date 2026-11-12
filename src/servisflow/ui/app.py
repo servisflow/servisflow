@@ -13,6 +13,9 @@ def get_engine():
 
 
 def main() -> None:
+    # NFR-08: yalnızca genel hata mesajı. Ayar koddan da verilir ki uygulama
+    # repo kökü dışından başlatıldığında da geçerli olsun (PR #10 incelemesi).
+    st.set_option("client.showErrorDetails", "none")
     st.set_page_config(page_title="ServisFlow")
     get_engine()
     st.title("ServisFlow")
