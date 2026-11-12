@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.2 — yedi use case ve arayüz birleşti; DIR puanları ekip onayında · `main` dal koruması 12.11.2026'da açıldı
+- **Doküman Durumu:** v0.3 — yedi use case ve arayüz birleşti; DIR puanları ekipçe verildi · `main` dal koruması 12.11.2026'da açıldı
 - **Başlangıç:** 12.11.2026 · **Teslim:** Hafta 9 (izlence)
 - **Koordinasyon:** Üye 5 (Kerem Erden, Yazılım Mimarı) · Üye 7 (Ahmet Selim Dostabakan, QA) · Üye 6 (Mehmet Ünsalan)
 
@@ -170,9 +170,9 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 ---
 
-## 4. Faz 3 İçin DIR Beyanı (Taslak — puanlar ekip onayında)
+## 4. Faz 3 İçin DIR Beyanı
 
-Faz 3'te YZ, kodlamanın ve kod incelemesinin her aşamasında kullanıldı. Kullanım beş iş paketine ayrıldı. **Puanları ekip verir** (CLAUDE.md); aşağıdaki gerekçeler gerçekleşen işlemlere dayanır, yapılmayanlar “eksik” olarak yazılmıştır. Her paketin sonundaki “YZ önerisi”, ekibin değerlendirmesi için bir başlangıç noktasıdır.
+Faz 3'te YZ, kodlamanın ve kod incelemesinin her aşamasında kullanıldı. Kullanım beş iş paketine ayrıldı. Gerekçeler gerçekleşen işlemlere dayanır, yapılmayanlar “eksik” olarak yazılmıştır. **Puanlar ekip kararıdır** (13.11.2026, ekip tartışması; Mehmet Ünsalan'a da danışıldı). Her paketin sonunda YZ'nin ilk önerisi de kayıt için gösterilmiştir.
 
 Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 raporları, iş kuralları (BR), test senaryoları (TC), ADR'ler ve kalite eşikleri verildi; `CLAUDE.md` ile kurallar kalıcı hâle getirildi: kapsam genişletilmeyecek, yapılmamış doğrulama yapılmış gibi yazılmayacak, puanları ve kararları YZ vermeyecek, kişisel veri depoya girmeyecek. YZ ajan olarak çalıştı (dosya düzenleme, test çalıştırma, dal ve PR açma); `main` korumalı olduğu için her değişiklik bir insanın onayıyla birleşti (A9, B6).
 
@@ -188,11 +188,11 @@ Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 rapor
 
 | Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | Ortak bağlam (A1 – A4, A6). Mimari seçenekler (2.1) ve reddedilen alternatifler ADR'lerde yazıldı (A8: karar ekipte). |
-| **I** | `[ekip]` | YZ, Streamlit'in kurulu sürüm belgesine bakarak Faz 2'deki yanlış `showErrorDetails` değerini buldu (RV3-01). İnceleyen dört bulgu (KR-01 – KR-04) çıkardı; bulgular önce yerelde yeniden üretildi, sonra düzeltildi (B1, B3). Farklı modeller karşılaştırılmadı (B4 eksik). |
-| **R** | `[ekip]` | İnceleyen iskeleti kendi ortamında çalıştırıp kalite kapılarını tekrarladı ve SQLite'ın tür ile uzunluk dayatmadığını canlı denemeyle gösterdi (C3, C4). Her bulgu için test eklendi. İnceleme yorumunun taslağı YZ ile hazırlandı (İP-8). |
+| **D** | 4 | Ortak bağlam (A1 – A4, A6). Mimari seçenekler (2.1) ve reddedilen alternatifler ADR'lerde yazıldı (A8: karar ekipte). |
+| **I** | 4 | YZ, Streamlit'in kurulu sürüm belgesine bakarak Faz 2'deki yanlış `showErrorDetails` değerini buldu (RV3-01). İnceleyen dört bulgu (KR-01 – KR-04) çıkardı; bulgular önce yerelde yeniden üretildi, sonra düzeltildi (B1, B3). Farklı modeller karşılaştırılmadı (B4 eksik). |
+| **R** | 4 | İnceleyen iskeleti kendi ortamında çalıştırıp kalite kapılarını tekrarladı ve SQLite'ın tür ile uzunluk dayatmadığını canlı denemeyle gösterdi (C3, C4). Her bulgu için test eklendi. İnceleme yorumunun taslağı YZ ile hazırlandı (İP-8). |
 
-*YZ önerisi:* D 4 · I 4 · R 4 → 51.
+**Skor (ekip kararı):** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3**. *(YZ önerisi: D 4 · I 4 · R 4 → 51.)*
 
 ### 4.2. İş Paketi 5 — UC-07 Servis Katmanı ve `CLAUDE.md`
 
@@ -206,11 +206,11 @@ Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 rapor
 
 | Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | Ortak bağlam; gün sınırları ve yarı açık aralık ADR-004/005 ile önceden tanımlıydı (A2, A6). |
-| **I** | `[ekip]` | İnceleyenin önerileri (KR-05 – KR-07) uygulandı; N+1 bulgusu önce ölçülerek yeniden üretildi (B1, B2). |
-| **R** | `[ekip]` | İnceleyen test planında olmayan bir durumu (yıl geçişindeki hafta) ayrıca denedi (C3, C4). **Eksik / süreç notu:** Düzeltme commit'i #11 birleştikten sonra geldiği için main'e girmedi; durum fark edilip #17 ile taşındı (3.4). |
+| **D** | 4 | Ortak bağlam; gün sınırları ve yarı açık aralık ADR-004/005 ile önceden tanımlıydı (A2, A6). |
+| **I** | 4 | İnceleyenin önerileri (KR-05 – KR-07) uygulandı; N+1 bulgusu önce ölçülerek yeniden üretildi (B1, B2). |
+| **R** | 4 | İnceleyen test planında olmayan bir durumu (yıl geçişindeki hafta) ayrıca denedi (C3, C4). **Eksik / süreç notu:** Düzeltme commit'i #11 birleştikten sonra geldiği için main'e girmedi; durum fark edilip #17 ile taşındı (3.4). |
 
-*YZ önerisi:* D 4 · I 4 · R 4 → 51.
+**Skor (ekip kararı):** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3**. *(YZ önerisi: D 4 · I 4 · R 4 → 51.)*
 
 ### 4.3. İş Paketi 6 — UC-01 – UC-06 Servis Katmanı
 
@@ -224,11 +224,11 @@ Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 rapor
 
 | Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | Ortak bağlam; her UC için BR ve TC'ler kabul ölçütü olarak verildi (A2, A6). Güvenlik beklentileri (R-01, R-02, KR-03) açıkça tanımlıydı (A4, A9). |
-| **I** | `[ekip]` | Testler koddan önce yazıldı ve kırmızı görüldü. **Mutasyon testi:** Kod 22 yerden kasten bozuldu; ilk turda 4 mutant yaşadı (float yasağı, `user is not None` koruması, TC-32 üst sınırı, bir eşdeğer mutant). Üçü için test eklendi, eşdeğer mutantın gerekçesi yazıldı (B1, B3). YZ'nin kendi rapor metnine yazdığı ekip içi ayrım ifadesi push'tan önce düzeltildi (B3, gizlilik). B4 eksik. |
-| **R** | `[ekip]` | Kalite kapıları yerelde ve CI'da; TC-23 iki gerçek veritabanı bağlantısıyla sınandı (C3). **Eksik / süreç notu:** #15'in ilk incelemesi PR açıklamasının yeniden yazımıydı; ikinci onay ve #16 onayı, YZ'nin hazırladığı metinle verildi (İP-8). Kodun içerik denetimi insan tarafından ortak incelemede (13.11.2026) uygulama üzerinden yapıldı; satır satır kod okuması sınırlı kaldı (C4 kısmen, C6 kısmen: üyeler kendi UC dosyalarını sözlü savunma için okuyor). |
+| **D** | 4 | Ortak bağlam; her UC için BR ve TC'ler kabul ölçütü olarak verildi (A2, A6). Güvenlik beklentileri (R-01, R-02, KR-03) açıkça tanımlıydı (A4, A9). |
+| **I** | 4 | Testler koddan önce yazıldı ve kırmızı görüldü. **Mutasyon testi:** Kod 22 yerden kasten bozuldu; ilk turda 4 mutant yaşadı (float yasağı, `user is not None` koruması, TC-32 üst sınırı, bir eşdeğer mutant). Üçü için test eklendi, eşdeğer mutantın gerekçesi yazıldı (B1, B3). YZ'nin kendi rapor metnine yazdığı ekip içi ayrım ifadesi push'tan önce düzeltildi (B3, gizlilik). B4 eksik. |
+| **R** | 3 | Kalite kapıları yerelde ve CI'da; TC-23 iki gerçek veritabanı bağlantısıyla sınandı (C3). **Eksik / süreç notu:** #15'in ilk incelemesi PR açıklamasının yeniden yazımıydı; ikinci onay ve #16 onayı, YZ'nin hazırladığı metinle verildi (İP-8). Kodun içerik denetimi insan tarafından ortak incelemede (13.11.2026) uygulama üzerinden yapıldı; satır satır kod okuması sınırlı kaldı (C4 kısmen, C6 kısmen: üyeler kendi UC dosyalarını sözlü savunma için okuyor). |
 
-*YZ önerisi:* D 4 · I 4 · R 3 → 38.
+**Skor (ekip kararı):** D = 4, I = 4, R = 3 → DIR = Floor(0,8 × 48) = **38** → **Bant 3**. *(YZ önerisi: D 4 · I 4 · R 3 → 38.)*
 
 **Not (dengeli katkı):** UC-01 – UC-04 sahipleri GitHub organizasyonunda olmadığı ve UC-06 sahibi bu dönemde ulaşılamadığı için servis katmanları Kerem Erden yönlendirmesiyle yazıldı. Arayüz ve kullanıcı kabul testi (TC-31) sahiplerinin katkısına açıktır.
 
@@ -244,11 +244,11 @@ Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 rapor
 
 | Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | Ortak bağlam; ekranların yalnızca servisleri çağırması (ADR-001) ve hata gösterimi (ADR-007) sınır olarak verildi (A2, A4). |
-| **I** | `[ekip]` | YZ'nin ilk taslağındaki iki hata testlerle bulundu ve düzeltildi (başarısız girişin çift sayılması, CAPTCHA alanının geç çıkması). Ortak incelemede ekip iki kullanılabilirlik bulgusu çıkardı (KR-08, KR-09) ve kuruşun kaldırılması kararını verdi (B3, A8). Plaka listesi için YZ'nin ilk çözümü (tam eşleşme, ardından bulanık süzgeç) ekip örneğiyle (`06 b`) reddedildi; süzgeç seçenekleri gerçek tarayıcıda karşılaştırıldı (B2, B4 kısmen: model değil yöntem karşılaştırması). |
-| **R** | `[ekip]` | Her ekran AppTest ile ve gerçek tarayıcıda uçtan uca çalıştırıldı (C3). **Ortak inceleme (13.11.2026):** temiz kurulum, tüm testler, uygulama ekran paylaşımında birlikte denendi; Windows'taki kurulum hatası bulunup belgelendi (C4). **Eksik / süreç notu:** #18 ve #19 onayları içerik denetimi olmadan verildi (3.4); içerik denetimi ortak incelemede yapıldı. |
+| **D** | 4 | Ortak bağlam; ekranların yalnızca servisleri çağırması (ADR-001) ve hata gösterimi (ADR-007) sınır olarak verildi (A2, A4). |
+| **I** | 5 | YZ'nin ilk taslağındaki iki hata testlerle bulundu ve düzeltildi (başarısız girişin çift sayılması, CAPTCHA alanının geç çıkması). Ortak incelemede ekip iki kullanılabilirlik bulgusu çıkardı (KR-08, KR-09) ve kuruşun kaldırılması kararını verdi (B3, A8). Plaka listesi için YZ'nin ilk çözümü (tam eşleşme, ardından bulanık süzgeç) ekip örneğiyle (`06 b`) reddedildi; süzgeç seçenekleri gerçek tarayıcıda karşılaştırıldı (B2, B4 kısmen: model değil yöntem karşılaştırması). |
+| **R** | 3 | Her ekran AppTest ile ve gerçek tarayıcıda uçtan uca çalıştırıldı (C3). **Ortak inceleme (13.11.2026):** temiz kurulum, tüm testler, uygulama ekran paylaşımında birlikte denendi; Windows'taki kurulum hatası bulunup belgelendi (C4). **Eksik / süreç notu:** #18 ve #19 onayları içerik denetimi olmadan verildi (3.4); içerik denetimi ortak incelemede yapıldı. |
 
-*YZ önerisi:* D 4 · I 5 · R 3 → 48. (I için 5'in dayanağı: ekip örneğiyle YZ çözümünün iki kez reddedilmesi ve alternatiflerin karşılaştırılması; ekip 4'ü de seçebilir.)
+**Skor (ekip kararı):** D = 4, I = 5, R = 3 → DIR = Floor(0,8 × 60) = **48** → **Bant 3**. *(YZ önerisi: D 4 · I 5 · R 3 → 48. (I için 5'in dayanağı: ekip örneğiyle YZ çözümünün iki kez reddedilmesi ve alternatiflerin karşılaştırılması; ekip 4'ü de seçebilir.))*
 
 ### 4.5. İş Paketi 8 — Kod İncelemesi Desteği
 
@@ -262,11 +262,11 @@ Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 rapor
 
 | Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | **Eksik:** Hazır onay metni yöntemi YZ'nin kendi önerisiydi; ekipten metnin nasıl yazılacağı sorulmadı ve “yalnızca inceleyenin yaptığı işlemler yazılır” sınırı başta konmadı (A4 eksik). YZ, metinlere henüz yapılmamış doğrulama cümleleri (“çalıştırdım”, “denedim”) yazdı ve yalnızca yanına çalıştırılacak komutları ekledi. |
-| **I** | `[ekip]` | #10 ve #11'de YZ'nin bulguları inceleyen tarafından kendi ortamında tekrarlandı (B1). Ekip, #18 – #19'dan sonra hazır metin yönteminin hatalı olduğunu tespit edip reddetti (B3); yerine ekran paylaşımlı ortak inceleme yapıldı ve iki gerçek bulgu çıktı (KR-08, KR-09). Kural kalıcı hâle getirildi: `CLAUDE.md`'ye “Claude inceleme ve onay metni yazmaz, yalnızca kontrol listesi verir” eklendi (B6, insan onay noktası). |
-| **R** | `[ekip]` | **Eksik:** #18'de onay, PR açıldıktan 51 saniye sonra ve CI bitmeden gönderildi; #19'da şablon doldurulmadan gönderildi. Bu iki onayın metni gerçekleşmemiş doğrulamaları içeriyor. Durum 3.4'te süreç notu olarak kaydedildi; içerik denetimi 13.11.2026'daki ortak incelemede yapıldı ve iki bulgu üretti (KR-08, KR-09). #20 onayında inceleyen kendi cümlesini ekledi. |
+| **D** | 4 | **Eksik:** Hazır onay metni yöntemi YZ'nin kendi önerisiydi; ekipten metnin nasıl yazılacağı sorulmadı ve “yalnızca inceleyenin yaptığı işlemler yazılır” sınırı başta konmadı (A4 eksik). YZ, metinlere henüz yapılmamış doğrulama cümleleri (“çalıştırdım”, “denedim”) yazdı ve yalnızca yanına çalıştırılacak komutları ekledi. |
+| **I** | 3 | #10 ve #11'de YZ'nin bulguları inceleyen tarafından kendi ortamında tekrarlandı (B1). Ekip, #18 – #19'dan sonra hazır metin yönteminin hatalı olduğunu tespit edip reddetti (B3); yerine ekran paylaşımlı ortak inceleme yapıldı ve iki gerçek bulgu çıktı (KR-08, KR-09). Kural kalıcı hâle getirildi: `CLAUDE.md`'ye “Claude inceleme ve onay metni yazmaz, yalnızca kontrol listesi verir” eklendi (B6, insan onay noktası). |
+| **R** | 4 | **Eksik:** #18'de onay, PR açıldıktan 51 saniye sonra ve CI bitmeden gönderildi; #19'da şablon doldurulmadan gönderildi. Bu iki onayın metni gerçekleşmemiş doğrulamaları içeriyor. Durum 3.4'te süreç notu olarak kaydedildi; içerik denetimi 13.11.2026'daki ortak incelemede yapıldı ve iki bulgu üretti (KR-08, KR-09). #20 onayında inceleyen kendi cümlesini ekledi. |
 
-*YZ önerisi:* D 3 · I 4 · R 2 → 19 (Bant 2); #18 ve #19 onay metinleri inceleyenin kendi gözlemleriyle düzeltilirse R 3 → 28. Bu paket Faz 3'ün en zayıf noktasıdır. Hatalı yöntemi YZ önerdi; ancak DIR insanın doğrulamasını ölçer ve onayları gönderen inceleyendir, bu yüzden YZ'nin hatası R'yi yükseltmez. Puanın dayanağı, ekibin hatayı fark edip yöntemi değiştirmesi ve kaydı düzeltmesidir.
+**Skor (ekip kararı):** D = 4, I = 3, R = 4 → DIR = Floor(0,8 × 48) = **38** → **Bant 3**. *(YZ önerisi: D 3 · I 4 · R 2 → 19 (Bant 2); #18 ve #19 onay metinleri inceleyenin kendi gözlemleriyle düzeltilirse R 3 → 28. Bu paket Faz 3'ün en zayıf noktasıdır. Hatalı yöntemi YZ önerdi; ancak DIR insanın doğrulamasını ölçer ve onayları gönderen inceleyendir, bu yüzden YZ'nin hatası R'yi yükseltmez. Puanın dayanağı, ekibin hatayı fark edip yöntemi değiştirmesi ve kaydı düzeltmesidir.)*
 
 ### 4.6. Özet Beyan Tablosu
 
