@@ -8,7 +8,7 @@ işlerden hesaplanır (BR-05, ADR-005).
 from datetime import date, datetime, time, timedelta, timezone
 
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from servisflow.repository.models import TASK_DONE, ServiceTask, ServiceVisit, Vehicle
 from servisflow.services.clock import ISTANBUL
@@ -77,11 +77,15 @@ def completed_tasks(
 
 
 def vehicle_history(session: Session, vehicle_id: int) -> list[ServiceVisit]:
-    """Aracın ziyaretleri, en yeniden en eskiye (FR-07)."""
+    """Aracın ziyaretleri işleriyle birlikte, en yeniden en eskiye (FR-07).
+
+    İşler tek ek sorguyla yüklenir; ziyaret başına ayrı sorgu (N+1) oluşmaz.
+    """
     if session.get(Vehicle, vehicle_id) is None:
         raise NotFoundError("Araç bulunamadı.")
     query = (
         select(ServiceVisit)
+        .options(selectinload(ServiceVisit.tasks))
         .where(ServiceVisit.vehicle_id == vehicle_id)
         .order_by(ServiceVisit.opened_at.desc(), ServiceVisit.id.desc())
     )

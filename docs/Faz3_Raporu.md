@@ -125,14 +125,15 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 | UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Bekliyor |
 | UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Bekliyor |
 | UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Bekliyor |
-| UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Servis katmanı PR’da; arayüz UC-01 sonrası |
+| UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Servis katmanı PR #11'de (inceleme bulguları düzeltildi); arayüz UC-01 sonrası |
 
 ### 3.4. Kod İnceleme Kayıtları
 
 | PR | Konu | Yazan | İnceleyen | Bulgular | Düzeltme |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| #10 | İskelet (#2) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | Onaylandı; birleştirmeyi engellemeyen 4 bulgu (KR-01 – KR-04, aşağıda) | Düzeltme PR'ı: `iskelet-inceleme-duzeltmeleri` |
-| #11 | UC-07 servis katmanı (#9) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | `[İnceleme sürüyor]` | |
+| #10 | İskelet (#2) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | Onaylandı; birleştirmeyi engellemeyen 4 bulgu (KR-01 – KR-04, aşağıda) | Düzeltme: PR #12 |
+| #11 | UC-07 servis katmanı (#9) | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | Olumlu; birleştirmeyi engellemeyen 3 öneri (KR-05 – KR-07, aşağıda) | Aynı PR'da düzeltildi |
+| #12 | KR-01 – KR-04 düzeltmeleri | Ahmet Selim Dostabakan (YZ destekli) | Kerem Erden | Onaylandı ve birleştirildi. **Süreç notu:** Onay yorumu yanlışlıkla UC-07 (#11) incelemesinin metnini taşıyor; #12'nin içeriğine ait ayrı bir inceleme metni yok. | Kerem Erden'den #12 için kısa bir doğrulama yorumu istendi |
 
 **PR #10 inceleme bulguları (Kerem Erden).** İnceleyen, iskeleti yerelde çalıştırıp kalite kapılarını kendisi tekrarladı ve `showErrorDetails` değerini kurulu Streamlit'in kaynağından doğruladı. Bulgular yazar tarafından yerelde yeniden üretilerek doğrulandı:
 
@@ -142,6 +143,14 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 | **KR-02** | `String(n)` uzunlukları uygulanmıyor: 300 karakterlik ad, 21 karakterlik plaka ve boş başlık kaydedildi. | R-11'deki uzunluk sınırları yalnızca servis katmanına kalıyordu. | Ad, başlık, plaka, telefon, açıklama ve not için CHECK kısıtları ve 14 test. |
 | **KR-03** | Hatalı giriş sayısı hem `User.failed_attempts` hem `LoginAttempt` içinde tutuluyor; `failed_attempts` kullanılırsa CAPTCHA yalnızca gerçek kullanıcı adında çıkar. | Kullanıcı adının var olup olmadığı sızar (R-02). | `failed_attempts` kaldırıldı; sayım kuralı ADR-006'ya yazıldı. |
 | **KR-04** | Veritabanı yolu ve `.streamlit/config.toml` çalışma dizinine bağlı. | Uygulama proje kökü dışından başlatılırsa NFR-08 devre dışı kalır, veritabanı başka yerde oluşur. | Veritabanı yolu proje köküne sabitlendi (ortam değişkeniyle değiştirilebilir); hata ayarı koddan da veriliyor. Uygulama başka bir dizinden başlatılarak doğrulandı. |
+
+**PR #11 inceleme bulguları (Kerem Erden).** İnceleyen UC-07'yi yerelde çalıştırdı, kalite kapılarını tekrarladı ve test planında olmayan bir durumu da denedi: yıl geçişindeki hafta (31.12.2026 → 28.12.2026 – 04.01.2027), doğru çalışıyor.
+
+| No | Bulgu | Etki | Düzeltme |
+| :--- | :--- | :--- | :--- |
+| **KR-05** | FR-07'nin “eski ziyaretteki işler yeni ziyaretle karışmaz” kabul ölçütü testte doğrulanmıyor; TC-28 yalnızca ziyaret sırasına bakıyor. | Bir kabul ölçütü testsiz kalıyordu (izlenebilirlik). | Her ziyaretin yalnızca kendi işlerini içerdiğini doğrulayan test eklendi. |
+| **KR-06** | `vehicle_history` sonrasında her ziyaretin işlerine erişmek ziyaret başına ayrı sorgu üretiyor (N+1): 3 ziyarette 5 sorgu. | Bu ölçekte performans sorunu değil; ziyaret sayısıyla büyür. | Yazar ölçümü yineledi (3 ziyarette 5 sorgu). İşler `selectinload` ile tek ek sorguda yükleniyor. Ziyaret sayısından bağımsız olarak 3 sorgu olduğunu doğrulayan test eklendi; düzeltme geri alındığında test 7 sorgu görüp başarısız oluyor. |
+| **KR-07** | Bu PR'ın inceleme kaydı rapora eklenmemiş. | Kod incelemesinin izlenebilirliği. | Bu tablo. |
 
 ---
 
