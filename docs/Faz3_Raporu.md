@@ -125,7 +125,7 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 | UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Bekliyor |
 | UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Bekliyor |
 | UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Bekliyor |
-| UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Bekliyor |
+| UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Servis katmanı PR’da; arayüz UC-01 sonrası |
 
 ### 3.4. Kod İnceleme Kayıtları
 
