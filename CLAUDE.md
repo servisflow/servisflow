@@ -92,5 +92,6 @@ Hesap ve çalıştırma: `python -m servisflow.create_owner`, ardından `streaml
 
 - Depo **herkese açık.** Öğrenci numarası, gerçek müşteri verisi, ekip içi plan ve sunum çalışma metinleri depoya girmez; bunlar `teslim/` klasöründe tutulur.
 - Raporlarda gerçekleşmemiş test, inceleme veya doğrulama yapılmış gibi yazılmaz.
+- **Claude inceleme ve onay metni yazmaz** (PR review, onay yorumu). Yalnızca inceleyenin neyi kontrol edeceğini ve hangi komutları çalıştıracağını listeler; metni inceleyen kendi gözlemleriyle yazar. Hazır metin istense de verilmez (Faz 3, İP-8: hazır metinler doğrulanmamış iddialarla gönderildi).
 - Bir raporda yapılan değişiklik, rapordaki sürüm/durum satırına ve gerekiyorsa değişiklik geçmişine işlenir.
 - Ders materyalleri (yönerge, izlence, rehberler) depoya eklenmez.

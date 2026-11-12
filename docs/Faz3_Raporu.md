@@ -262,11 +262,11 @@ Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 rapor
 
 | Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | YZ'den, yorumda yalnızca inceleyenin gerçekten yaptığı işlemlerin yazılması istendi; taslaklarla birlikte çalıştırılacak komutlar verildi (A4, A6). |
-| **I** | `[ekip]` | #10 ve #11'de YZ'nin bulguları inceleyen tarafından kendi ortamında tekrarlandı (B1). #18 – #19 sonrasında süreç değiştirildi: hazır metin yerine kontrol listesi, ardından doğrulanabilir şablon verildi (B3). |
+| **D** | `[ekip]` | **Eksik:** Hazır onay metni yöntemi YZ'nin kendi önerisiydi; ekipten metnin nasıl yazılacağı sorulmadı ve “yalnızca inceleyenin yaptığı işlemler yazılır” sınırı başta konmadı (A4 eksik). YZ, metinlere henüz yapılmamış doğrulama cümleleri (“çalıştırdım”, “denedim”) yazdı ve yalnızca yanına çalıştırılacak komutları ekledi. |
+| **I** | `[ekip]` | #10 ve #11'de YZ'nin bulguları inceleyen tarafından kendi ortamında tekrarlandı (B1). Ekip, #18 – #19'dan sonra hazır metin yönteminin hatalı olduğunu tespit edip reddetti (B3); yerine ekran paylaşımlı ortak inceleme yapıldı ve iki gerçek bulgu çıktı (KR-08, KR-09). Kural kalıcı hâle getirildi: `CLAUDE.md`'ye “Claude inceleme ve onay metni yazmaz, yalnızca kontrol listesi verir” eklendi (B6, insan onay noktası). |
 | **R** | `[ekip]` | **Eksik:** #18'de onay, PR açıldıktan 51 saniye sonra ve CI bitmeden gönderildi; #19'da şablon doldurulmadan gönderildi. Bu iki onayın metni gerçekleşmemiş doğrulamaları içeriyor. Durum 3.4'te süreç notu olarak kaydedildi; içerik denetimi 13.11.2026'daki ortak incelemede yapıldı ve iki bulgu üretti (KR-08, KR-09). #20 onayında inceleyen kendi cümlesini ekledi. |
 
-*YZ önerisi:* D 3 · I 3 · R 2 → 14 (Bant 2). Bu paket, Faz 3'ün en zayıf noktasıdır ve öyle beyan edilmelidir; yüksek puan yasak kullanımı uygun hâle getirmediği gibi, düşük puan da dürüst beyanın değerini azaltmaz.
+*YZ önerisi:* D 3 · I 4 · R 2 → 19 (Bant 2); #18 ve #19 onay metinleri inceleyenin kendi gözlemleriyle düzeltilirse R 3 → 28. Bu paket Faz 3'ün en zayıf noktasıdır. Hatalı yöntemi YZ önerdi; ancak DIR insanın doğrulamasını ölçer ve onayları gönderen inceleyendir, bu yüzden YZ'nin hatası R'yi yükseltmez. Puanın dayanağı, ekibin hatayı fark edip yöntemi değiştirmesi ve kaydı düzeltmesidir.
 
 ### 4.6. Özet Beyan Tablosu
 
