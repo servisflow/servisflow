@@ -7,6 +7,8 @@ __pycache__/
 .venv/
 venv/
 .pytest_cache/
+# `pip install -e .` ile oluşan paket kaydı
+*.egg-info/
 .coverage
 htmlcov/
 
