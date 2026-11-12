@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** v1.1 — ekip tarafından incelendi ve onaylandı (11.11.2026); PR şablonu ekip kararıyla kaldırıldı (12.11.2026)
+- **Doküman Durumu:** v1.2 — ekip tarafından incelendi ve onaylandı (11.11.2026); PR şablonu ekip kararıyla kaldırıldı ve `showErrorDetails` değeri düzeltildi (v1.2, 12.11.2026)
 - **Hazırlanma Tarihi:** 11.11.2026 · **Teslim:** Hafta 7 (izlence)
 - **Koordinasyon:** Üye 7 (Ahmet Selim Dostabakan, QA/Test Lideri) · Üye 5 (Kerem Erden, DevSecOps)
 
@@ -40,7 +40,7 @@
 | **RV-11** | İzlenebilirlik matrisi | FR-07 (araç geçmişi) ve UC-01'in “oturumsuz erişim” davranışı hiçbir test senaryosuna bağlı değil. | İzlenebilir | Orta | Yeni test senaryoları eklendi (Bölüm 3.7: TC-03, TC-27, TC-28). |
 | **RV-12** | UC-07 | “Geçersiz tarih seçimi” tanımlı değil. Tarih seçici kullanıldığında biçim hatası oluşamaz; gelecekteki bir dönemin ne döndüreceği belirsiz. | Tek anlamlı | Düşük | Tarih takvim bileşeniyle seçilir. Gelecekteki dönem seçilebilir ve `0,00 TL` döner. |
 | **RV-13** | NFR-02, CI | NFR-02 kapsamayı “`services` katmanı” için tanımlıyor; CI ise `ui` hariç tüm paketi ölçüyor. | Tutarlı | Düşük | NFR-02 CI ile hizalandı: “`ui` hariç tüm kod (`services` + `repository`)”. |
-| **RV-14** | Sunum, UC-01 | Streamlit varsayılan olarak hata ayrıntılarını (yığın izi) tarayıcıda gösterir; bu, iç yapı bilgisini sızdırır. Gereksinimlerde ele alınmamış. | Eksiksiz | Orta | Yeni NFR-08: kullanıcıya yalnızca genel hata mesajı gösterilir (`client.showErrorDetails = false`). |
+| **RV-14** | Sunum, UC-01 | Streamlit varsayılan olarak hata ayrıntılarını (yığın izi) tarayıcıda gösterir; bu, iç yapı bilgisini sızdırır. Gereksinimlerde ele alınmamış. | Eksiksiz | Orta | Yeni NFR-08: kullanıcıya yalnızca genel hata mesajı gösterilir (`client.showErrorDetails = "none"`; v1.2'de düzeltildi, bkz. Faz 3 RV3-01). |
 
 **İnceleme sonucu (11.11.2026):** Bulgular ekip toplantısında tek tek ele alındı; her use case sahibi kendi bölümüne ait bulguları ayrıntılı inceleyip onayladı. **14 bulgunun 14'ü kabul edildi.** RV-07'nin kararı ekip tarafından değiştirildi: önerilen “5 hatalı girişte 5 dk kilit” yerine “3 hatalı girişten sonra CAPTCHA ve hatalı giriş kaydının kullanıcıya gösterilmesi” seçildi. Bu sayede saldırı denemesi hem yavaşlatılıyor hem de hesap sahibine görünür hale geliyor.
 
@@ -277,7 +277,7 @@ flowchart LR
 | **R-05** | T | ✓ geri alınarak geçmiş günün tutarının sessizce değiştirilmesi | 1 | 3 | 3 Orta | A04 | Geri alma yalnızca aynı gün (BR-04) | TC-20 |
 | **R-06** | R | Tek hesabın parolasının ustalarla paylaşılması; bir işlemi kimin yaptığının ayırt edilememesi | 1 | 1 | 1 Düşük | A07 | Tek hesap politikası: parola yalnızca işletme sorumlusundadır ve paylaşılmaz (kullanım kılavuzunda yazılı); tam audit log kapsam dışı, kalan risk kabul edildi | UAT sırasında kılavuz kontrolü |
 | **R-07** | T | Aynı anda iki ✓ isteğiyle çift sayım | 2 | 3 | **6 Yüksek** | A04 | Koşullu güncelleme (RV-09); toplamın sorgudan hesaplanması | TC-18, TC-23 |
-| **R-08** | I | Hata ekranında yığın izi ve dosya yollarının görünmesi | 3 | 2 | **6 Yüksek** | A05 | `client.showErrorDetails = false` (NFR-08) | TC-30 |
+| **R-08** | I | Hata ekranında yığın izi ve dosya yollarının görünmesi | 3 | 2 | **6 Yüksek** | A05 | `client.showErrorDetails = "none"` (NFR-08) | TC-30 |
 | **R-09** | I | Müşteri verisinin depoya veya ekran görüntülerine sızması | 1 | 2 | 2 Düşük | A02 | Yalnızca sentetik veri; `*.db` `.gitignore`'da; teslim belgeleri depo dışında | Veri seti incelemesi |
 | **R-10** | I | Parola veya gizli anahtarın depoya commit edilmesi | 1 | 3 | 3 Orta | A05 | Depoda gizli bilgi tutulmaz; `.env` `.gitignore`'da; GitHub secret scanning ve push protection | KK-4 |
 | **R-11** | D | Çok uzun metinlerle veritabanının şişirilmesi veya arayüzün kilitlenmesi | 1 | 2 | 2 Düşük | A04 | Tüm metin alanlarında uzunluk sınırı (ad 100, açıklama 500, başlık 100) | TC-07 |

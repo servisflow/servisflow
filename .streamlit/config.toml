@@ -1,0 +1,4 @@
+# NFR-08 / R-08: tarayıcıda yalnızca genel hata mesajı; ayrıntılar konsola yazılır.
+# Not: false değeri artık "stacktrace" demektir ve yığın izini gösterir.
+[client]
+showErrorDetails = "none"
