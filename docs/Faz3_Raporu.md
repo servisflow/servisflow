@@ -82,7 +82,7 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 | UC-02 | `services/customers.py` | `normalize_phone(raw) -> str \| None` · `create_customer(session, clock, full_name, phone=None) -> Customer` · `update_customer(session, customer_id, full_name, phone)` · `search_customers(session, text) -> list[Customer]` |
 | UC-03 | `services/vehicles.py` | `normalize_plate(raw) -> str` · `register_vehicle(session, customer_id, plate, brand, model) -> Vehicle` · `find_vehicle_by_plate(session, plate) -> Vehicle` |
 | UC-04 | `services/visits.py` | `open_visit(session, clock, vehicle_id, complaint=None) -> ServiceVisit` |
-| UC-05 | `services/tasks.py` | `to_kurus(amount: Decimal) -> int` · `add_task(session, clock, visit_id, title, amount, note=None) -> ServiceTask` · `update_task(session, task_id, title, amount, note)` · `delete_task(session, task_id)` |
+| UC-05 | `services/tasks.py` | `to_kurus(amount: Decimal) -> int` · `add_task(session, clock, visit_id, title, amount, note=None) -> ServiceTask` · `update_task(session, task_id, title, amount, note)` · `delete_task(session, task_id)` · `visit_totals(session, visit_id) -> tuple[int, int]` |
 | UC-06 | `services/completion.py` | `complete_task(session, clock, task_id) -> ServiceTask` · `undo_completion(session, clock, task_id) -> ServiceTask` |
 | UC-07 | `services/reports.py` | `period_bounds(kind, day) -> tuple[datetime, datetime]` · `gross_total(session, start, end) -> int` · `vehicle_history(session, vehicle_id) -> list[ServiceVisit]` |
 
@@ -123,7 +123,7 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 | UC-02 | Alperhan Karşı | #4 | `uc-02-musteri` | Bekliyor |
 | UC-03 | Mehmet Kenan Dilberoğlu | #5 | `uc-03-arac` | Bekliyor |
 | UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Bekliyor |
-| UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Bekliyor |
+| UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Servis katmanı PR'da; arayüz UC-01 sonrası |
 | UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Bekliyor |
 | UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Servis katmanı PR’da; arayüz UC-01 sonrası |
 
