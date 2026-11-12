@@ -53,11 +53,11 @@ def _show(at, kind, day):
 @pytest.mark.parametrize(
     "kind, day, total, rows",
     [
-        ("gun", date(2026, 10, 22), "1.600,00 TL", 1),  # TC-25 günlük
-        ("gun", date(2026, 10, 23), "1.200,00 TL", 1),
-        ("hafta", date(2026, 10, 22), "2.800,00 TL", 2),  # TC-25 hafta
-        ("ay", date(2026, 10, 1), "2.800,00 TL", 2),
-        ("yil", date(2026, 1, 1), "2.800,00 TL", 2),
+        ("gun", date(2026, 10, 22), "1.600 TL", 1),  # TC-25 günlük
+        ("gun", date(2026, 10, 23), "1.200 TL", 1),
+        ("hafta", date(2026, 10, 22), "2.800 TL", 2),  # TC-25 hafta
+        ("ay", date(2026, 10, 1), "2.800 TL", 2),
+        ("yil", date(2026, 1, 1), "2.800 TL", 2),
     ],
 )
 def test_donem_toplamlari(page, kind, day, total, rows):
@@ -70,7 +70,7 @@ def test_donem_toplamlari(page, kind, day, total, rows):
 def test_bos_donem_sifir(page):
     """TC-27: boş dönem 0,00 TL; açık iş hiçbir dönemde sayılmaz."""
     at = _show(page, "gun", date(2026, 10, 24))
-    assert at.metric[0].value == "0,00 TL"
+    assert at.metric[0].value == "0 TL"
     assert "tamamlanan iş yok" in at.caption[-1].value
 
 

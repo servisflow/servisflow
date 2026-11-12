@@ -112,8 +112,9 @@ def test_ayni_plaka_ikinci_kez_reddedilir(page, db_url):
 def test_plakayla_arama_sahibini_gosterir(page):
     at = _new_customer(page, "Can GPT")
     at = _add_vehicle(at, "34BJK321")
-    at = at.text_input(key="plaka_ara").input("34 bjk 321").run()
+    at = at.text_input(key="plaka_ara").input("34 b").run()  # KR-09: başı yeterli
     assert "Can GPT" in at.info[0].value
+    assert "34BJK321" in at.info[0].value
 
 
 def test_musteri_guncellenir(page, db_url):

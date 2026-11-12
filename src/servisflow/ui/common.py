@@ -14,6 +14,7 @@ from servisflow.repository.db import (
     make_engine,
     make_session_factory,
 )
+from servisflow.services import vehicles
 from servisflow.services.errors import ServisFlowError
 
 T = TypeVar("T")
@@ -54,18 +55,21 @@ def run(action: Callable[[Session], T], success: str | None = None) -> T | None:
 
 
 def tl(kurus: int) -> str:
-    """Kuruşu Türkçe biçimde TL olarak yazar: 160050 → '1.600,50 TL'.
+    """Kuruşu Türkçe biçimde TL olarak yazar: 160000 → '1.600 TL'.
 
-    Hesap Decimal ile yapılır; float yalnızca yuvarlama hatası getirirdi (ADR-003).
+    Tutarlar tam TL girilir (BR-01 v1.4); eski kayıtlarda kuruş varsa
+    '1.600,50 TL' biçiminde gösterilir. Hesap Decimal iledir (ADR-003).
     """
-    text = f"{Decimal(kurus) / 100:,.2f}"
+    value = Decimal(kurus) / 100
+    text = f"{value:,.0f}" if kurus % 100 == 0 else f"{value:,.2f}"
     return text.replace(",", "_").replace(".", ",").replace("_", ".") + " TL"
 
 
-def amount_from_input(value: float) -> Decimal:
-    """`st.number_input` float döndürür; `Decimal(str(x))` girilen değeri korur.
+def amount_from_input(value: int | float) -> Decimal:
+    """Sayı alanının değerini Decimal'e çevirir.
 
-    `Decimal(1.15)` 1.1499999... olurdu; `str(1.15)` ise '1.15' verir (ADR-003).
+    Alan tam sayı adımlıdır ve int döndürür. Yine de float gelirse
+    `Decimal(str(x))` girilen değeri korur; `Decimal(1.15)` 1.1499... olurdu.
     """
     return Decimal(str(value))
 
@@ -95,3 +99,19 @@ def show_flash() -> None:
         st.error(st.session_state.pop(FLASH_ERROR))
     if FLASH_OK in st.session_state:
         st.success(st.session_state.pop(FLASH_OK))
+
+
+def plate_matches(text: str) -> list[dict]:
+    """Plakanın başıyla eşleşen araçlar, düz veri olarak (KR-09)."""
+
+    def find(session):
+        return [
+            {
+                "id": v.id,
+                "label": f"{v.plate_normalized} · {v.brand} {v.model}"
+                f" · {v.customer.full_name}",
+            }
+            for v in vehicles.suggest_plates(session, text)
+        ]
+
+    return run(find) or []

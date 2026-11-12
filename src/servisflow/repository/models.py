@@ -15,7 +15,7 @@ from .db import Base
 
 TASK_TODO = "TODO"
 TASK_DONE = "DONE"
-MIN_AMOUNT_KURUS = 1  # 0,01 TL (BR-01)
+MIN_AMOUNT_KURUS = 100  # 1 TL (BR-01 v1.4: yalnızca tam TL, KR-08)
 MAX_AMOUNT_KURUS = 100_000_000  # 1.000.000,00 TL (BR-01)
 
 
@@ -126,7 +126,8 @@ class ServiceTask(Base):
     __table_args__ = (
         CheckConstraint(
             f"typeof(amount_kurus) = 'integer'"
-            f" AND amount_kurus BETWEEN {MIN_AMOUNT_KURUS} AND {MAX_AMOUNT_KURUS}",
+            f" AND amount_kurus BETWEEN {MIN_AMOUNT_KURUS} AND {MAX_AMOUNT_KURUS}"
+            " AND amount_kurus % 100 = 0",
             name="ck_task_amount_range",
         ),
         CheckConstraint("length(trim(title)) BETWEEN 1 AND 100", name="ck_task_title"),

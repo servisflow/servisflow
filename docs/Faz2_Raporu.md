@@ -50,7 +50,7 @@ Kabul edilen bulgular Faz 1 Raporu'na **v1.3** olarak işlenmiştir. Değişen v
 
 | Kod | Yeni metin |
 | :--- | :--- |
-| **BR-01** | Tutar sayısal alanla TL cinsinden, en fazla 2 ondalık basamakla girilir; 0,01 TL ile 1.000.000,00 TL arasında olmalıdır. Kuruş cinsinden tamsayı saklanır. |
+| **BR-01** | Tutar sayısal alanla **tam TL** olarak girilir (kuruş girilmez); 1 TL ile 1.000.000 TL arasında olmalıdır. Kuruş cinsinden tamsayı saklanır. *(v1.4, KR-08)* |
 | **BR-04** | ✓ yalnızca işin tamamlandığı **İstanbul takvim günü içinde** geri alınabilir. Geri alındığında iş `TODO`'ya döner, `completed_at` temizlenir. Gün geçtikten sonra `DONE` kesindir. |
 | **BR-07** | Plaka boşluklar kaldırılıp **Latin büyük harfe** çevrilerek normalize edilir. Biçim: il kodu `01`–`81`, ardından 1–3 harf (Ç, Ğ, İ, Ö, Ş, Ü hariç), ardından 2–4 rakam. Normalize plaka sistemde tekildir. |
 | **BR-08** | MVP'de müşteri, araç ve ziyaret kayıtları silinmez. Yalnızca `TODO` durumundaki iş silinebilir. |
@@ -134,7 +134,7 @@ Plan, ISO/IEC/IEEE 29119-3'teki test planı başlıkları esas alınarak sadele�
 | Teknik | Uygulandığı yer |
 | :--- | :--- |
 | **Denklik sınıfları** | Plaka (geçerli / Türkçe harfli / yanlış il kodu / fazla harf), telefon, arama |
-| **Sınır değer analizi** | Tutar (0,00 / 0,01 / 1.000.000,00 / 1.000.000,01), ad uzunluğu (0 / 1 / 100 / 101), gün sınırı (23:59:59 / 00:00:00) |
+| **Sınır değer analizi** | Tutar (0 / 1 / 1.000.000 / 1.000.001 TL; KR-08), ad uzunluğu (0 / 1 / 100 / 101), gün sınırı (23:59:59 / 00:00:00) |
 | **Durum geçiş testi** | `TODO` ↔ `DONE` geçişleri, aynı gün ve ertesi gün geri alma |
 | **Karar tablosu** | ✓ geri alma kuralı (Bölüm 3.4) |
 | **Hata tahmini** | Çift tıklama, boş form gönderimi, aynı anda iki sekmeden ✓ |
@@ -184,8 +184,8 @@ Faz 1'deki 13 senaryo genişletilmiş ve yeniden numaralandırılmıştır. Faz 
 | TC-12 | UC-03, BR-07 | Denklik | `34 ŞK 123` / `82 AB 123` / `34 ABCD 12` | Üçü de reddedilir | Birim |
 | TC-13 (05) | UC-04 | Beyaz kutu | Sabit saatle ziyaret açılır | `opened_at` = sabit saat | Birim |
 | TC-14 | UC-04 | Kara kutu | Aynı araca iki farklı günde ziyaret | İki ayrı ziyaret listelenir | Entegrasyon |
-| TC-15 (06) | UC-05, BR-01 | Sınır değer | 0,00 / 0,01 / 1.000.000,00 / 1.000.000,01 TL | Red / kabul / kabul / red | Birim |
-| TC-16 | UC-05, BR-01 | Denklik | 1.600,50 TL / 10,005 TL | `160050` kuruş / red | Birim |
+| TC-15 (06) | UC-05, BR-01 | Sınır değer | 0 / 1 / 1.000.000 / 1.000.001 TL *(KR-08)* | Red / kabul / kabul / red | Birim |
+| TC-16 | UC-05, BR-01 | Denklik | 1.600 TL / 1.600,50 TL *(KR-08)* | `160000` kuruş / red | Birim |
 | TC-17 (07) | UC-05, BR-02 | Durum geçişi | `DONE` işi düzenleme ve silme | İkisi de reddedilir | Birim |
 | TC-18 (08) | UC-06, BR-03 | Durum geçişi | Aynı işe iki kez ✓ | Tek tamamlama, `completed_at` değişmez | Entegrasyon |
 | TC-19 (09) | UC-06, BR-04 | Karar tablosu K1 | Aynı gün ✓ → geri al → ✓ | Yeni `completed_at`, toplamda bir kez | Birim |

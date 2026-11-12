@@ -74,12 +74,14 @@ pytest --cov
 
 Eşikler: fonksiyon başına McCabe ≤ 10 · `ui` hariç satır + dal kapsaması ≥ %80 · bandit yüksek bulgu 0 · pip-audit açık 0.
 
-Windows notu: `black`'in derlenmiş paketi uzun dosya yollarında yüklenemeyebilir; `pip install --no-binary black black==<sürüm>` ile derlenmemiş sürümü kur.
+Windows notları: `black`'in derlenmiş paketi uzun dosya yollarında yüklenemeyebilir; `pip install --no-binary black black==<sürüm>` ile derlenmemiş sürümü kur. `pip install -e .` *WinError 145* verirse (antivirüs geçici klasörü kilitler) `python -m pip install --upgrade pip setuptools` sonrası tekrarla; geçici çözüm `$env:PYTHONPATH = "src"`.
+
+Hesap ve çalıştırma: `python -m servisflow.create_owner`, ardından `streamlit run src/servisflow/ui/app.py`.
 
 ## Kodlama kuralları (ADR'ler: `docs/Faz3_Raporu.md` Bölüm 2.2)
 
 - **Zaman:** Servisler `datetime.now()` çağırmaz; `services.clock.Clock` alır. Testlerde `FixedClock`. Tüm zamanlar saat dilimli; veritabanında UTC. Gün sınırları `Europe/Istanbul`.
-- **Para:** Tamsayı kuruş (`amount_kurus`); `float` yok. 0,01 – 1.000.000,00 TL.
+- **Para:** Tamsayı kuruş (`amount_kurus`) saklanır, ama tutar **tam TL** girilir (BR-01 v1.4, KR-08); `float` yok. 1 – 1.000.000 TL.
 - **Veritabanı:** Yalnızca ORM / parametreli sorgu. SQLite tür ve uzunluk dayatmaz; sınırlar hem servis katmanında hem CHECK kısıtlarında.
 - **Tamamlama (✓):** Tek koşullu güncelleme (`WHERE status = 'TODO'`), idempotent. Geri alma yalnızca aynı İstanbul günü içinde. Dönem toplamı sayaçta tutulmaz, sorgudan hesaplanır.
 - **Hatalar:** Kullanıcıya gösterilecek hatalar `services.errors` türleri. Streamlit `client.showErrorDetails = "none"` (`false` yığın izini gösterir).

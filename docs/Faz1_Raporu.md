@@ -3,8 +3,8 @@
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları
 - **Ekip Büyüklüğü:** 7 kişi
-- **Doküman Durumu:** v1.3 — Faz 2 incelemesi sonrası iyileştirildi ve ekipçe onaylandı
-- **Hazırlanma Tarihi:** 22.10.2026 · **Son güncelleme:** 11.11.2026
+- **Doküman Durumu:** v1.4 — Faz 3 kod incelemesi sonrası BR-01 güncellendi (KR-08)
+- **Hazırlanma Tarihi:** 22.10.2026 · **Son güncelleme:** 13.11.2026
 
 > **Kapsam kararı (v0.4):** v0.3 taslağındaki stok yönetimi, parça bazlı fiyat satırları, üç rollü yetki matrisi, iş emri durum makinesi ve audit log, ders süresi içinde **her özelliği test edilmiş ve ölçülmüş biçimde teslim edebilmek** amacıyla kapsamdan çıkarılmıştır. Proje, araç bazlı **To-Do tarzı iş takibi** ve **tamamlanma tarihine dayalı dönemsel raporlama** çekirdeğine indirgenmiştir. Bu karar, kalite yönetiminde bilinen *“kapsamı sınırla, derinliği artır”* ilkesine dayanır: daha az özellik, daha yüksek test kapsamı ve daha düşük teknik risk.
 
@@ -128,7 +128,7 @@ Küçük oto servislerinde yapılan işler çoğunlukla deftere veya kâğıt i�
 
 | Kod | Kural |
 | :--- | :--- |
-| **BR-01** | Tutar sayısal alanla TL cinsinden, en fazla 2 ondalık basamakla girilir; 0,01 TL ile 1.000.000,00 TL arasında olmalıdır. Kuruş cinsinden tamsayı saklanır. *(v1.3, RV-05)* |
+| **BR-01** | Tutar sayısal alanla **tam TL** olarak girilir (kuruş girilmez); 1 TL ile 1.000.000 TL arasında olmalıdır. Kuruş cinsinden tamsayı saklanır. *(v1.4, KR-08)* |
 | **BR-02** | ✓ ile tamamlanan işin durumu `DONE` olur, `completed_at` sistemce atanır ve tutar/başlık düzenlemeye kapanır. |
 | **BR-03** | Zaten `DONE` olan işe tekrar ✓ isteği gelirse **hiçbir şey değişmez** (idempotent); `completed_at` ve tutar korunur. |
 | **BR-04** | ✓ yalnızca işin tamamlandığı **İstanbul takvim günü içinde** geri alınabilir. Geri alındığında iş `TODO`'ya döner, `completed_at` temizlenir, iş rapordan düşer; yeniden ✓ yapılırsa yeni tamamlanma zamanı alır. Gün geçtikten sonra `DONE` kesindir. *(v1.3, RV-01)* |
@@ -243,7 +243,7 @@ flowchart LR
 | **Alternatif / hata akışı** | Boş başlık, sıfır/negatif/üst sınırı aşan tutar, metin içeren tutar reddedilir. `DONE` işin düzenlenmesi veya silinmesi reddedilir (BR-02). |
 | **Son koşul** | İşler ziyaret altında ayrı satırlar olarak saklanır. |
 | **Kalite odağı** | Fonksiyonel doğruluk, kullanılabilirlik. |
-| **Test** | Sınır değerler (0, 0,01, 1.000.000, 1.000.000,01 TL), kuruş dönüşümü (`1.600,50` → `160050`), `DONE` işe düzenleme denemesi. |
+| **Test** | Sınır değerler (0, 1, 1.000.000, 1.000.001 TL), kuruşlu tutarın reddi (`1.600,50`; v1.4), `DONE` işe düzenleme denemesi. |
 
 #### UC-06 — İdempotent Görev Tamamlama (✓) ve Tutar Kilitleme (Üye 6)
 | Alan | İçerik |
@@ -323,7 +323,7 @@ Toplam bir “sayaç” olarak tutulmaz, **her seferinde sorgudan hesaplanır**.
 | TC-03 | Denklik sınıfı | “Can GPT” kaydı, “can” araması | Kayıt bulunur |
 | TC-04 | Denklik sınıfı | `34BJK321` varken `34 bjk 321` eklenir | Reddedilir |
 | TC-05 | Beyaz kutu | Sabitlenmiş saatle ziyaret açılır | `opened_at` = sabit saat |
-| TC-06 | Sınır değer | Tutar 0 / 0,01 / 1.000.000 / 1.000.000,01 TL | Red / kabul / kabul / red |
+| TC-06 | Sınır değer | Tutar 0 / 1 / 1.000.000 / 1.000.001 TL (v1.4) | Red / kabul / kabul / red |
 | TC-07 | Durum geçişi | `DONE` işi düzenleme | Reddedilir |
 | TC-08 | Durum geçişi | Aynı işe iki kez ✓ | Tek tamamlama, toplam değişmez |
 | TC-09 | Durum geçişi | ✓ → geri al → ✓ | Yeni `completed_at`, toplamda bir kez |
@@ -438,6 +438,7 @@ Toplam bir “sayaç” olarak tutulmaz, **her seferinde sorgudan hesaplanır**.
 | v1.1 | 31.10.2026 | DIR beyanı, izlence takvimi, geliştirme ortamı ve CI |
 | v1.2 | 11.11.2026 | Öğretim elemanı onayı, proje panosu |
 | v1.3 | 11.11.2026 | Faz 2 incelemesi (RV-01 – RV-14): BR-01, BR-04, BR-07, BR-08, FR-01, NFR-02 güncellendi; BR-09 ve NFR-08 eklendi; aktör “İşletme Sorumlusu” olarak netleştirildi (tek kullanıcı hesabı, ustalar sisteme girmez) |
+| v1.4 | 13.11.2026 | Faz 3 kod incelemesi (KR-08): BR-01 tam TL olarak değiştirildi; TC-06 ve UC-05 test satırı buna göre güncellendi |
 
 ## 6. Kaynaklar (Faz 1)
 

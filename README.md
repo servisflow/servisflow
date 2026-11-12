@@ -1,7 +1,7 @@
 # ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 
-> **Durum:** Faz 1 tamamlandı — ekip ve öğretim elemanı tarafından onaylandı.  
-> **Ders:** Yazılım Kalite Standartları · **Ekip:** 7 kişi · **Sürüm:** v1.3 (11.11.2026) · Faz 2 ekipçe onaylandı
+> **Durum:** Faz 1 ve Faz 2 tamamlandı. Faz 3 sürüyor: yedi use case'in servis katmanı ve ekranları `main`'de, uygulama uçtan uca çalışıyor.  
+> **Ders:** Yazılım Kalite Standartları · **Ekip:** 7 kişi · **Son güncelleme:** 13.11.2026
 
 **ServisFlow**, küçük bir oto serviste her araç için **To-Do uygulaması mantığında yapılacak işler listesi** tutan, işler **✓** ile tamamlandığında tutarlarını tamamlanma gününe yazan ve **günlük / haftalık / aylık / yıllık brüt iş bedelini** raporlayan sade bir web uygulamasıdır.
 
@@ -128,8 +128,6 @@ servisflow/
 
 ## 🚀 Kurulum
 
-Faz 3 sürüyor: kod iskeleti (veri modeli, saat sağlayıcısı, veritabanı katmanı, uygulama girişi) hazır; use case'ler kendi PR'larıyla ekleniyor.
-
 ```bash
 git clone https://github.com/servisflow/servisflow.git
 cd servisflow
@@ -139,11 +137,21 @@ pip install -r requirements.txt -r requirements-dev.txt
 pip install -e .
 ```
 
-Uygulamayı çalıştırma:
+İşletme sorumlusu hesabını oluşturma (bir kez; parola en az 8 karakter):
+
+```bash
+python -m servisflow.create_owner
+```
+
+Uygulamayı çalıştırma (repo kökünden):
 
 ```bash
 streamlit run src/servisflow/ui/app.py
 ```
+
+Tarayıcıda `http://localhost:8501` açılır: giriş → **Müşteriler ve araçlar** → **Servis ve işler** (ziyaret, iş, ✓) → **Rapor**.
+
+> **Windows notu:** `pip install -e .` *WinError 145 (The directory is not empty)* ile durursa sorun koddan değil, geçici klasörü kilitleyen antivirüsten kaynaklanır. `python -m pip install --upgrade pip setuptools` sonrası komutu tekrarlayın; acil durumda `$env:PYTHONPATH = "src"` ile paket kurulmadan çalıştırılabilir.
 
 Kalite kapılarını yerelde çalıştırma (CI'daki adımların aynısı):
 

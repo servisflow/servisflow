@@ -10,9 +10,13 @@ from servisflow.repository.models import Customer, Vehicle
 from servisflow.services.errors import ConflictError, NotFoundError, ValidationError
 
 TEXT_MAX = 50
+SUGGEST_LIMIT = 10
+SUGGEST_MIN = 2
+_PLATE_CHARS = re.compile(r"[0-9A-Z]+")
 _TURKISH = set("çğıöşüÇĞİÖŞÜ")
 # BR-07: il kodu 01–81, 1–3 harf, 2–4 rakam.
 _PLATE = re.compile(r"(0[1-9]|[1-7]\d|8[01])[A-Z]{1,3}\d{2,4}")
+_PLATE_PARTS = re.compile(r"(\d{2})([A-Z]{1,3})(\d{2,4})")
 
 
 def normalize_plate(raw: str) -> str:
@@ -75,3 +79,41 @@ def find_vehicle_by_plate(session: Session, plate: str) -> Vehicle:
     if vehicle is None:
         raise NotFoundError("Bu plakayla kayıtlı araç yok.")
     return vehicle
+
+
+def suggest_plates(session: Session, text: str) -> list[Vehicle]:
+    """Yazılan plakanın başıyla eşleşen araçlar (KR-09: `06 b` → `06BUM00`).
+
+    Girdi tam plaka gibi normalize edilir ama biçim denetlenmez, çünkü yarım
+    plaka henüz BR-07'ye uymaz. Yalnızca rakam ve Latin büyük harf kabul edilir;
+    böylece `%` ve `_` LIKE sorgusunda joker karakter olarak çalışamaz.
+    """
+    prefix = "".join((text or "").split())
+    if _TURKISH & set(prefix):
+        return []
+    prefix = prefix.upper()
+    if len(prefix) < SUGGEST_MIN or not _PLATE_CHARS.fullmatch(prefix):
+        return []
+    return list(
+        session.scalars(
+            select(Vehicle)
+            .where(Vehicle.plate_normalized.startswith(prefix, autoescape=True))
+            .order_by(Vehicle.plate_normalized)
+            .limit(SUGGEST_LIMIT)
+        )
+    )
+
+
+def format_plate(plate_normalized: str) -> str:
+    """Plakayı üzerinde yazıldığı gibi boşluklu gösterir: `06BUM00` → `06 BUM 00`."""
+    parts = _PLATE_PARTS.fullmatch(plate_normalized)
+    return " ".join(parts.groups()) if parts else plate_normalized
+
+
+def list_vehicles(session: Session) -> list[Vehicle]:
+    """Tüm araçlar plakaya göre sıralı; arayüzdeki seçim listesi için.
+
+    Tek şubeli bir serviste araç sayısı küçüktür; liste tarayıcıda, yazılan
+    plakanın başına göre süzülür (KR-09).
+    """
+    return list(session.scalars(select(Vehicle).order_by(Vehicle.plate_normalized)))

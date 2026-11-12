@@ -10,7 +10,13 @@ import streamlit as st
 from servisflow.services import completion, tasks, vehicles, visits
 from servisflow.services.clock import ISTANBUL, SystemClock
 from servisflow.services.reports import vehicle_history
-from servisflow.ui.common import act, amount_from_input, run, show_flash, tl
+from servisflow.ui.common import (
+    act,
+    amount_from_input,
+    run,
+    show_flash,
+    tl,
+)
 
 DONE = "DONE"
 
@@ -19,11 +25,11 @@ def _when(moment) -> str:
     return f"{moment.astimezone(ISTANBUL):%d.%m.%Y %H:%M}"
 
 
-def _vehicle(session, plate: str) -> dict:
-    v = vehicles.find_vehicle_by_plate(session, plate)
+def _vehicle_labels(session) -> dict[int, str]:
     return {
-        "id": v.id,
-        "label": f"{v.plate_normalized} · {v.brand} {v.model} · {v.customer.full_name}",
+        v.id: f"{vehicles.format_plate(v.plate_normalized)} · {v.brand} {v.model}"
+        f" · {v.customer.full_name}"
+        for v in vehicles.list_vehicles(session)
     }
 
 
@@ -95,10 +101,9 @@ def _edit_task_form(task: dict) -> None:
         title = st.text_input("Başlık", value=task["title"], key=f"is_baslik_{tid}")
         amount = st.number_input(
             "Tutar (TL)",
-            min_value=0.0,
-            value=task["amount"] / 100,
-            step=0.01,
-            format="%.2f",
+            min_value=0,
+            value=task["amount"] // 100,
+            step=1,
             key=f"is_tutar_{tid}",
         )
         note = st.text_input("Not", value=task["note"] or "", key=f"is_not_{tid}")
@@ -119,9 +124,8 @@ def _new_task_form(visit_id: int) -> None:
         title = st.text_input("Başlık", key=f"yeni_is_baslik_{visit_id}")
         amount = st.number_input(
             "Tutar (TL)",
-            min_value=0.0,
-            step=0.01,
-            format="%.2f",
+            min_value=0,
+            step=1,
             key=f"yeni_is_tutar_{visit_id}",
         )
         note = st.text_input("Not (isteğe bağlı)", key=f"yeni_is_not_{visit_id}")
@@ -152,16 +156,25 @@ def _visit_block(visit: dict, latest: bool) -> None:
 def render() -> None:
     st.header("Servis ve işler")
     show_flash()
-    plate = st.text_input("Araç plakası", key="ziyaret_plaka")
-    if not plate.strip():
-        st.caption("Plaka girin; araç Müşteriler ve araçlar ekranından eklenir.")
+    labels = run(_vehicle_labels) or {}
+    # Liste yazdıkça tarayıcıda süzülür; "prefix" kipi etiketin başına bakar.
+    # Etiket boşluklu plakayla başladığı için "06 b" yazınca 06 BA… ve 06 BUM…
+    # önerilir. Seçim yapılana kadar hiçbir araç açılmaz (KR-09).
+    vehicle_id = st.selectbox(
+        "Araç plakası",
+        list(labels),
+        index=None,
+        format_func=labels.get,
+        placeholder="Plakayı boşluklu yazın (ör. 06 b) ve listeden seçin",
+        filter_mode="prefix",
+        key="ziyaret_arac",
+    )
+    if vehicle_id is None:
+        st.caption("Araç Müşteriler ve araçlar ekranından eklenir.")
         return
-    vehicle = run(lambda s: _vehicle(s, plate))
-    if vehicle is None:
-        return
-    st.subheader(vehicle["label"])
-    _new_visit_form(vehicle["id"])
-    history = run(lambda s: _history(s, vehicle["id"])) or []
+    st.subheader(labels[vehicle_id])
+    _new_visit_form(vehicle_id)
+    history = run(lambda s: _history(s, vehicle_id)) or []
     if not history:
         st.caption("Bu araç için henüz ziyaret yok.")
     for index, visit in enumerate(history):
