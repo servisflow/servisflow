@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.1 — geliştirme sürüyor
+- **Doküman Durumu:** Taslak v0.1 — geliştirme sürüyor · `main` dal koruması 12.11.2026'da açıldı
 - **Başlangıç:** 12.11.2026 · **Teslim:** Hafta 9 (izlence)
 - **Koordinasyon:** Üye 5 (Kerem Erden, Yazılım Mimarı) · Üye 7 (Ahmet Selim Dostabakan, QA) · Üye 6 (Mehmet Ünsalan)
 
@@ -23,7 +23,7 @@ Faz 2 çıktıları, kod iskeleti yazılırken gerçek araçlarla karşılaştı
 | **RV3-01** | Faz 2 RV-14, R-08 | Hata ayrıntılarını gizlemek için `client.showErrorDetails = false` öngörülmüştü. Streamlit 1.67 belgelerine göre `false` artık **“stacktrace”** anlamına geliyor ve yığın izi tarayıcıda **gösterilmeye devam ediyor**. Önlem kâğıt üstünde doğru görünüp gerçekte işe yaramayacaktı. | Yüksek | Doğru değer `"none"`. `.streamlit/config.toml` dosyasına bu değer yazıldı; Faz 2 raporu v1.2'de düzeltildi. TC-30 bu ayarı doğrulayacak. |
 | **RV3-02** | Faz 2 KK-2, 2.3 | PR şablonu ekip kararıyla kaldırıldı. | Düşük | KK-2: CI yeşil + 1 onay + ilgili issue. İnceleme noktaları rehber olarak kaldı (Faz 2 v1.1). |
 | **RV3-03** | Veri modeli, RV-07 | `LoginAttempt` tablosunda denemenin hangi kullanıcı adıyla yapıldığı tutulmuyordu; var olmayan bir kullanıcı adıyla yapılan denemeler (R-02) kaydedilemiyordu. | Orta | `LoginAttempt.username` alanı eklendi. |
-| **RV3-04** | KK-2 | KK-2 “ilgili issue bağlı” şartını koyuyor, ancak depoda hiç issue yoktu. | Orta | Her use case ve iskelet için birer issue açıldı (Bölüm 3.2). |
+| **RV3-04** | KK-2 | KK-2 “ilgili issue bağlı” şartını koyuyor, ancak depoda hiç issue yoktu. | Orta | İskelet (#2) ve her use case (#3 – #9) için birer issue açıldı (Bölüm 3.3). |
 | **RV3-05** | Kurulum, KK-4 | Paket kurulabilir tanımlanmamıştı; Streamlit uygulaması `servisflow` paketini içe aktaramıyordu. | Orta | `pyproject.toml`'a derleme sistemi eklendi; kurulum `pip install -e .` ile yapılır. |
 | **RV3-06** | Faz 2 sunumu | Öğretim elemanının Faz 2 sunumundaki geri bildirimi | — | `[Ekip tarafından eklenecek]` |
 
@@ -119,19 +119,19 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 | UC | Sahibi | Issue | Dal | Durum |
 | :--- | :--- | :--- | :--- | :--- |
-| UC-01 | Ahmet Karavuş | `[#]` | `uc-01-oturum` | Bekliyor |
-| UC-02 | Alperhan Karşı | `[#]` | `uc-02-musteri` | Bekliyor |
-| UC-03 | Mehmet Kenan Dilberoğlu | `[#]` | `uc-03-arac` | Bekliyor |
-| UC-04 | Ilgın Çutok | `[#]` | `uc-04-ziyaret` | Bekliyor |
-| UC-05 | Kerem Erden | `[#]` | `uc-05-is-listesi` | Bekliyor |
-| UC-06 | Mehmet Ünsalan | `[#]` | `uc-06-tamamlama` | Bekliyor |
-| UC-07 | Ahmet Selim Dostabakan | `[#]` | `uc-07-rapor` | Bekliyor |
+| UC-01 | Ahmet Karavuş | #3 | `uc-01-oturum` | Bekliyor |
+| UC-02 | Alperhan Karşı | #4 | `uc-02-musteri` | Bekliyor |
+| UC-03 | Mehmet Kenan Dilberoğlu | #5 | `uc-03-arac` | Bekliyor |
+| UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Bekliyor |
+| UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Bekliyor |
+| UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Bekliyor |
+| UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Bekliyor |
 
 ### 3.4. Kod İnceleme Kayıtları
 
 | PR | Konu | Yazan | İnceleyen | Bulgular | Düzeltme |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `[#]` | İskelet | Ahmet Selim Dostabakan (YZ destekli) | `[ ]` | `[ ]` | `[ ]` |
+| `[#]` | İskelet (#2) | Ahmet Selim Dostabakan (YZ destekli) | `[ ]` | `[ ]` | `[ ]` |
 
 ---
 
