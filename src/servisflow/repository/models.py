@@ -2,6 +2,8 @@
 
 Kayıtlar silinmez (BR-08), bu yüzden ilişkilerde silme zinciri yoktur.
 İş kuralları `services` katmanında doğrulanır; buradaki kısıtlar son savunma hattıdır.
+SQLite sütun türünü ve `String(n)` uzunluğunu dayatmaz; bu yüzden tür ve uzunluk
+sınırları açık CHECK kısıtlarıyla yazılmıştır (ADR-002, PR #10 incelemesi).
 """
 
 from datetime import datetime, timezone
@@ -42,12 +44,16 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(50), unique=True)
     password_hash: Mapped[str] = mapped_column(String(255))
-    failed_attempts: Mapped[int] = mapped_column(default=0)
     last_login_at: Mapped[datetime | None] = mapped_column(UTCDateTime)
 
 
 class LoginAttempt(Base):
-    """Giriş denemeleri; başarılı girişte son hatalı denemeler listelenir (RV-07)."""
+    """Giriş denemeleri; başarılı girişte son hatalı denemeler listelenir (RV-07).
+
+    Hatalı deneme sayısı yalnızca buradan, kullanıcı adına göre hesaplanır; var olan
+    ve olmayan kullanıcı adları aynı şekilde sayılır, böylece CAPTCHA'nın çıkması
+    kullanıcı adının var olup olmadığını sızdırmaz (R-02, ADR-006).
+    """
 
     __tablename__ = "login_attempt"
 
@@ -59,6 +65,15 @@ class LoginAttempt(Base):
 
 class Customer(Base):
     __tablename__ = "customer"
+    __table_args__ = (
+        CheckConstraint(
+            "length(trim(full_name)) BETWEEN 1 AND 100", name="ck_customer_name"
+        ),
+        CheckConstraint(
+            "phone IS NULL OR (length(phone) = 10 AND phone NOT GLOB '*[^0-9]*')",
+            name="ck_customer_phone",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     full_name: Mapped[str] = mapped_column(String(100))
@@ -70,6 +85,14 @@ class Customer(Base):
 
 class Vehicle(Base):
     __tablename__ = "vehicle"
+    __table_args__ = (
+        CheckConstraint(
+            "length(plate_normalized) BETWEEN 5 AND 9", name="ck_vehicle_plate"
+        ),
+        CheckConstraint(
+            "length(brand) <= 50 AND length(model) <= 50", name="ck_vehicle_text"
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     customer_id: Mapped[int] = mapped_column(ForeignKey("customer.id"))
@@ -83,6 +106,11 @@ class Vehicle(Base):
 
 class ServiceVisit(Base):
     __tablename__ = "service_visit"
+    __table_args__ = (
+        CheckConstraint(
+            "complaint IS NULL OR length(complaint) <= 500", name="ck_visit_complaint"
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     vehicle_id: Mapped[int] = mapped_column(ForeignKey("vehicle.id"))
@@ -97,9 +125,12 @@ class ServiceTask(Base):
     __tablename__ = "service_task"
     __table_args__ = (
         CheckConstraint(
-            f"amount_kurus BETWEEN {MIN_AMOUNT_KURUS} AND {MAX_AMOUNT_KURUS}",
+            f"typeof(amount_kurus) = 'integer'"
+            f" AND amount_kurus BETWEEN {MIN_AMOUNT_KURUS} AND {MAX_AMOUNT_KURUS}",
             name="ck_task_amount_range",
         ),
+        CheckConstraint("length(trim(title)) BETWEEN 1 AND 100", name="ck_task_title"),
+        CheckConstraint("note IS NULL OR length(note) <= 500", name="ck_task_note"),
         CheckConstraint(
             f"(status = '{TASK_DONE}' AND completed_at IS NOT NULL)"
             f" OR (status = '{TASK_TODO}' AND completed_at IS NULL)",

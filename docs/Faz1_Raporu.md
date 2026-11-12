@@ -283,8 +283,8 @@ stateDiagram-v2
 
 | Varlık | Temel alanlar | İlişki |
 | :--- | :--- | :--- |
-| `User` | `id`, `username`, `password_hash`, `failed_attempts`, `last_login_at` | Tek kayıt: işletme sorumlusu |
-| `LoginAttempt` | `id`, `attempted_at`, `success` | Giriş denemeleri; başarılı girişte son hatalı denemeler listelenir |
+| `User` | `id`, `username`, `password_hash`, `last_login_at` | Tek kayıt: işletme sorumlusu |
+| `LoginAttempt` | `id`, `username`, `attempted_at`, `success` | Giriş denemeleri; başarılı girişte son hatalı denemeler listelenir |
 | `Customer` | `id`, `full_name`, `phone`, `created_at` | 1 müşteri → N araç |
 | `Vehicle` | `id`, `customer_id`, `plate_normalized` (tekil), `brand`, `model` | 1 araç → N ziyaret |
 | `ServiceVisit` | `id`, `vehicle_id`, `opened_at`, `complaint` | 1 ziyaret → N iş |

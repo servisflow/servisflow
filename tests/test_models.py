@@ -105,3 +105,56 @@ def test_saat_dilimsiz_zaman_kaydedilemez(session):
 def test_servis_hatalari_ortak_tabandan_turer():
     for error in (errors.ValidationError, errors.NotFoundError, errors.ConflictError):
         assert issubclass(error, errors.ServisFlowError)
+
+
+# --- PR #10 kod incelemesi (Kerem Erden) bulgularına ait testler ----------
+
+
+def test_kesirli_tutar_reddedilir(session, clock):
+    """SQLite tür dayatmaz; 1600.5 kuruş `real` olarak saklanmamalı (ADR-003)."""
+    visit = _visit(session, clock)
+    session.add(_task(visit, clock, amount_kurus=1600.5))
+    with pytest.raises(IntegrityError):
+        session.flush()
+
+
+@pytest.mark.parametrize("title", ["", "   ", "x" * 101])
+def test_gecersiz_is_basligi_reddedilir(session, clock, title):
+    visit = _visit(session, clock)
+    session.add(_task(visit, clock, title=title))
+    with pytest.raises(IntegrityError):
+        session.flush()
+
+
+def test_uzun_is_notu_reddedilir(session, clock):
+    visit = _visit(session, clock)
+    session.add(_task(visit, clock, note="x" * 501))
+    with pytest.raises(IntegrityError):
+        session.flush()
+
+
+@pytest.mark.parametrize("full_name", ["", "  ", "x" * 101])
+def test_gecersiz_musteri_adi_reddedilir(session, clock, full_name):
+    session.add(Customer(full_name=full_name, created_at=clock.now()))
+    with pytest.raises(IntegrityError):
+        session.flush()
+
+
+@pytest.mark.parametrize("phone", ["532123456", "53212345678", "532-123-456"])
+def test_gecersiz_telefon_reddedilir(session, clock, phone):
+    session.add(Customer(full_name="Can GPT", phone=phone, created_at=clock.now()))
+    with pytest.raises(IntegrityError):
+        session.flush()
+
+
+@pytest.mark.parametrize("plate", ["34AB", "Y" * 21])
+def test_gecersiz_uzunlukta_plaka_reddedilir(session, clock, plate):
+    with pytest.raises(IntegrityError):
+        _visit(session, clock, plate=plate)
+
+
+def test_uzun_sikayet_reddedilir(session, clock):
+    visit = _visit(session, clock)
+    visit.complaint = "x" * 501
+    with pytest.raises(IntegrityError):
+        session.flush()
