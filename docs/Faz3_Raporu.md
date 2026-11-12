@@ -64,7 +64,7 @@ Karar kayıtları Nygard'ın ADR biçiminin sadeleştirilmiş hâliyle yazılmı
 *Bağlam:* Çift tıklamada çift sayım (R-07). *Karar:* Tamamlama tek koşullu güncellemedir: `UPDATE ... SET status='DONE', completed_at=:now WHERE id=:id AND status='TODO'`. Etkilenen satır 0 ise işlem değişiklik yapmadan başarılı sayılır. Dönem toplamı bir sayaçta tutulmaz, her seferinde sorgudan hesaplanır. *Reddedilen:* Önce oku sonra yaz (iki istek arasında yarış durumu), toplam sayacı (geri almada tutarsızlık).
 
 **ADR-006 — Kimlik doğrulama.**
-*Karar:* Parolalar `argon2-cffi` ile Argon2id özetlenir. 3 hatalı girişten sonra CAPTCHA istenir; CAPTCHA uygulamanın kendi sunucusunda üretilir. Hatalı deneme sayısı yalnızca `LoginAttempt` tablosundan, kullanıcı adına göre hesaplanır; var olan ve olmayan kullanıcı adları aynı şekilde sayılır. Böylece CAPTCHA'nın çıkması kullanıcı adının var olup olmadığını sızdırmaz (R-02; PR #10 incelemesi). *Açık konu:* CAPTCHA'nın biçimi (görsel metin mi, basit işlem sorusu mu) UC-01 PR'ında Ahmet Karavuş tarafından seçilip bu kayda eklenecek. *Reddedilen:* Dış CAPTCHA servisi (veri üçüncü tarafa gider, internet gerekir).
+*Karar:* Parolalar `argon2-cffi` ile Argon2id özetlenir. 3 hatalı girişten sonra CAPTCHA istenir; CAPTCHA uygulamanın kendi sunucusunda üretilir. Hatalı deneme sayısı yalnızca `LoginAttempt` tablosundan, kullanıcı adına göre hesaplanır; var olan ve olmayan kullanıcı adları aynı şekilde sayılır. Böylece CAPTCHA'nın çıkması kullanıcı adının var olup olmadığını sızdırmaz (R-02; PR #10 incelemesi). CAPTCHA biçimi: sunucuda `secrets` ile üretilen iki sayının toplama sorusu (görsel metin, ek kütüphane ve erişilebilirlik sorunu getirdiği için seçilmedi). Olmayan kullanıcı adında da aynı süre harcansın diye parola sahte bir Argon2 özetiyle karşılaştırılır. *Reddedilen:* Dış CAPTCHA servisi (veri üçüncü tarafa gider, internet gerekir).
 
 **ADR-007 — Hata gösterimi.**
 *Karar:* Servis katmanı yalnızca `ServisFlowError` türevlerini (`ValidationError`, `NotFoundError`, `ConflictError`) kullanıcıya gösterilebilir mesajla fırlatır; arayüz bunları kullanıcıya gösterir. Diğer tüm hatalarda tarayıcıda genel mesaj görünür (`showErrorDetails = "none"`, RV3-01), ayrıntı yalnızca sunucu konsoluna yazılır. Ayar hem `.streamlit/config.toml` dosyasında hem de uygulama kodunda (`st.set_option`) verilir; böylece uygulama proje kökü dışından başlatılsa da geçerlidir (PR #10 incelemesi).
@@ -78,11 +78,11 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 | UC | Modül | Fonksiyonlar |
 | :--- | :--- | :--- |
-| UC-01 | `services/auth.py` | `create_owner(session, username, password)` · `captcha_required(session, username) -> bool` · `authenticate(session, clock, username, password, captcha_passed) -> User` · `failed_attempts_since_last_login(session, username) -> list[datetime]` |
+| UC-01 | `services/auth.py` | `create_owner(session, username, password)` · `captcha_required(session, username) -> bool` · `authenticate(session, clock, username, password, captcha_passed) -> User` · `failed_attempts_since_last_login(session, username) -> list[datetime]` · `new_captcha() -> tuple[str, int]` · `check_captcha(expected, given) -> bool` |
 | UC-02 | `services/customers.py` | `normalize_phone(raw) -> str \| None` · `create_customer(session, clock, full_name, phone=None) -> Customer` · `update_customer(session, customer_id, full_name, phone)` · `search_customers(session, text) -> list[Customer]` |
 | UC-03 | `services/vehicles.py` | `normalize_plate(raw) -> str` · `register_vehicle(session, customer_id, plate, brand, model) -> Vehicle` · `find_vehicle_by_plate(session, plate) -> Vehicle` |
 | UC-04 | `services/visits.py` | `open_visit(session, clock, vehicle_id, complaint=None) -> ServiceVisit` |
-| UC-05 | `services/tasks.py` | `to_kurus(amount: Decimal) -> int` · `add_task(session, clock, visit_id, title, amount, note=None) -> ServiceTask` · `update_task(session, task_id, title, amount, note)` · `delete_task(session, task_id)` |
+| UC-05 | `services/tasks.py` | `to_kurus(amount: Decimal) -> int` · `add_task(session, clock, visit_id, title, amount, note=None) -> ServiceTask` · `update_task(session, task_id, title, amount, note)` · `delete_task(session, task_id)` · `visit_totals(session, visit_id) -> tuple[int, int]` |
 | UC-06 | `services/completion.py` | `complete_task(session, clock, task_id) -> ServiceTask` · `undo_completion(session, clock, task_id) -> ServiceTask` |
 | UC-07 | `services/reports.py` | `period_bounds(kind, day) -> tuple[datetime, datetime]` · `gross_total(session, start, end) -> int` · `vehicle_history(session, vehicle_id) -> list[ServiceVisit]` |
 
@@ -119,11 +119,11 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 | UC | Sahibi | Issue | Dal | Durum |
 | :--- | :--- | :--- | :--- | :--- |
-| UC-01 | Ahmet Karavuş | #3 | `uc-01-oturum` | Bekliyor |
-| UC-02 | Alperhan Karşı | #4 | `uc-02-musteri` | Bekliyor |
-| UC-03 | Mehmet Kenan Dilberoğlu | #5 | `uc-03-arac` | Bekliyor |
-| UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Bekliyor |
-| UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Bekliyor |
+| UC-01 | Ahmet Karavuş | #3 | `uc-01-oturum` | Servis katmanı PR'da (Kerem Erden, YZ destekli); giriş ekranı ayrı PR'da |
+| UC-02 | Alperhan Karşı | #4 | `uc-02-musteri` | Servis katmanı PR'da (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
+| UC-03 | Mehmet Kenan Dilberoğlu | #5 | `uc-03-arac` | Servis katmanı PR'da (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
+| UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Servis katmanı PR'da (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
+| UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Servis katmanı PR'da; arayüz UC-01 sonrası |
 | UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Bekliyor |
 | UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Servis katmanı PR’da; arayüz UC-01 sonrası |
 

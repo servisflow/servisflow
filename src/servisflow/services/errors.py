@@ -15,3 +15,7 @@ class NotFoundError(ServisFlowError):
 
 class ConflictError(ServisFlowError):
     """İstek mevcut durumla çelişiyor (ör. aynı plaka, DONE işi düzenleme)."""
+
+
+class AuthenticationError(ServisFlowError):
+    """Giriş reddedildi. Mesaj, kullanıcı adının var olup olmadığını sızdırmaz."""
