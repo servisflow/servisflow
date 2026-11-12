@@ -1,6 +1,7 @@
 """Ekranların ortak parçaları: veritabanı bağlantısı ve servis çağrısı sarmalayıcısı."""
 
 from collections.abc import Callable
+from decimal import Decimal
 from typing import TypeVar
 
 import streamlit as st
@@ -50,3 +51,47 @@ def run(action: Callable[[Session], T], success: str | None = None) -> T | None:
     if success:
         st.success(success)
     return result
+
+
+def tl(kurus: int) -> str:
+    """Kuruşu Türkçe biçimde TL olarak yazar: 160050 → '1.600,50 TL'.
+
+    Hesap Decimal ile yapılır; float yalnızca yuvarlama hatası getirirdi (ADR-003).
+    """
+    text = f"{Decimal(kurus) / 100:,.2f}"
+    return text.replace(",", "_").replace(".", ",").replace("_", ".") + " TL"
+
+
+def amount_from_input(value: float) -> Decimal:
+    """`st.number_input` float döndürür; `Decimal(str(x))` girilen değeri korur.
+
+    `Decimal(1.15)` 1.1499999... olurdu; `str(1.15)` ise '1.15' verir (ADR-003).
+    """
+    return Decimal(str(value))
+
+
+FLASH_OK = "flash_ok"
+FLASH_ERROR = "flash_error"
+
+
+def act(action: Callable[[Session], object], success: str) -> None:
+    """Düğmeyle tetiklenen işlemi yürütür ve sayfayı yeniden çizer.
+
+    Liste, işlemden önce çizildiği için sonuç ancak yeniden çizimde görünür;
+    mesaj oturum durumunda taşınır ve `show_flash` ile sayfanın başında gösterilir.
+    """
+    try:
+        with session_scope() as session:
+            action(session)
+    except ServisFlowError as exc:
+        st.session_state[FLASH_ERROR] = str(exc)
+    else:
+        st.session_state[FLASH_OK] = success
+    st.rerun()
+
+
+def show_flash() -> None:
+    if FLASH_ERROR in st.session_state:
+        st.error(st.session_state.pop(FLASH_ERROR))
+    if FLASH_OK in st.session_state:
+        st.success(st.session_state.pop(FLASH_OK))

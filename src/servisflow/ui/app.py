@@ -9,7 +9,7 @@ import streamlit as st
 from servisflow.services import auth
 from servisflow.services.clock import ISTANBUL, SystemClock
 from servisflow.services.errors import ServisFlowError
-from servisflow.ui import customers_page
+from servisflow.ui import customers_page, reports_page, visits_page
 from servisflow.ui.common import new_session, session_scope
 
 USER_KEY = "user_id"
@@ -21,6 +21,8 @@ ERROR_KEY = "login_error"
 PAGES = {
     "Ana sayfa": None,
     "Müşteriler ve araçlar": customers_page.render,
+    "Servis ve işler": visits_page.render,
+    "Rapor": reports_page.render,
 }
 
 
