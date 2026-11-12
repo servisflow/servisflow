@@ -21,25 +21,25 @@ from servisflow.services.errors import ConflictError, NotFoundError, ValidationE
 
 TITLE_MAX = 100  # R-11
 NOTE_MAX = 500  # R-11
-_KURUS = Decimal("0.01")
 
 
 def to_kurus(amount: Decimal | int) -> int:
-    """TL tutarını tamsayı kuruşa çevirir (BR-01, ADR-003).
+    """Tam TL tutarını tamsayı kuruşa çevirir (BR-01 v1.4, ADR-003, KR-08).
 
-    `float` kabul edilmez: 1.15 bellekte 1.1499999... olarak durur. Arayüz
-    sayıyı `Decimal(str(deger))` ile çevirip gönderir. Metin ayrıştırılmaz (RV-05).
+    Tutar kuruşsuz girilir; saklama yine kuruştur, böylece ileride kuruş gerekirse
+    şema değişmez. `float` kabul edilmez (yuvarlama hatası taşır); metin
+    ayrıştırılmaz (RV-05).
     """
     if isinstance(amount, bool) or not isinstance(amount, (Decimal, int)):
         raise ValidationError("Tutar sayı olarak girilmelidir.")
     value = Decimal(amount)
     if not value.is_finite():
         raise ValidationError("Tutar geçerli bir sayı olmalıdır.")
-    if value != value.quantize(_KURUS):
-        raise ValidationError("Tutar en fazla 2 ondalık basamak içerebilir.")
-    kurus = int(value / _KURUS)
+    if value != value.to_integral_value():
+        raise ValidationError("Tutar kuruşsuz, tam TL olarak girilmelidir.")
+    kurus = int(value) * 100
     if not MIN_AMOUNT_KURUS <= kurus <= MAX_AMOUNT_KURUS:
-        raise ValidationError("Tutar 0,01 TL ile 1.000.000,00 TL arasında olmalıdır.")
+        raise ValidationError("Tutar 1 TL ile 1.000.000 TL arasında olmalıdır.")
     return kurus
 
 

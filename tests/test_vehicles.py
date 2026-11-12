@@ -109,3 +109,43 @@ def test_plakayla_arac_bulunur(session, customer):
 def test_kayitsiz_plaka_bulunamaz(session):
     with pytest.raises(NotFoundError):
         vehicles.find_vehicle_by_plate(session, "06AB123")
+
+
+# --- Plaka önerisi: KR-09 (Faz 3 incelemesi, Selim ve Kerem) ------------------
+
+
+@pytest.fixture
+def plakalar(session, customer):
+    for plate in ["06BUM00", "06BA1234", "06AB123", "34BJK321"]:
+        vehicles.register_vehicle(session, customer.id, plate, "Ford", "Transit")
+
+
+def _plates(result):
+    return [v.plate_normalized for v in result]
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("06 b", ["06BA1234", "06BUM00"]),  # inceleme örneği
+        ("06 bu", ["06BUM00"]),
+        ("06bum00", ["06BUM00"]),  # tam plaka da bulunur
+        ("06", ["06AB123", "06BA1234", "06BUM00"]),
+        ("34 bjk", ["34BJK321"]),
+        ("35", []),
+    ],
+)
+def test_plaka_basindan_oneri(session, plakalar, text, expected):
+    assert _plates(vehicles.suggest_plates(session, text)) == expected
+
+
+@pytest.mark.parametrize("text", ["", "  ", "0", "%", "06_", "06 ş"])
+def test_oneri_icin_gecersiz_veya_kisa_girdi_bos_doner(session, plakalar, text):
+    """En az 2 karakter; % ve _ joker karakter gibi davranmaz; Türkçe harf eşleşmez."""
+    assert vehicles.suggest_plates(session, text) == []
+
+
+def test_oneri_sayisi_sinirli(session, customer):
+    for n in range(15):
+        vehicles.register_vehicle(session, customer.id, f"06AB{100 + n}", "F", "T")
+    assert len(vehicles.suggest_plates(session, "06")) == vehicles.SUGGEST_LIMIT

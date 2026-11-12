@@ -7,24 +7,23 @@ tamamlanır. Tamamlanan iş düzenlenemez ve silinemez (BR-02); ✓ yalnızca ay
 
 import streamlit as st
 
-from servisflow.services import completion, tasks, vehicles, visits
+from servisflow.services import completion, tasks, visits
 from servisflow.services.clock import ISTANBUL, SystemClock
 from servisflow.services.reports import vehicle_history
-from servisflow.ui.common import act, amount_from_input, run, show_flash, tl
+from servisflow.ui.common import (
+    act,
+    amount_from_input,
+    plate_matches,
+    run,
+    show_flash,
+    tl,
+)
 
 DONE = "DONE"
 
 
 def _when(moment) -> str:
     return f"{moment.astimezone(ISTANBUL):%d.%m.%Y %H:%M}"
-
-
-def _vehicle(session, plate: str) -> dict:
-    v = vehicles.find_vehicle_by_plate(session, plate)
-    return {
-        "id": v.id,
-        "label": f"{v.plate_normalized} · {v.brand} {v.model} · {v.customer.full_name}",
-    }
 
 
 def _history(session, vehicle_id: int) -> list[dict]:
@@ -95,10 +94,9 @@ def _edit_task_form(task: dict) -> None:
         title = st.text_input("Başlık", value=task["title"], key=f"is_baslik_{tid}")
         amount = st.number_input(
             "Tutar (TL)",
-            min_value=0.0,
-            value=task["amount"] / 100,
-            step=0.01,
-            format="%.2f",
+            min_value=0,
+            value=task["amount"] // 100,
+            step=1,
             key=f"is_tutar_{tid}",
         )
         note = st.text_input("Not", value=task["note"] or "", key=f"is_not_{tid}")
@@ -119,9 +117,8 @@ def _new_task_form(visit_id: int) -> None:
         title = st.text_input("Başlık", key=f"yeni_is_baslik_{visit_id}")
         amount = st.number_input(
             "Tutar (TL)",
-            min_value=0.0,
-            step=0.01,
-            format="%.2f",
+            min_value=0,
+            step=1,
             key=f"yeni_is_tutar_{visit_id}",
         )
         note = st.text_input("Not (isteğe bağlı)", key=f"yeni_is_not_{visit_id}")
@@ -152,13 +149,24 @@ def _visit_block(visit: dict, latest: bool) -> None:
 def render() -> None:
     st.header("Servis ve işler")
     show_flash()
-    plate = st.text_input("Araç plakası", key="ziyaret_plaka")
+    plate = st.text_input(
+        "Araç plakası (ilk karakterler yeterli, ör. 06 b)", key="ziyaret_plaka"
+    )
     if not plate.strip():
         st.caption("Plaka girin; araç Müşteriler ve araçlar ekranından eklenir.")
         return
-    vehicle = run(lambda s: _vehicle(s, plate))
-    if vehicle is None:
+    matches = plate_matches(plate)
+    if not matches:
+        st.warning("Bu başlangıçla kayıtlı plaka yok (en az 2 karakter girin).")
         return
+    vehicle = matches[0]
+    if len(matches) > 1:
+        vehicle = st.selectbox(
+            f"Eşleşen {len(matches)} araç",
+            matches,
+            format_func=lambda m: m["label"],
+            key="ziyaret_secim",
+        )
     st.subheader(vehicle["label"])
     _new_visit_form(vehicle["id"])
     history = run(lambda s: _history(s, vehicle["id"])) or []

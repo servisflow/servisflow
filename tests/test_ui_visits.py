@@ -87,7 +87,26 @@ def test_plaka_ile_arac_bulunur(page):
 
 def test_kayitsiz_plaka_mesaji(page):
     at = page.text_input(key="ziyaret_plaka").input("06AB123").run()
-    assert "kayıtlı araç yok" in at.error[0].value
+    assert "kayıtlı plaka yok" in at.warning[0].value
+
+
+def test_kr09_plaka_basindan_tek_eslesme_dogrudan_secilir(page):
+    at = page.text_input(key="ziyaret_plaka").input("34 b").run()
+    assert "34BJK321" in at.subheader[0].value
+    assert not at.selectbox
+
+
+def test_kr09_birden_fazla_eslesmede_secim_listesi(page, db_url):
+    def add(s):
+        owner = customers.create_customer(s, SystemClock(), "Işıl Çağrı")
+        vehicles.register_vehicle(s, owner.id, "34BUM00", "Ford", "Transit")
+
+    _query(db_url[0], add)
+    at = page.text_input(key="ziyaret_plaka").input("34 b").run()
+    box = at.selectbox(key="ziyaret_secim")
+    assert [o.split(" · ")[0] for o in box.options] == ["34BJK321", "34BUM00"]
+    at = box.select_index(1).run()
+    assert "Işıl Çağrı" in at.subheader[0].value
 
 
 def test_ziyaret_acilir_tarih_sistemce(page, db_url):
@@ -100,23 +119,25 @@ def test_ziyaret_acilir_tarih_sistemce(page, db_url):
 
 
 def test_is_eklenir_tutar_kurusa_dogru_cevrilir(page, db_url):
-    """1600,50 TL → 160050 kuruş; float → Decimal(str(x)) dönüşümü (TC-16)."""
-    at = _add_task(_open_visit(page), "Ön sol teker", 1600.50, "Bilya, keçe")
+    """1600 TL → 160000 kuruş (TC-16, BR-01 v1.4)."""
+    at = _add_task(_open_visit(page), "Ön sol teker", 1600, "Bilya, keçe")
     assert at.success[0].value == "İş eklendi."
-    assert _tasks(db_url[0]) == [("Ön sol teker", 160050, "TODO")]
+    assert _tasks(db_url[0]) == [("Ön sol teker", 160000, "TODO")]
     text = " ".join(m.value for m in at.markdown)
-    assert "Açık işler: **1.600,50 TL** · Tamamlanan: **0,00 TL**" in text
+    assert "Açık işler: **1.600 TL** · Tamamlanan: **0 TL**" in text
 
 
-def test_float_tuzagi_1_15(page, db_url):
-    """1.15 float olarak 1.1499... saklanır; arayüz yine 115 kuruş kaydetmeli."""
-    _add_task(_open_visit(page), "Vida", 1.15)
-    assert _tasks(db_url[0]) == [("Vida", 115, "TODO")]
+def test_tutar_alani_tam_tl_ve_bir_tl_adim(page):
+    """KR-08: kuruş girilmez; alan tam sayı tutar ve 1 TL adımla artar."""
+    at = _open_visit(page)
+    box = [n for n in at.number_input if n.key.startswith("yeni_is_tutar_")][0]
+    assert box.step == 1
+    assert isinstance(box.value, int)
 
 
 def test_sifir_tutar_reddedilir(page, db_url):
-    at = _add_task(_open_visit(page), "Yağ", 0.0)
-    assert "0,01 TL" in at.error[0].value
+    at = _add_task(_open_visit(page), "Yağ", 0)
+    assert "1 TL ile 1.000.000 TL" in at.error[0].value
     assert _tasks(db_url[0]) == []
 
 
@@ -129,7 +150,7 @@ def test_tik_tamamlar_ve_toplamlari_gunceller(page, db_url):
     statuses = [s for *_, s in _tasks(db_url[0])]
     assert statuses == ["DONE", "TODO"]
     text = " ".join(m.value for m in at.markdown)
-    assert "Açık işler: **1.200,00 TL** · Tamamlanan: **1.600,00 TL**" in text
+    assert "Açık işler: **1.200 TL** · Tamamlanan: **1.600 TL**" in text
     # Tamamlanan iş için ✓ ve düzenleme yok, yalnızca geri al var (BR-02)
     assert not [b for b in at.button if b.key == f"tik_{tid}"]
     assert not [b for b in at.button if b.key == f"sil_{tid}"]
@@ -164,20 +185,21 @@ def test_todo_is_duzenlenir_ve_silinir(page, db_url):
     at = _add_task(_open_visit(page), "Yağ", 1200.0)
     tid = _tasks_ids(db_url[0])[0]
     at.text_input(key=f"is_baslik_{tid}").input("Yağ + filtre")
-    at.number_input(key=f"is_tutar_{tid}").set_value(1350.5)
+    at.number_input(key=f"is_tutar_{tid}").set_value(1350)
     at = _button(at, "Güncelle").click().run()
     assert at.success[0].value == "İş güncellendi."
-    assert _tasks(db_url[0]) == [("Yağ + filtre", 135050, "TODO")]
+    assert _tasks(db_url[0]) == [("Yağ + filtre", 135000, "TODO")]
     at = at.button(key=f"sil_{tid}").click().run()
     assert at.success[0].value == "İş silindi."
     assert _tasks(db_url[0]) == []
 
 
 def test_tl_bicimi():
-    assert (tl(160050), tl(1), tl(100_000_000)) == (
+    assert (tl(160000), tl(100), tl(100_000_000), tl(160050)) == (
+        "1.600 TL",
+        "1 TL",
+        "1.000.000 TL",
         "1.600,50 TL",
-        "0,01 TL",
-        "1.000.000,00 TL",
     )
 
 

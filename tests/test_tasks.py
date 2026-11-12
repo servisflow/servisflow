@@ -36,18 +36,17 @@ def _mark_done(session, task, clock):
     session.flush()
 
 
-# --- to_kurus: BR-01 ---------------------------------------------------------
+# --- to_kurus: BR-01 (v1.4, KR-08: yalnızca tam TL) ---------------------------
 
 
 @pytest.mark.parametrize(
     "amount, kurus",
     [
-        (Decimal("0.01"), 1),  # TC-15 alt sınır
-        (Decimal("1000000.00"), 100_000_000),  # TC-15 üst sınır
-        (Decimal("1600.50"), 160_050),  # TC-16
-        (Decimal("1600.5"), 160_050),
-        (Decimal("1200"), 120_000),
-        (1200, 120_000),  # tam TL
+        (Decimal("1"), 100),  # TC-15 alt sınır
+        (Decimal("1000000"), 100_000_000),  # TC-15 üst sınır
+        (Decimal("1600"), 160_000),  # TC-16
+        (Decimal("1600.00"), 160_000),  # sıfır ondalık tam TL'dir
+        (1200, 120_000),
     ],
 )
 def test_gecerli_tutar_kurusa_cevrilir(amount, kurus):
@@ -58,10 +57,11 @@ def test_gecerli_tutar_kurusa_cevrilir(amount, kurus):
     "amount",
     [
         Decimal("0"),  # TC-15
-        Decimal("0.00"),
         Decimal("-5"),
-        Decimal("1000000.01"),  # TC-15
-        Decimal("10.005"),  # TC-16: ikiden fazla ondalık
+        Decimal("1000001"),  # TC-15
+        Decimal("1600.50"),  # TC-16: kuruş girilemez (KR-08)
+        Decimal("0.99"),
+        Decimal("1000000.01"),
         Decimal("NaN"),
         Decimal("Infinity"),
     ],
@@ -73,18 +73,16 @@ def test_gecersiz_tutar_reddedilir(amount):
 
 # 1.5 ikili sistemde tam saklanır; yalnızca 1.15 ile test, float yasağını değil
 # ondalık kontrolünü sınardı (mutasyon testiyle bulundu).
-@pytest.mark.parametrize("amount", [1.5, 1.15, "1600,50", "abc", True, None])
+@pytest.mark.parametrize("amount", [1.5, 1.15, 1200.0, "1600", "abc", True, None])
 def test_decimal_olmayan_tutar_reddedilir(amount):
     """float yuvarlama hatası taşır, metin ayrıştırılmaz (RV-05), bool sayı değildir."""
     with pytest.raises(ValidationError):
         tasks.to_kurus(amount)
 
 
-def test_float_tuzagi_decimal_strden_kurulmali():
-    """1.15 float olarak 1.149999... saklanır; Decimal(float) bu hatayı taşır."""
-    with pytest.raises(ValidationError):
-        tasks.to_kurus(Decimal(1.15))
-    assert tasks.to_kurus(Decimal(str(1.15))) == 115
+def test_kurus_hata_mesaji_tam_tl_ister():
+    with pytest.raises(ValidationError, match="tam TL"):
+        tasks.to_kurus(Decimal("1600.50"))
 
 
 # --- add_task: FR-05 ---------------------------------------------------------
@@ -150,12 +148,10 @@ def test_gecersiz_tutarla_hicbir_sey_eklenmez(session, clock, visit):
 def test_todo_is_duzenlenir(session, clock, visit):
     task = tasks.add_task(session, clock, visit.id, "Yağ", Decimal("1200"))
     clock.advance(timedelta(hours=1))
-    updated = tasks.update_task(
-        session, task.id, "Yağ + filtre", Decimal("1350.50"), ""
-    )
+    updated = tasks.update_task(session, task.id, "Yağ + filtre", Decimal("1350"), "")
     assert (updated.title, updated.amount_kurus, updated.note) == (
         "Yağ + filtre",
-        135_050,
+        135_000,
         None,
     )
     assert updated.created_at != clock.now()  # düzenleme oluşturma zamanını değiştirmez

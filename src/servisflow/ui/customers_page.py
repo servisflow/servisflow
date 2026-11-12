@@ -4,7 +4,7 @@ import streamlit as st
 
 from servisflow.services import customers, vehicles
 from servisflow.services.clock import SystemClock
-from servisflow.ui.common import run
+from servisflow.ui.common import plate_matches, run
 
 
 def _customer_data(customer) -> dict:
@@ -38,17 +38,16 @@ def _new_customer_form() -> None:
 
 
 def _plate_search() -> None:
-    plate = st.text_input("Plakayla araç bul", key="plaka_ara")
+    plate = st.text_input(
+        "Plakayla araç bul (ilk karakterler yeterli)", key="plaka_ara"
+    )
     if not plate.strip():
         return
-
-    def find(session):
-        v = vehicles.find_vehicle_by_plate(session, plate)
-        return f"{v.plate_normalized} · {v.brand} {v.model} · {v.customer.full_name}"
-
-    found = run(find)
-    if found:
-        st.info(found)
+    matches = plate_matches(plate)
+    if not matches:
+        st.warning("Bu başlangıçla kayıtlı plaka yok (en az 2 karakter girin).")
+    for match in matches:
+        st.info(match["label"])
 
 
 def _edit_form(row: dict) -> None:

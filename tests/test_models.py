@@ -59,7 +59,7 @@ def test_ayni_plaka_ikinci_kez_eklenemez(session, clock):
         session.flush()
 
 
-@pytest.mark.parametrize("amount", [0, 100_000_001])
+@pytest.mark.parametrize("amount", [0, 99, 150, 160_050, 100_000_100])
 def test_tutar_sinirlarin_disinda_reddedilir(session, clock, amount):
     visit = _visit(session, clock)
     session.add(_task(visit, clock, amount_kurus=amount))
@@ -67,7 +67,7 @@ def test_tutar_sinirlarin_disinda_reddedilir(session, clock, amount):
         session.flush()
 
 
-@pytest.mark.parametrize("amount", [1, 100_000_000])
+@pytest.mark.parametrize("amount", [100, 100_000_000])
 def test_tutar_sinirlarinda_kabul_edilir(session, clock, amount):
     visit = _visit(session, clock)
     session.add(_task(visit, clock, amount_kurus=amount))
