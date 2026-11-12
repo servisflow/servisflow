@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.1 — geliştirme sürüyor · `main` dal koruması 12.11.2026'da açıldı
+- **Doküman Durumu:** Taslak v0.2 — yedi use case ve arayüz birleşti; DIR puanları ekip onayında · `main` dal koruması 12.11.2026'da açıldı
 - **Başlangıç:** 12.11.2026 · **Teslim:** Hafta 9 (izlence)
 - **Koordinasyon:** Üye 5 (Kerem Erden, Yazılım Mimarı) · Üye 7 (Ahmet Selim Dostabakan, QA) · Üye 6 (Mehmet Ünsalan)
 
@@ -170,26 +170,113 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 ---
 
-## 4. Faz 3 İçin DIR Beyanı (Taslak)
+## 4. Faz 3 İçin DIR Beyanı (Taslak — puanlar ekip onayında)
+
+Faz 3'te YZ, kodlamanın ve kod incelemesinin her aşamasında kullanıldı. Kullanım beş iş paketine ayrıldı. **Puanları ekip verir** (CLAUDE.md); aşağıdaki gerekçeler gerçekleşen işlemlere dayanır, yapılmayanlar “eksik” olarak yazılmıştır. Her paketin sonundaki “YZ önerisi”, ekibin değerlendirmesi için bir başlangıç noktasıdır.
+
+Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 raporları, iş kuralları (BR), test senaryoları (TC), ADR'ler ve kalite eşikleri verildi; `CLAUDE.md` ile kurallar kalıcı hâle getirildi: kapsam genişletilmeyecek, yapılmamış doğrulama yapılmış gibi yazılmayacak, puanları ve kararları YZ vermeyecek, kişisel veri depoya girmeyecek. YZ ajan olarak çalıştı (dosya düzenleme, test çalıştırma, dal ve PR açma); `main` korumalı olduğu için her değişiklik bir insanın onayıyla birleşti (A9, B6).
 
 ### 4.1. İş Paketi 4 — Kod İskeleti ve Mimari Karar Kayıtları
 
 | Alan | İçerik |
 | :--- | :--- |
 | **Tarih** | 12.11.2026 |
-| **YZ aracı** | Anthropic Claude (Claude Code) |
-| **İlgili üyeler** | Ahmet Selim Dostabakan (yönlendirme); inceleme: `[PR'ı inceleyen üye]` |
-| **Görevin YZ kullanım sınırı** | Yeşil (kod geliştirme ve teknik dokümantasyon). Mimari kararların kabulü ve kod incelemesi ekibe aittir. |
+| **YZ aracı** | Anthropic Claude (Claude Code, ajan) |
+| **İlgili üyeler** | Ahmet Selim Dostabakan (yönlendirme); inceleme: Kerem Erden (#10) |
+| **Görevin YZ kullanım sınırı** | Yeşil (kod geliştirme, teknik dokümantasyon). Mimari kararların kabulü ve kod incelemesi ekibe aittir. |
+| **Üretilen çıktı** | Veri modeli, saat sağlayıcısı, veritabanı katmanı, hata türleri, ilk testler; ADR-001 – ADR-008; servis sözleşmesi (2.3); dal koruması (#10, #12) |
 
-**Süreç özeti:** YZ'ye onaylı Faz 1 ve Faz 2 raporları, veri modeli, kalite kapıları ve önceki mimari kararlar verildi. YZ veri modelini, saat sağlayıcısını, veritabanı katmanını ve testlerini yazdı; kalite kapılarını yerelde çalıştırdı; Streamlit yapılandırma seçeneğini kurulu sürümün kendi belgesinden kontrol ederek Faz 2'deki yanlış değeri (RV3-01) tespit etti.
-
-| Boyut | Puan | Gerekçe |
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | |
-| **I** | `[ekip]` | |
-| **R** | `[ekip]` | PR incelemesinden sonra yazılacak. |
+| **D** | `[ekip]` | Ortak bağlam (A1 – A4, A6). Mimari seçenekler (2.1) ve reddedilen alternatifler ADR'lerde yazıldı (A8: karar ekipte). |
+| **I** | `[ekip]` | YZ, Streamlit'in kurulu sürüm belgesine bakarak Faz 2'deki yanlış `showErrorDetails` değerini buldu (RV3-01). İnceleyen dört bulgu (KR-01 – KR-04) çıkardı; bulgular önce yerelde yeniden üretildi, sonra düzeltildi (B1, B3). Farklı modeller karşılaştırılmadı (B4 eksik). |
+| **R** | `[ekip]` | İnceleyen iskeleti kendi ortamında çalıştırıp kalite kapılarını tekrarladı ve SQLite'ın tür ile uzunluk dayatmadığını canlı denemeyle gösterdi (C3, C4). Her bulgu için test eklendi. İnceleme yorumunun taslağı YZ ile hazırlandı (İP-8). |
 
----
+*YZ önerisi:* D 4 · I 4 · R 4 → 51.
+
+### 4.2. İş Paketi 5 — UC-07 Servis Katmanı ve `CLAUDE.md`
+
+| Alan | İçerik |
+| :--- | :--- |
+| **Tarih** | 12.11.2026 |
+| **YZ aracı** | Anthropic Claude (Claude Code, ajan) |
+| **İlgili üyeler** | Ahmet Selim Dostabakan (yönlendirme); inceleme: Kerem Erden (#11, #13, #17) |
+| **Görevin YZ kullanım sınırı** | Yeşil |
+| **Üretilen çıktı** | `services/reports.py` ve testleri (TC-24 – TC-29); `CLAUDE.md` |
+
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
+| :--- | :---: | :--- |
+| **D** | `[ekip]` | Ortak bağlam; gün sınırları ve yarı açık aralık ADR-004/005 ile önceden tanımlıydı (A2, A6). |
+| **I** | `[ekip]` | İnceleyenin önerileri (KR-05 – KR-07) uygulandı; N+1 bulgusu önce ölçülerek yeniden üretildi (B1, B2). |
+| **R** | `[ekip]` | İnceleyen test planında olmayan bir durumu (yıl geçişindeki hafta) ayrıca denedi (C3, C4). **Eksik / süreç notu:** Düzeltme commit'i #11 birleştikten sonra geldiği için main'e girmedi; durum fark edilip #17 ile taşındı (3.4). |
+
+*YZ önerisi:* D 4 · I 4 · R 4 → 51.
+
+### 4.3. İş Paketi 6 — UC-01 – UC-06 Servis Katmanı
+
+| Alan | İçerik |
+| :--- | :--- |
+| **Tarih** | 12.11.2026 |
+| **YZ aracı** | Anthropic Claude (Claude Code, ajan) |
+| **İlgili üyeler** | Kerem Erden (yönlendirme); inceleme: Ahmet Selim Dostabakan (#15, #16). UC-01 – UC-04 ve UC-06'nın sahipleri bu işe katılmadı (bkz. Not). |
+| **Görevin YZ kullanım sınırı** | Yeşil. CAPTCHA biçimi (ADR-006 açık konusu) YZ tarafından önerildi; UC-01 sahibiyle teyidi açık. |
+| **Üretilen çıktı** | `auth.py`, `customers.py`, `vehicles.py`, `visits.py`, `tasks.py`, `completion.py`, kurulum betiği ve testleri (şu an 162 test; #15 ve #16 birleştiğinde 142) |
+
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
+| :--- | :---: | :--- |
+| **D** | `[ekip]` | Ortak bağlam; her UC için BR ve TC'ler kabul ölçütü olarak verildi (A2, A6). Güvenlik beklentileri (R-01, R-02, KR-03) açıkça tanımlıydı (A4, A9). |
+| **I** | `[ekip]` | Testler koddan önce yazıldı ve kırmızı görüldü. **Mutasyon testi:** Kod 22 yerden kasten bozuldu; ilk turda 4 mutant yaşadı (float yasağı, `user is not None` koruması, TC-32 üst sınırı, bir eşdeğer mutant). Üçü için test eklendi, eşdeğer mutantın gerekçesi yazıldı (B1, B3). YZ'nin kendi rapor metnine yazdığı ekip içi ayrım ifadesi push'tan önce düzeltildi (B3, gizlilik). B4 eksik. |
+| **R** | `[ekip]` | Kalite kapıları yerelde ve CI'da; TC-23 iki gerçek veritabanı bağlantısıyla sınandı (C3). **Eksik / süreç notu:** #15'in ilk incelemesi PR açıklamasının yeniden yazımıydı; ikinci onay ve #16 onayı, YZ'nin hazırladığı metinle verildi (İP-8). Kodun içerik denetimi insan tarafından ortak incelemede (13.11.2026) uygulama üzerinden yapıldı; satır satır kod okuması sınırlı kaldı (C4 kısmen, C6 kısmen: üyeler kendi UC dosyalarını sözlü savunma için okuyor). |
+
+*YZ önerisi:* D 4 · I 4 · R 3 → 38.
+
+**Not (dengeli katkı):** UC-01 – UC-04 sahipleri GitHub organizasyonunda olmadığı ve UC-06 sahibi bu dönemde ulaşılamadığı için servis katmanları Kerem Erden yönlendirmesiyle yazıldı. Arayüz ve kullanıcı kabul testi (TC-31) sahiplerinin katkısına açıktır.
+
+### 4.4. İş Paketi 7 — Arayüz (Streamlit ekranları) ve KR-08, KR-09
+
+| Alan | İçerik |
+| :--- | :--- |
+| **Tarih** | 12 – 13.11.2026 |
+| **YZ aracı** | Anthropic Claude (Claude Code, ajan; gerçek tarayıcı denemesi için Playwright) |
+| **İlgili üyeler** | Kerem Erden (yönlendirme); inceleme: Ahmet Selim Dostabakan (#18, #19, #20); ortak inceleme: Kerem Erden ve Ahmet Selim Dostabakan |
+| **Görevin YZ kullanım sınırı** | Yeşil. BR-01 değişikliği (tam TL) ekip kararıdır. |
+| **Üretilen çıktı** | Giriş, müşteri/araç, servis ve işler, rapor ekranları; 34 arayüz testi (AppTest) |
+
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
+| :--- | :---: | :--- |
+| **D** | `[ekip]` | Ortak bağlam; ekranların yalnızca servisleri çağırması (ADR-001) ve hata gösterimi (ADR-007) sınır olarak verildi (A2, A4). |
+| **I** | `[ekip]` | YZ'nin ilk taslağındaki iki hata testlerle bulundu ve düzeltildi (başarısız girişin çift sayılması, CAPTCHA alanının geç çıkması). Ortak incelemede ekip iki kullanılabilirlik bulgusu çıkardı (KR-08, KR-09) ve kuruşun kaldırılması kararını verdi (B3, A8). Plaka listesi için YZ'nin ilk çözümü (tam eşleşme, ardından bulanık süzgeç) ekip örneğiyle (`06 b`) reddedildi; süzgeç seçenekleri gerçek tarayıcıda karşılaştırıldı (B2, B4 kısmen: model değil yöntem karşılaştırması). |
+| **R** | `[ekip]` | Her ekran AppTest ile ve gerçek tarayıcıda uçtan uca çalıştırıldı (C3). **Ortak inceleme (13.11.2026):** temiz kurulum, tüm testler, uygulama ekran paylaşımında birlikte denendi; Windows'taki kurulum hatası bulunup belgelendi (C4). **Eksik / süreç notu:** #18 ve #19 onayları içerik denetimi olmadan verildi (3.4); içerik denetimi ortak incelemede yapıldı. |
+
+*YZ önerisi:* D 4 · I 5 · R 3 → 48. (I için 5'in dayanağı: ekip örneğiyle YZ çözümünün iki kez reddedilmesi ve alternatiflerin karşılaştırılması; ekip 4'ü de seçebilir.)
+
+### 4.5. İş Paketi 8 — Kod İncelemesi Desteği
+
+| Alan | İçerik |
+| :--- | :--- |
+| **Tarih** | 12 – 13.11.2026 |
+| **YZ aracı** | Anthropic Claude (Claude Cowork oturumu: Kerem Erden; Claude Code oturumu: Kerem Erden) |
+| **İlgili üyeler** | Kerem Erden (#10, #11 incelemeleri); Ahmet Selim Dostabakan (#15 – #20 onayları) |
+| **Görevin YZ kullanım sınırı** | Sarı (koşullu). İnceleme yorumunun taslağı YZ'den alınabilir; yorumdaki her doğrulama iddiası inceleyenin kendi yaptığı işleme dayanmalıdır. |
+| **Üretilen çıktı** | #10 ve #11 inceleme yorumlarının taslağı; #15, #16, #17, #18, #20 onay metinlerinin taslağı ve inceleyenin çalıştıracağı komut listesi; #19 için doldurulacak şablon |
+
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
+| :--- | :---: | :--- |
+| **D** | `[ekip]` | YZ'den, yorumda yalnızca inceleyenin gerçekten yaptığı işlemlerin yazılması istendi; taslaklarla birlikte çalıştırılacak komutlar verildi (A4, A6). |
+| **I** | `[ekip]` | #10 ve #11'de YZ'nin bulguları inceleyen tarafından kendi ortamında tekrarlandı (B1). #18 – #19 sonrasında süreç değiştirildi: hazır metin yerine kontrol listesi, ardından doğrulanabilir şablon verildi (B3). |
+| **R** | `[ekip]` | **Eksik:** #18'de onay, PR açıldıktan 51 saniye sonra ve CI bitmeden gönderildi; #19'da şablon doldurulmadan gönderildi. Bu iki onayın metni gerçekleşmemiş doğrulamaları içeriyor. Durum 3.4'te süreç notu olarak kaydedildi; içerik denetimi 13.11.2026'daki ortak incelemede yapıldı ve iki bulgu üretti (KR-08, KR-09). #20 onayında inceleyen kendi cümlesini ekledi. |
+
+*YZ önerisi:* D 3 · I 3 · R 2 → 14 (Bant 2). Bu paket, Faz 3'ün en zayıf noktasıdır ve öyle beyan edilmelidir; yüksek puan yasak kullanımı uygun hâle getirmediği gibi, düşük puan da dürüst beyanın değerini azaltmaz.
+
+### 4.6. Özet Beyan Tablosu
+
+| Üretilen artifact & YZ aracı | Kullanım amacı | İnsan müdahalesi ve düzeltme | Doğrulama yöntemi |
+| :--- | :--- | :--- | :--- |
+| İskelet, ADR / Claude Code | Veri modeli, katmanlar, mimari kayıtlar | KR-01 – KR-04 bulguları ve düzeltmeleri | İnceleyenin kendi ortamında çalıştırması, canlı deneme, CI |
+| UC-07 servisi / Claude Code | Dönemsel rapor | KR-05 – KR-07 | Yıl geçişi haftasının ek denemesi, sorgu sayısı ölçümü |
+| UC-01 – UC-06 servisleri / Claude Code | İş kuralları | Mutasyonla bulunan test açıkları kapatıldı; gizlilik ifadesi düzeltildi | 162 test, mutasyon testi, CI, ortak inceleme |
+| Arayüz / Claude Code, Playwright | Ekranlar | KR-08 (tam TL, ekip kararı), KR-09 (plaka önerisi); iki hata testlerle düzeltildi | AppTest, gerçek tarayıcı, ekran paylaşımlı ortak inceleme |
+| İnceleme yorumları / Claude Cowork, Claude Code | Yorum taslağı | Hazır metin yerine kontrol listesi ve şablona geçildi | **Kısmen:** #18, #19 onayları doğrulama içermiyor (3.4) |
 
 ## 5. Kaynaklar (Faz 3)
 
@@ -197,4 +284,7 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 2. **SQLAlchemy 2.1 belgeleri**, ORM bildirimsel eşleme ve `TypeDecorator`.
 3. **Streamlit belgeleri**, yapılandırma seçeneği `client.showErrorDetails` ve `streamlit.testing.v1.AppTest`.
 4. **argon2-cffi belgeleri** ve **OWASP Password Storage Cheat Sheet**.
-5. **Anthropic Claude (Claude Code)**, 12.11.2026; kullanım Bölüm 4'te beyan edilmiştir.
+5. **Anthropic Claude (Claude Code, Claude Cowork)**, 12 – 13.11.2026; kullanım Bölüm 4'te beyan edilmiştir.
+6. **Streamlit belgeleri**, `st.selectbox` (`filter_mode`) ve `streamlit.testing.v1.AppTest`.
+7. **Playwright belgeleri**, Chromium ile tarayıcı otomasyonu.
+8. **DeMillo, R. A., Lipton, R. J., & Sayward, F. G. (1978).** Hints on Test Data Selection: Help for the Practicing Programmer. *Computer, 11*(4), 34–41. Mutasyon testinin kaynağı. `[ekip: birincil kaynaktan doğrulanacak, C1]`
