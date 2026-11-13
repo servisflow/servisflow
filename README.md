@@ -165,7 +165,9 @@ Tarayıcıda `http://localhost:8501` açılır: giriş → **Müşteriler ve ara
 
 ### ☁️ Bulutta çalıştırma (Streamlit Community Cloud)
 
-Uygulama [Streamlit Community Cloud](https://share.streamlit.io) üzerinde de çalışır (Faz 4 - iv):
+**Canlı sürüm:** https://servisflow.streamlit.app/ (yalnızca uydurma verilerle deneyin; veriler kalıcı değildir)
+
+Kendi kopyanızı yayınlamak için (Faz 4 - iv):
 
 1. share.streamlit.io'ya GitHub hesabıyla girin → **Create app** → depo `servisflow/servisflow`, dal `main`, ana dosya `streamlit_app.py`.
 2. **Advanced settings** → Python 3.12; **Secrets** alanına sorumlu hesabını yazın (parola depoya girmez):

@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.3 — McCabe (#22) ve TC-30 (#23) tamam; devreye alma yöntemi (Streamlit Community Cloud) eklendi; TC-31 yürütüldü (14.11.2026), bulunan H4-02 düzeltildi; bulut yayını sürüyor
+- **Doküman Durumu:** Taslak v0.4 — McCabe (#22) ve TC-30 (#23) tamam; TC-31 yürütüldü, bulunan H4-02 düzeltildi (#24); uygulama Streamlit Community Cloud'da yayında (14.11.2026)
 - **Başlangıç:** 13.11.2026 · **Teslim:** Hafta 12 (izlence)
 
 | Yönerge maddesi | Bu belgedeki karşılığı |
@@ -21,7 +21,7 @@ Faz 3 Raporu (v0.3) ve kod üzerinde açık kalan maddeler:
 | No | Konu | Kaynak | Durum |
 | :--- | :--- | :--- | :--- |
 | RV4-01 | `create_all` var olan veritabanına yeni kısıt eklemez; eski yerel `servisflow.db` dosyaları silinmeli. Göç (migration) aracı kapsam dışı. | #12, #20 incelemeleri | Açık; devreye alma talimatına yazılacak (Bölüm 4) |
-| RV4-02 | Plaka seçim listesinde boşluksuz yazım (`06b`) eşleşmiyor; yalnızca boşluklu yazım (`06 b`) çalışıyor. | KR-09 | Açık; kullanıcı testinde (TC-31) gözlenecek |
+| RV4-02 | Plaka seçim listesinde boşluksuz yazım (`06b`) eşleşmiyor; yalnızca boşluklu yazım (`06 b`) çalışıyor. | KR-09 | TC-31'de gözlenmedi: boşluksuz `54tty` yazımında araç listede çıktı. Kapandı. |
 | RV4-03 | ADR-006 CAPTCHA biçimi (toplama sorusu) UC-01 sahibiyle teyit edilmedi. | #15 incelemesi | Açık |
 | RV4-04 | Kaynakçadaki mutasyon testi makalesi birincil kaynaktan doğrulanmadı. | Faz 3, Kaynaklar | Açık (`[ekip]`) |
 | RV4-05 | NFR-01 hedefini (McCabe ≤ 7) aşan iki fonksiyon. | Bu belge, Bölüm 3 | **Kapandı** (3.3) |
@@ -64,15 +64,15 @@ Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi 
 
 | # | Görev | Beklenen | Gözlenen | Yardım gerekti mi? |
 | :---: | :--- | :--- | :--- | :---: |
-| 1 | `sorumlu` hesabıyla giriş yap | Ana sayfa açılır | `[ekip]` | `[ekip]` |
-| 2 | Yeni müşteri ekle: “Ali Deneme”, 05001112233 | “Müşteri kaydedildi.” | `[ekip]` | `[ekip]` |
-| 3 | Bu müşteriye araç ekle: 34 ABC 123, Fiat Egea | “Araç kaydedildi.”, araç tabloda | `[ekip]` | `[ekip]` |
-| 4 | Servis ve işler ekranında plaka listesine önce `34a`, sonra `34 a` yazıp aracı seç | `34 a` ile araç listede çıkar; `34a` sonucu not edilir (RV4-02) | `[ekip]` | `[ekip]` |
-| 5 | Şikâyet “Frenden ses geliyor” ile ziyaret aç | “Ziyaret açıldı”, tarih sistemden gelir | `[ekip]` | `[ekip]` |
-| 6 | İki iş ekle: “Ön balata değişimi” 1500 TL, “Yağ değişimi” 1200 TL | Açık işler: 2.700 TL | `[ekip]` | `[ekip]` |
-| 7 | Balata işini ✓ ile tamamla | Açık 1.200 TL · Tamamlanan 1.500 TL | `[ekip]` | `[ekip]` |
-| 8 | Rapor ekranında bugünün günlük toplamına bak | 1.500 TL | `[ekip]` | `[ekip]` |
-| 9 | Çıkış yap | Giriş ekranına dönülür | `[ekip]` | `[ekip]` |
+| 1 | `sorumlu` hesabıyla giriş yap | Ana sayfa açılır | — | — |
+| 2 | Yeni müşteri ekle: “Ali Deneme”, 05001112233 | “Müşteri kaydedildi.” | — | — |
+| 3 | Bu müşteriye araç ekle: 34 ABC 123, Fiat Egea | “Araç kaydedildi.”, araç tabloda | — | — |
+| 4 | Servis ve işler ekranında plaka listesine önce `34a`, sonra `34 a` yazıp aracı seç | `34 a` ile araç listede çıkar; `34a` sonucu not edilir (RV4-02) | — | — |
+| 5 | Şikâyet “Frenden ses geliyor” ile ziyaret aç | “Ziyaret açıldı”, tarih sistemden gelir | — | — |
+| 6 | İki iş ekle: “Ön balata değişimi” 1500 TL, “Yağ değişimi” 1200 TL | Açık işler: 2.700 TL | — | — |
+| 7 | Balata işini ✓ ile tamamla | Açık 1.200 TL · Tamamlanan 1.500 TL | — | — |
+| 8 | Rapor ekranında bugünün günlük toplamına bak | 1.500 TL | — | — |
+| 9 | Çıkış yap | Giriş ekranına dönülür | — | — |
 
 **Yürütme (14.11.2026):** Kerem Erden yönetti; Ahmet Selim Dostabakan ve Mehmet Ünsalan izledi.
 
@@ -87,7 +87,7 @@ Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi 
   - işi ✓ ile tamamladı,
   - haftalık rapora baktı.
 - **Rapor kontrolü:** Haftalık toplam 10.300 TL göründü. Bu tutar, rapor tablosundaki üç tamamlanmış işin toplamıdır: önceki denemelerden 100 TL ve 10.000 TL, katılımcının işinden 200 TL. Toplam ile satırlar tutarlı.
-- **RV4-02 (`54tty` boşluksuz yazım):** Katılımcı denedi; sonuç `[ekip]`.
+- **RV4-02 (`54tty` boşluksuz yazım):** Katılımcı denedi; araç listede çıktı.
 
 **Sonuç:**
 
@@ -111,6 +111,7 @@ Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi 
 | :--- | :--- | :--- | :--- | :--- |
 | #22 | McCabe ölçümü ve iyileştirme, rapor taslağı | Kerem Erden (YZ destekli) | Mehmet Ünsalan | Kerem Erden'in bilgisayarında ekran paylaşımıyla birlikte çalıştırıldı: 247 test geçti; `radon cc` en yüksek 6, `render` 9 → 3, `search_customers` 8 → 6. Onaylandı ve birleştirildi. |
 | #23 | TC-30: veritabanına erişilemezken genel hata mesajı | Kerem Erden (YZ destekli) | Mehmet Ünsalan | Kerem Erden'in bilgisayarında ekran paylaşımıyla birlikte çalıştırıldı: `tests/test_ui_errors.py` 2 test geçti; veritabanı yolu bilerek bozulmuş uygulamada sayfada yalnızca Türkçe genel mesaj göründü, Traceback yoktu; hata ayrıntısı (SQLAlchemy `OperationalError`, e3q8) yalnızca terminalde göründü. Onaylandı ve birleştirildi. |
+| #24 | Devreye alma (bulut), TC-31 sonucu, H4-02 düzeltmesi | Kerem Erden (YZ destekli) | Mehmet Ünsalan | Kerem Erden'in ekran paylaşımıyla, Ahmet Selim Dostabakan ile birlikte yönlendirilerek incelendi: `test_ui_customers` ve `test_ui_deploy` 14 test geçti; H4-02 uygulamada denendi: başka müşteri seçildiğinde form seçilen müşterinin bilgilerini gösteriyor, Murat seçiliyken “Güncelle” Ahmet'in kaydını bozmadı. Onaylandı ve birleştirildi. |
 
 ---
 
@@ -193,7 +194,14 @@ Ek olarak uygulama yerelde `streamlit run streamlit_app.py` ile, sır dosyasınd
 
 ### 4.4. Yayın Kaydı
 
-`[ekip: yayınlayan üye, tarih, adres, ilk açılış gözlemi]`
+| Alan | Kayıt |
+| :--- | :--- |
+| **Adres** | https://servisflow.streamlit.app/ |
+| **Tarih** | 14.11.2026 |
+| **Yayınlayan** | Kerem Erden |
+| **Ayarlar** | Depo `servisflow/servisflow`, dal `main`, ana dosya `streamlit_app.py`; sorumlu hesabı bulutun sır ayarında |
+| **Karşılaşılan engel** | İlk denemede GitHub “not authorized” hatası verdi: `servisflow` organizasyonunda üçüncü taraf uygulama (OAuth App) erişim kısıtlaması açıktı. Kısıtlama tümden kaldırılmadı; yalnızca Streamlit'e organizasyon erişimi verildi (en az yetki ilkesi). Erişimi organizasyon sahibi Kerem Erden verdi (GitHub, OAuth uygulama ayarı, “Grant”). |
+| **İlk açılış gözlemi** | Giriş ekranı açıldı; sır ayarında tanımlanan kullanıcı adı ve parolayla giriş yapıldı (hesap sırlardan oluşturuldu). |
 
 ---
 
