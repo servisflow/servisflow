@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.4 — McCabe (#22) ve TC-30 (#23) tamam; TC-31 yürütüldü, bulunan H4-02 düzeltildi (#24); uygulama Streamlit Community Cloud'da yayında (14.11.2026)
+- **Doküman Durumu:** Taslak v0.5 — DIR İP-9 ve İP-10 ekip puanları işlendi; McCabe (#22) ve TC-30 (#23) tamam; TC-31 yürütüldü, bulunan H4-02 düzeltildi (#24); uygulama Streamlit Community Cloud'da yayında (14.11.2026)
 - **Başlangıç:** 13.11.2026 · **Teslim:** Hafta 12 (izlence)
 
 | Yönerge maddesi | Bu belgedeki karşılığı |
@@ -205,7 +205,7 @@ Ek olarak uygulama yerelde `streamlit run streamlit_app.py` ile, sır dosyasınd
 
 ---
 
-## 5. Faz 4 İçin DIR Beyanı (Taslak)
+## 5. Faz 4 İçin DIR Beyanı
 
 ### 5.1. İş Paketi 9 — McCabe Ölçümü ve İyileştirme
 
@@ -213,31 +213,35 @@ Ek olarak uygulama yerelde `streamlit run streamlit_app.py` ile, sır dosyasınd
 | :--- | :--- |
 | **Tarih** | 13.11.2026 |
 | **YZ aracı** | Anthropic Claude (Claude Code, ajan) |
-| **İlgili üyeler** | Kerem Erden (yönlendirme); inceleme: `[PR'ı inceleyen üye]` |
+| **İlgili üyeler** | Kerem Erden (yönlendirme); inceleme: Mehmet Ünsalan (#22) |
 | **Görevin YZ kullanım sınırı** | Yeşil (ölçüm, kod iyileştirme, teknik dokümantasyon). Ölçüm yorumunun kabulü ekibe aittir. |
 | **Üretilen çıktı** | `radon` ölçümleri, iki fonksiyonun yeniden düzenlenmesi, bu bölümün taslağı |
 
 | Boyut | Puan | Gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | |
-| **I** | `[ekip]` | |
-| **R** | `[ekip]` | PR incelemesinden sonra yazılacak. |
+| **D** | 4 | Eşik ve hedef önceden tanımlıydı (NFR-01: CC ≤ 10, hedef ≤ 7); ölçüm aracı CI'da zorunluydu (`xenon`) (A2, A6). |
+| **I** | 4 | YZ ölçümü yaptı ve hedefi aşan iki fonksiyonu böldü; bedelini (MI 45,9 → 44,6) kendisi raporladı. Ekip iyileştirmeyi birlikte tartıştı (Kerem Erden'in beyanı) (B3). Farklı modeller karşılaştırılmadı (B4 eksik). |
+| **R** | 4 | Mehmet Ünsalan, Kerem Erden'in ekran paylaşımında 247 testi ve `radon cc` çıktısını birlikte çalıştırdı: en yüksek CC 6, `render` 9 → 3, `search_customers` 8 → 6 (C3, C4). |
 
-### 5.2. İş Paketi 10 — Devreye Alma (Bulut) ve TC-31 Hazırlığı
+**Skor (ekip kararı):** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3**. *(YZ önerisi: D 4 · I 3 · R 4 → 38; ekip tartışması kayda geçtikten sonra I 3 → 4.)*
+
+### 5.2. İş Paketi 10 — Devreye Alma (Bulut), TC-31 ve H4-02
 
 | Alan | İçerik |
 | :--- | :--- |
 | **Tarih** | 13.11.2026 |
 | **YZ aracı** | Anthropic Claude (Claude Code, ajan) |
-| **İlgili üyeler** | Kerem Erden (yönlendirme, yöntem seçimi ekip kararı); inceleme: `[PR'ı inceleyen üye]` |
+| **İlgili üyeler** | Kerem Erden (yönlendirme, yayın), Ahmet Selim Dostabakan ve Mehmet Ünsalan (TC-31 gözlemi); inceleme: Mehmet Ünsalan (#24, #25) |
 | **Görevin YZ kullanım sınırı** | Yeşil (kod, test, teknik dokümantasyon). Yayın işlemini ve kullanıcı testini ekip yapar. |
 | **Üretilen çıktı** | `streamlit_app.py`, sırlardan hesap oluşturma ve testleri, README bulut bölümü, Bölüm 4 ve TC-31 görev kağıdı taslağı |
 
 | Boyut | Puan | Gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | |
-| **I** | `[ekip]` | |
-| **R** | `[ekip]` | PR incelemesi ve buluttaki ilk yayın gözleminden sonra yazılacak. |
+| **D** | 4 | Yöntem (Streamlit Community Cloud) ekip kararı (A8). Gizlilik sınırları önceden kondu: parola depoya girmez, testlerde yalnızca uydurma veri kullanılır (A7). |
+| **I** | 4 | Ekip, YZ'nin TC-31 planını değiştirdi: uygulayan geliştirici yerine ekip dışı katılımcı oldu (B3). Yayın ekranındaki yanlış ana dosya yolu yayından önce düzeltildi. OAuth kısıtlamasında kısıtlama kaldırılmadı, yalnızca Streamlit'e izin verildi (en az yetki). H4-02 önce testle yeniden üretildi, sonra düzeltildi (B1). Farklı modeller karşılaştırılmadı (B4 eksik). |
+| **R** | 4 | Ekip dışı katılımcı gerçek bir hata buldu (H4-02) (C3). Düzeltme, ekran paylaşımında Ahmet Selim Dostabakan ve Mehmet Ünsalan'ın yönlendirmesiyle uygulamada yeniden denendi (C4). Canlı sitede giriş ekranı ve sırlardaki hesapla giriş doğrulandı. **Eksik:** Canlı sitede tam akış (müşteri → rapor) denenmedi. |
+
+**Skor (ekip kararı):** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3**. *(YZ önerisi: D 4 · I 4 · R 4 → 51. Canlı sitede tam akış denenirse R 5 → 64.)*
 
 ---
 
