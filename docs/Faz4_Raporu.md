@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.3 — McCabe (#22) ve TC-30 (#23) tamam; devreye alma yöntemi (Streamlit Community Cloud) ve TC-31 planı (ekip dışı katılımcı) eklendi; yayın ve kullanıcı testi sürüyor
+- **Doküman Durumu:** Taslak v0.3 — McCabe (#22) ve TC-30 (#23) tamam; devreye alma yöntemi (Streamlit Community Cloud) eklendi; TC-31 yürütüldü (14.11.2026), bulunan H4-02 düzeltildi; bulut yayını sürüyor
 - **Başlangıç:** 13.11.2026 · **Teslim:** Hafta 12 (izlence)
 
 | Yönerge maddesi | Bu belgedeki karşılığı |
@@ -34,7 +34,7 @@ Faz 3 Raporu (v0.3) ve kod üzerinde açık kalan maddeler:
 
 ### 2.1. Test Senaryolarının Karşılanma Durumu
 
-Faz 2 test planındaki 32 senaryonun 31'i otomatik testlerle karşılanıyor (pytest; arayüz için Streamlit AppTest). Toplam 256 test (devreye alma testleri dahil, Bölüm 4.2), `ui` hariç satır ve dal kapsaması %100 (NFR-02).
+Faz 2 test planındaki 32 senaryonun 31'i otomatik testlerle (pytest; arayüz için Streamlit AppTest), TC-31 kullanıcı kabul testiyle karşılandı (2.2). Toplam 258 test (devreye alma testleri dahil, Bölüm 4.2), `ui` hariç satır ve dal kapsaması %100 (NFR-02).
 
 | Teknik | Senaryolar | Otomatik test dosyaları |
 | :--- | :--- | :--- |
@@ -44,7 +44,7 @@ Faz 2 test planındaki 32 senaryonun 31'i otomatik testlerle karşılanıyor (py
 | Beyaz kutu | TC-02, TC-13 | `test_auth`, `test_visits` |
 | Kara kutu (sistem) | TC-03, TC-14, TC-22, TC-24, TC-25, TC-27, TC-28, TC-32 | `test_ui_login`, `test_ui_customers`, `test_ui_reports`, `test_visits`, `test_reports`, `test_auth` |
 | Hata tahmini | TC-23, TC-30 | `test_completion` (iki gerçek veritabanı bağlantısı), `test_ui_errors` (erişilemeyen veritabanı) |
-| **Açık** | **TC-31** (kullanıcı kabul testi) | — |
+| Kullanıcı kabul | TC-31 | Ekip dışı katılımcıyla elle yürütüldü (2.2) |
 
 Ek olarak Faz 3'te mutasyon testi yapıldı (22 mutant; yaşayan 4 mutanttan 3'ü için test eklendi, 1'i eşdeğer) ve uygulama gerçek tarayıcıda (Playwright) uçtan uca çalıştırıldı.
 
@@ -74,13 +74,35 @@ Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi 
 | 8 | Rapor ekranında bugünün günlük toplamına bak | 1.500 TL | `[ekip]` | `[ekip]` |
 | 9 | Çıkış yap | Giriş ekranına dönülür | `[ekip]` | `[ekip]` |
 
-**Sonuç:** Süre `[ekip]` · Ölçüt karşılandı mı `[ekip]` · Takılınan adımlar ve öneriler `[ekip]` · Gözlemci notları `[ekip]`
+**Yürütme (14.11.2026):** Kerem Erden yönetti; Ahmet Selim Dostabakan ve Mehmet Ünsalan izledi.
+
+- **Plandan sapmalar:**
+  - Test yerel kurulumda yapıldı. Bulut yayını #24 birleşmeden yapılamadığı için ortam “bulut” olamadı.
+  - Katılımcı, görev kağıdındaki veriler yerine kendi uydurduğu verilerle aynı akışı yürüttü. Bu yüzden yukarıdaki tablo satır satır doldurulmadı.
+  - Veritabanında ekibin önceki denemelerinden kalan kayıtlar vardı.
+- **Yürütülen akış:** Katılımcı test hesabıyla giriş yaptı ve sırasıyla şunları yaptı:
+  - yeni müşteri ekledi (uydurma ad),
+  - bu müşteriye 54 TTY 01 plakalı (uydurma) bir araç ekledi,
+  - ziyaret açıp 200 TL tutarlı “silecek değişimi” işini ekledi,
+  - işi ✓ ile tamamladı,
+  - haftalık rapora baktı.
+- **Rapor kontrolü:** Haftalık toplam 10.300 TL göründü. Bu tutar, rapor tablosundaki üç tamamlanmış işin toplamıdır: önceki denemelerden 100 TL ve 10.000 TL, katılımcının işinden 200 TL. Toplam ile satırlar tutarlı.
+- **RV4-02 (`54tty` boşluksuz yazım):** Katılımcı denedi; sonuç `[ekip]`.
+
+**Sonuç:**
+
+- **Süre:** 2 dk 20 sn.
+- **Yardım:** İstenmedi.
+- **NFR-06 ölçütü** (≤ 3 dakika, yardımsız): Karşılandı.
+- **Bulgu:** H4-02 (2.3). Müşteri ekranında başka müşteri seçildiğinde düzenleme formu ilk seçilen müşterinin bilgilerinde kalıyordu.
+- **Onay:** Mehmet Ünsalan, `[ekip: PR onayı]`.
 
 ### 2.3. Bulunan Hatalar ve Düzeltmeler
 
 | No | Hata | Bulan | Düzeltme |
 | :--- | :--- | :--- | :--- |
 | H4-01 | TC-30: veritabanına erişilemezken uygulama Streamlit'in İngilizce hata kutusunu gösteriyordu (“This app has encountered an error… click on 'Manage app'”). Güvenlik gereği zaten karşılanıyordu: tarayıcıya yığın izi gitmiyordu (`stack_trace` boş), ayrıntı yalnızca sunucu konsolundaydı. Sorun kullanılabilirlikti: teknik, İngilizce ve uygulamayla ilgisiz bir yönerge. | TC-30 testi (önce kırmızı) | Veritabanı hataları (`SQLAlchemyError`) `main()` içinde yakalanıyor: kullanıcıya Türkçe genel mesaj, ayrıntı `logging` ile sunucu günlüğüne (ADR-007). İki test: giriş ekranı ve oturum açıkken işlem sırasında; ikisi de yığın izi, dosya yolu ve SQL ayrıntısının sayfada olmadığını denetler. |
+| H4-02 | Müşteri ekranında başka bir müşteri seçildiğinde düzenleme formu (ad, telefon) ilk seçilen müşterinin bilgilerini göstermeye devam ediyordu. Bu durumda “Güncelle”ye basılırsa seçili müşterinin kaydının üzerine önceki müşterinin adı ve telefonu yazılıyordu (veri bozulması). Neden: Form alanlarının anahtarı sabitti (`duz_ad`). Streamlit sabit anahtarlı alanın değerini korur ve yeni `value` değerini yok sayar. | TC-31, ekip dışı katılımcı | Alan anahtarları müşteri kimliğini içeriyor (`duz_ad_<id>`); araç ekleme alanları da öyle (yarım kalan girdi başka müşteriye taşınmasın diye). Önce hatayı yeniden üreten iki test yazıldı (kırmızı): biri formun seçilen müşteriyi göstermesini, öteki “Güncelle”nin başka müşterinin bilgisini yazmamasını denetliyor. Düzeltmeden sonra ikisi de yeşil. Diğer ekranlardaki düzenleme formları zaten iş/ziyaret kimliğiyle anahtarlanmıştı. |
 | `[ekip]` | | | |
 
 ### 2.4. Kod İnceleme Kayıtları (Faz 4)

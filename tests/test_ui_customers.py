@@ -42,6 +42,11 @@ def _rows(url, model):
     return data
 
 
+def _box(at, prefix):
+    """Seçili müşteriye ait alan; anahtar müşteri kimliğiyle biter (H4-02)."""
+    return [t for t in at.text_input if t.key.startswith(f"{prefix}_")][0]
+
+
 @pytest.fixture
 def page(db_url):
     """Giriş yapılmış kullanıcıyla müşteri ekranı."""
@@ -87,9 +92,9 @@ def test_turkce_harfle_arama(page):
 
 
 def _add_vehicle(at, plate, brand="Isuzu", model="10 Long"):
-    at.text_input(key="arac_plaka").input(plate)
-    at.text_input(key="arac_marka").input(brand)
-    at.text_input(key="arac_model").input(model)
+    _box(at, "arac_plaka").input(plate)
+    _box(at, "arac_marka").input(brand)
+    _box(at, "arac_model").input(model)
     return [b for b in at.button if b.label == "Aracı kaydet"][0].click().run()
 
 
@@ -119,7 +124,41 @@ def test_plakayla_arama_sahibini_gosterir(page):
 
 def test_musteri_guncellenir(page, db_url):
     at = _new_customer(page, "Can GPT")
-    at.text_input(key="duz_ad").input("Can Claude")
+    _box(at, "duz_ad").input("Can Claude")
     at = [b for b in at.button if b.label == "Güncelle"][0].click().run()
     assert at.success[0].value == "Müşteri güncellendi."
     assert _rows(db_url[0], Customer) == [("Can Claude", None)]
+
+
+def _select(at, url, name):
+    engine = make_engine(url)
+    with make_session_factory(engine)() as s:
+        cid = s.query(Customer).filter_by(full_name=name).one().id
+    engine.dispose()
+    return at.selectbox(key="musteri_sec").set_value(cid).run()
+
+
+@pytest.fixture
+def two_customers(page, db_url):
+    at = _new_customer(page, "Ahmet Deneme", "05001112233")
+    return _new_customer(at, "Murat Deneme", "05004445566")
+
+
+def test_h4_02_secim_degisince_form_secilen_musteriyi_gosterir(two_customers, db_url):
+    """TC-31'de bulundu: başka müşteri seçilince form önceki müşteride kalıyordu."""
+    for name, phone in (
+        ("Murat Deneme", "5004445566"),
+        ("Ahmet Deneme", "5001112233"),
+    ):
+        at = _select(two_customers, db_url[0], name)
+        assert (_box(at, "duz_ad").value, _box(at, "duz_tel").value) == (name, phone)
+
+
+def test_h4_02_guncelle_baska_musterinin_bilgisini_yazmaz(two_customers, db_url):
+    at = _select(two_customers, db_url[0], "Ahmet Deneme")
+    at = _select(at, db_url[0], "Murat Deneme")
+    at = [b for b in at.button if b.label == "Güncelle"][0].click().run()
+    assert sorted(_rows(db_url[0], Customer)) == [
+        ("Ahmet Deneme", "5001112233"),
+        ("Murat Deneme", "5004445566"),
+    ]
