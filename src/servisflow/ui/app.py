@@ -4,13 +4,18 @@ Arayüz yalnızca `services` katmanını çağırır (ADR-001). Oturum açılmad
 ekranı dışında hiçbir ekran çizilmez (FR-01, TC-03).
 """
 
+import logging
+
 import streamlit as st
+from sqlalchemy.exc import SQLAlchemyError
 
 from servisflow.services import auth
 from servisflow.services.clock import ISTANBUL, SystemClock
 from servisflow.services.errors import ServisFlowError
 from servisflow.ui import customers_page, reports_page, visits_page
-from servisflow.ui.common import new_session, session_scope
+from servisflow.ui.common import DB_ERROR_MESSAGE, new_session, session_scope
+
+logger = logging.getLogger("servisflow")
 
 USER_KEY = "user_id"
 CAPTCHA_KEY = "captcha"
@@ -115,10 +120,17 @@ def main() -> None:
     # repo kökü dışından başlatıldığında da geçerli olsun (PR #10 incelemesi).
     st.set_option("client.showErrorDetails", "none")
     st.set_page_config(page_title="ServisFlow")
-    if st.session_state.get(USER_KEY) is None:
-        login_page()
-    else:
-        app_page()
+    try:
+        if st.session_state.get(USER_KEY) is None:
+            login_page()
+        else:
+            app_page()
+    except SQLAlchemyError:
+        # TC-30: veritabanına erişilemezse kullanıcı yalnızca genel mesajı görür;
+        # ayrıntı (yığın izi, dosya yolu, SQL) yalnızca sunucu günlüğüne yazılır
+        # (ADR-007, R-08). st.rerun'un istisnası bu türden olmadığı için etkilenmez.
+        logger.exception("Veritabanı hatası")
+        st.error(DB_ERROR_MESSAGE)
 
 
 main()

@@ -18,6 +18,9 @@ from servisflow.services import vehicles
 from servisflow.services.errors import ServisFlowError
 
 T = TypeVar("T")
+DB_ERROR_MESSAGE = (
+    "Bir sorun oluştu, işlem yapılamadı. Lütfen biraz sonra tekrar deneyin."
+)
 
 
 @st.cache_resource
