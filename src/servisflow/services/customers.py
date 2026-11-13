@@ -69,6 +69,11 @@ def update_customer(
     return customer
 
 
+def _phone_matches(phone: str | None, digits: str) -> bool:
+    """Telefonda, aranan rakamlar geçiyor mu? Rakam aranmıyorsa eşleşme yok."""
+    return digits.isdigit() and phone is not None and digits in phone
+
+
 def search_customers(session: Session, text: str) -> list[Customer]:
     """Ad (Türkçe büyük/küçük harf duyarsız) veya telefonda geçen metinle arar.
 
@@ -81,6 +86,5 @@ def search_customers(session: Session, text: str) -> list[Customer]:
     return [
         c
         for c in customers
-        if query in _fold(c.full_name)
-        or (digits.isdigit() and c.phone is not None and digits in c.phone)
+        if query in _fold(c.full_name) or _phone_matches(c.phone, digits)
     ]

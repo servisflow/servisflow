@@ -87,6 +87,14 @@ def render() -> None:
     if not rows:
         st.caption("Kayıt bulunamadı.")
         return
+    _customer_table(rows)
+    row = _select_customer(rows)
+    _edit_form(row)
+    _vehicle_table(row)
+    _vehicle_form(row)
+
+
+def _customer_table(rows: list[dict]) -> None:
     st.dataframe(
         [
             {
@@ -98,6 +106,9 @@ def render() -> None:
         ],
         hide_index=True,
     )
+
+
+def _select_customer(rows: list[dict]) -> dict:
     by_id = {r["id"]: r for r in rows}
     selected = st.selectbox(
         "Müşteri seç",
@@ -105,16 +116,17 @@ def render() -> None:
         format_func=lambda i: f"{by_id[i]['name']} ({by_id[i]['phone'] or '-'})",
         key="musteri_sec",
     )
-    row = by_id[selected]
-    _edit_form(row)
-    if row["vehicles"]:
-        st.dataframe(
-            [
-                {"Plaka": v["plate"], "Marka": v["brand"], "Model": v["model"]}
-                for v in row["vehicles"]
-            ],
-            hide_index=True,
-        )
-    else:
+    return by_id[selected]
+
+
+def _vehicle_table(row: dict) -> None:
+    if not row["vehicles"]:
         st.caption("Bu müşterinin kayıtlı aracı yok.")
-    _vehicle_form(row)
+        return
+    st.dataframe(
+        [
+            {"Plaka": v["plate"], "Marka": v["brand"], "Model": v["model"]}
+            for v in row["vehicles"]
+        ],
+        hide_index=True,
+    )
