@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.3 — McCabe (#22) ve TC-30 (#23) tamam; devreye alma yöntemi (Streamlit Community Cloud) ve TC-31 planı eklendi; yayın ve kullanıcı testi sürüyor
+- **Doküman Durumu:** Taslak v0.3 — McCabe (#22) ve TC-30 (#23) tamam; devreye alma yöntemi (Streamlit Community Cloud) ve TC-31 planı (ekip dışı katılımcı) eklendi; yayın ve kullanıcı testi sürüyor
 - **Başlangıç:** 13.11.2026 · **Teslim:** Hafta 12 (izlence)
 
 | Yönerge maddesi | Bu belgedeki karşılığı |
@@ -54,10 +54,11 @@ Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi 
 
 **Plan (ekip kararı):**
 
-- **Uygulayan:** Kerem Erden · **Gözlemciler:** Ahmet Selim Dostabakan, Mehmet Ünsalan · **Onaylayan:** Mehmet Ünsalan
+- **Uygulayan:** Ekip dışından, sistemi daha önce görmemiş bir katılımcı (bir ekip üyesinin aile bireyi; kişisel bilgisi rapora yazılmaz). · **Yöneten:** Kerem Erden · **Gözlemciler:** Ahmet Selim Dostabakan, Mehmet Ünsalan · **Onaylayan:** Mehmet Ünsalan
+- **Yürütme:** Katılımcıya yalnızca görev kağıdı verilir; ekip yol göstermez. Katılımcı yardım isterse ilgili adım “yardım gerekti” olarak işaretlenir ve süre durdurulmaz.
 - **Ortam:** Bulutta yayınlanan sürüm (Bölüm 4); böylece test aynı zamanda devreye alınan sürümü doğrular.
 - **Veri:** Yalnızca uydurma veriler (gerçek müşteri, plaka veya telefon girilmez).
-- **Kısıt:** Uygulayan, geliştirme ekibinden ve sistemi tanıyan bir kişidir. Bu nedenle “yardımsız ≤ 3 dakika” ölçütü iyimser sonuç verebilir; sistemi ilk kez gören bir işletme sahibiyle yapılan bir test kadar güçlü değildir.
+- **Kısıt:** Katılımcı oto servis işletmecisi değildir; senaryodaki iş akışını (ziyaret, iş, ✓) gerçek bir işletme sahibi kadar tanımaz. Tek katılımcıyla yapılan test genellenemez.
 
 **Görev kağıdı** (süre 2. adımda başlar, 8. adımda durur):
 
