@@ -21,7 +21,7 @@ Faz 3 Raporu (v0.3) ve kod üzerinde açık kalan maddeler:
 | No | Konu | Kaynak | Durum |
 | :--- | :--- | :--- | :--- |
 | RV4-01 | `create_all` var olan veritabanına yeni kısıt eklemez; eski yerel `servisflow.db` dosyaları silinmeli. Göç (migration) aracı kapsam dışı. | #12, #20 incelemeleri | Açık; devreye alma talimatına yazılacak (Bölüm 4) |
-| RV4-02 | Plaka seçim listesinde boşluksuz yazım (`06b`) eşleşmiyor; yalnızca boşluklu yazım (`06 b`) çalışıyor. | KR-09 | Açık; kullanıcı testinde (TC-31) gözlenecek |
+| RV4-02 | Plaka seçim listesinde boşluksuz yazım (`06b`) eşleşmiyor; yalnızca boşluklu yazım (`06 b`) çalışıyor. | KR-09 | TC-31'de gözlenmedi: boşluksuz `54tty` yazımında araç listede çıktı. Kapandı. |
 | RV4-03 | ADR-006 CAPTCHA biçimi (toplama sorusu) UC-01 sahibiyle teyit edilmedi. | #15 incelemesi | Açık |
 | RV4-04 | Kaynakçadaki mutasyon testi makalesi birincil kaynaktan doğrulanmadı. | Faz 3, Kaynaklar | Açık (`[ekip]`) |
 | RV4-05 | NFR-01 hedefini (McCabe ≤ 7) aşan iki fonksiyon. | Bu belge, Bölüm 3 | **Kapandı** (3.3) |
@@ -87,7 +87,7 @@ Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi 
   - işi ✓ ile tamamladı,
   - haftalık rapora baktı.
 - **Rapor kontrolü:** Haftalık toplam 10.300 TL göründü. Bu tutar, rapor tablosundaki üç tamamlanmış işin toplamıdır: önceki denemelerden 100 TL ve 10.000 TL, katılımcının işinden 200 TL. Toplam ile satırlar tutarlı.
-- **RV4-02 (`54tty` boşluksuz yazım):** Katılımcı denedi; sonuç `[ekip]`.
+- **RV4-02 (`54tty` boşluksuz yazım):** Katılımcı denedi; araç listede çıktı.
 
 **Sonuç:**
 
@@ -200,8 +200,8 @@ Ek olarak uygulama yerelde `streamlit run streamlit_app.py` ile, sır dosyasınd
 | **Tarih** | 14.11.2026 |
 | **Yayınlayan** | Kerem Erden |
 | **Ayarlar** | Depo `servisflow/servisflow`, dal `main`, ana dosya `streamlit_app.py`; sorumlu hesabı bulutun sır ayarında |
-| **Karşılaşılan engel** | İlk denemede GitHub “not authorized” hatası verdi: `servisflow` organizasyonunda üçüncü taraf uygulama (OAuth App) erişim kısıtlaması açıktı. Kısıtlama tümden kaldırılmadı; yalnızca Streamlit'e organizasyon erişimi verildi (en az yetki ilkesi). Erişimi veren: `[ekip]` |
-| **İlk açılış gözlemi** | `[ekip: giriş ekranı, sırlardaki hesapla giriş, denenen işlem]` |
+| **Karşılaşılan engel** | İlk denemede GitHub “not authorized” hatası verdi: `servisflow` organizasyonunda üçüncü taraf uygulama (OAuth App) erişim kısıtlaması açıktı. Kısıtlama tümden kaldırılmadı; yalnızca Streamlit'e organizasyon erişimi verildi (en az yetki ilkesi). Erişimi organizasyon sahibi Kerem Erden verdi (GitHub, OAuth uygulama ayarı, “Grant”). |
+| **İlk açılış gözlemi** | Giriş ekranı açıldı; sır ayarında tanımlanan kullanıcı adı ve parolayla giriş yapıldı (hesap sırlardan oluşturuldu). |
 
 ---
 
