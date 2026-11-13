@@ -64,15 +64,15 @@ Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi 
 
 | # | Görev | Beklenen | Gözlenen | Yardım gerekti mi? |
 | :---: | :--- | :--- | :--- | :---: |
-| 1 | `sorumlu` hesabıyla giriş yap | Ana sayfa açılır | `[ekip]` | `[ekip]` |
-| 2 | Yeni müşteri ekle: “Ali Deneme”, 05001112233 | “Müşteri kaydedildi.” | `[ekip]` | `[ekip]` |
-| 3 | Bu müşteriye araç ekle: 34 ABC 123, Fiat Egea | “Araç kaydedildi.”, araç tabloda | `[ekip]` | `[ekip]` |
-| 4 | Servis ve işler ekranında plaka listesine önce `34a`, sonra `34 a` yazıp aracı seç | `34 a` ile araç listede çıkar; `34a` sonucu not edilir (RV4-02) | `[ekip]` | `[ekip]` |
-| 5 | Şikâyet “Frenden ses geliyor” ile ziyaret aç | “Ziyaret açıldı”, tarih sistemden gelir | `[ekip]` | `[ekip]` |
-| 6 | İki iş ekle: “Ön balata değişimi” 1500 TL, “Yağ değişimi” 1200 TL | Açık işler: 2.700 TL | `[ekip]` | `[ekip]` |
-| 7 | Balata işini ✓ ile tamamla | Açık 1.200 TL · Tamamlanan 1.500 TL | `[ekip]` | `[ekip]` |
-| 8 | Rapor ekranında bugünün günlük toplamına bak | 1.500 TL | `[ekip]` | `[ekip]` |
-| 9 | Çıkış yap | Giriş ekranına dönülür | `[ekip]` | `[ekip]` |
+| 1 | `sorumlu` hesabıyla giriş yap | Ana sayfa açılır | — | — |
+| 2 | Yeni müşteri ekle: “Ali Deneme”, 05001112233 | “Müşteri kaydedildi.” | — | — |
+| 3 | Bu müşteriye araç ekle: 34 ABC 123, Fiat Egea | “Araç kaydedildi.”, araç tabloda | — | — |
+| 4 | Servis ve işler ekranında plaka listesine önce `34a`, sonra `34 a` yazıp aracı seç | `34 a` ile araç listede çıkar; `34a` sonucu not edilir (RV4-02) | — | — |
+| 5 | Şikâyet “Frenden ses geliyor” ile ziyaret aç | “Ziyaret açıldı”, tarih sistemden gelir | — | — |
+| 6 | İki iş ekle: “Ön balata değişimi” 1500 TL, “Yağ değişimi” 1200 TL | Açık işler: 2.700 TL | — | — |
+| 7 | Balata işini ✓ ile tamamla | Açık 1.200 TL · Tamamlanan 1.500 TL | — | — |
+| 8 | Rapor ekranında bugünün günlük toplamına bak | 1.500 TL | — | — |
+| 9 | Çıkış yap | Giriş ekranına dönülür | — | — |
 
 **Yürütme (14.11.2026):** Kerem Erden yönetti; Ahmet Selim Dostabakan ve Mehmet Ünsalan izledi.
 
