@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.1 — geliştirme sürüyor · `main` dal koruması 12.11.2026'da açıldı
+- **Doküman Durumu:** v0.3 — yedi use case ve arayüz birleşti; DIR puanları ekipçe verildi · `main` dal koruması 12.11.2026'da açıldı
 - **Başlangıç:** 12.11.2026 · **Teslim:** Hafta 9 (izlence)
 - **Koordinasyon:** Üye 5 (Kerem Erden, Yazılım Mimarı) · Üye 7 (Ahmet Selim Dostabakan, QA) · Üye 6 (Mehmet Ünsalan)
 
@@ -117,15 +117,17 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 ### 3.3. Use Case Geliştirme Planı
 
-| UC | Sahibi | Issue | Dal | Durum |
-| :--- | :--- | :--- | :--- | :--- |
-| UC-01 | Ahmet Karavuş | #3 | `uc-01-oturum` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); giriş ekranı ayrı PR'da |
-| UC-02 | Alperhan Karşı | #4 | `uc-02-musteri` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-03 | Mehmet Kenan Dilberoğlu | #5 | `uc-03-arac` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-04 | Ilgın Çutok | #6 | `uc-04-ziyaret` | Servis katmanı #15 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-05 | Kerem Erden | #7 | `uc-05-is-listesi` | Servis katmanı #15 ile birleşti; arayüz UC-01 sonrası |
-| UC-06 | Mehmet Ünsalan | #8 | `uc-06-tamamlama` | Servis katmanı #16 ile birleşti (Kerem Erden, YZ destekli); arayüz UC-01 sonrası |
-| UC-07 | Ahmet Selim Dostabakan | #9 | `uc-07-rapor` | Servis katmanı #11 ile birleşti; KR-05 – KR-07 düzeltmeleri ayrı PR'la; arayüz UC-01 sonrası |
+| UC | Sahibi | Geliştiren | İnceleyen | Issue | Durum (main'de) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| UC-01 | Ahmet Karavuş | Kerem Erden | Ahmet Selim Dostabakan | #3 | Servis #15, giriş ekranı #18 |
+| UC-02 | Alperhan Karşı | Kerem Erden | Ahmet Selim Dostabakan | #4 | Servis #15, ekran #19 |
+| UC-03 | Mehmet Kenan Dilberoğlu | Kerem Erden | Ahmet Selim Dostabakan | #5 | Servis #15, ekran #19, plaka önerisi #20 (KR-09) |
+| UC-04 | Ilgın Çutok | Kerem Erden | Ahmet Selim Dostabakan | #6 | Servis #15, ekran #19 |
+| UC-05 | Kerem Erden | Kerem Erden | Ahmet Selim Dostabakan | #7 | Servis #15, ekran #19, tam TL #20 (KR-08) |
+| UC-06 | Mehmet Ünsalan | Kerem Erden | Ahmet Selim Dostabakan | #8 | Servis #16, ekran #19 |
+| UC-07 | Ahmet Selim Dostabakan | Ahmet Selim Dostabakan; Kerem Erden (rapor ekranı) | Kerem Erden; Ahmet Selim Dostabakan (rapor ekranı) | #9 | Servis #11, KR-05 – KR-07 #17, rapor ekranı #19 |
+
+Use case sahiplikleri değişmedi (kişi başı en az bir UC). Geliştiren sütunundaki “Kerem Erden” kayıtları YZ desteklidir (Bölüm 4, İP-6 ve İP-7). Dal adları `CLAUDE.md`'deki `uc-0X-...` biçimi yerine oturumun çalışma dalıdır.
 
 ### 3.4. Kod İnceleme Kayıtları
 
@@ -139,8 +141,8 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 | #15 | UC-01 – UC-05 servis katmanı (#3 – #7) | Kerem Erden (YZ destekli) | Ahmet Selim Dostabakan | İlk inceleme onay değil yorum olarak gönderildi ve yalnızca UC-05'i kapsıyordu (**süreç notu**). Son haldeki onay: 178 test, plaka ve telefon normalizasyonu elle denendi, CAPTCHA sayımı ve DONE kilidi kodda incelendi. Engellemeyen not: ADR-006'daki CAPTCHA biçimi UC-01 sahibiyle ekipçe teyit edilmeli. | CAPTCHA biçimi teyidi açık |
 | #16 | UC-06 servis katmanı (#8) | Kerem Erden (YZ destekli) | Ahmet Selim Dostabakan | Onaylandı: 188 test; koşullu UPDATE, İstanbul gün sınırı ve K1 – K4 karar tablosu incelendi. | — |
 | #17 | KR-05 – KR-07'nin main'e taşınması, inceleme kayıtları | Ahmet Selim Dostabakan (kod), Kerem Erden (YZ destekli; rapor) | Ahmet Selim Dostabakan | Onaylandı: kodun değişmediği ve 3.4 kayıtları kontrol edildi. | — |
-| #18 | UC-01 arayüzü: giriş ekranı | Kerem Erden (YZ destekli) | Ahmet Selim Dostabakan | **Süreç notu:** Onay, PR açıldıktan 51 saniye sonra ve CI bitmeden verildi; metinde yazan elle denemeler bu sürede yapılamazdı. İçerik denetimi 13.11.2026'daki ortak incelemede yapıldı (aşağıda). | KR-08, KR-09 |
-| #19 | Arayüz: müşteri/araç, servis ve işler, rapor | Kerem Erden (YZ destekli) | Ahmet Selim Dostabakan | **Süreç notu:** Onay metni, doldurulması gereken şablonun boş hâli (köşeli parantezlerle) olarak gönderildi; onay anında içerik denetimi yapılmadı. İçerik denetimi 13.11.2026'daki ortak incelemede yapıldı (aşağıda). | KR-08, KR-09 |
+| #18 | UC-01 arayüzü: giriş ekranı | Kerem Erden (YZ destekli) | Ahmet Selim Dostabakan | **Süreç notu:** İlk onay, PR açıldıktan 51 saniye sonra ve CI bitmeden verildi; metinde yazan elle denemeler bu sürede yapılamazdı. İçerik denetimi 13.11.2026'daki ortak incelemede yapıldı ve inceleyen onay metnine bu denemeyi ekledi: 3 hatalı paroladan sonra CAPTCHA çıktı, girişte önceki hatalı denemeler tarih-saatleriyle listelendi (TC-04, TC-32). | KR-08, KR-09 |
+| #19 | Arayüz: müşteri/araç, servis ve işler, rapor | Kerem Erden (YZ destekli) | Ahmet Selim Dostabakan | **Süreç notu:** İlk onay metni doldurulmamış şablon olarak gönderildi. İçerik denetimi 13.11.2026'daki ortak incelemede yapıldı (inceleyen senaryoları söyledi, Kerem Erden uyguladı) ve inceleyen onay metnini gözlemleriyle güncelledi: müşteri ekleme, plaka normalizasyonu (`06 bum 00` → `06BUM00`) ve tekrar eklemede “zaten kayıtlı” mesajı, ziyaret açma, iş ekleme, ✓ ve geri alma, günlük rapor toplamı; tamamlanmamış iş sayılmadı. | KR-08, KR-09 |
 
 **PR #10 inceleme bulguları (Kerem Erden).** İnceleyen, iskeleti yerelde çalıştırıp kalite kapılarını kendisi tekrarladı ve `showErrorDetails` değerini kurulu Streamlit'in kaynağından doğruladı. Bulgular yazar tarafından yerelde yeniden üretilerek doğrulandı:
 
@@ -170,26 +172,113 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 
 ---
 
-## 4. Faz 3 İçin DIR Beyanı (Taslak)
+## 4. Faz 3 İçin DIR Beyanı
+
+Faz 3'te YZ, kodlamanın ve kod incelemesinin her aşamasında kullanıldı. Kullanım beş iş paketine ayrıldı. Gerekçeler gerçekleşen işlemlere dayanır, yapılmayanlar “eksik” olarak yazılmıştır. **Puanlar ekip kararıdır** (13.11.2026, ekip tartışması; Mehmet Ünsalan'a da danışıldı). Her paketin sonunda YZ'nin ilk önerisi de kayıt için gösterilmiştir.
+
+Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 raporları, iş kuralları (BR), test senaryoları (TC), ADR'ler ve kalite eşikleri verildi; `CLAUDE.md` ile kurallar kalıcı hâle getirildi: kapsam genişletilmeyecek, yapılmamış doğrulama yapılmış gibi yazılmayacak, puanları ve kararları YZ vermeyecek, kişisel veri depoya girmeyecek. YZ ajan olarak çalıştı (dosya düzenleme, test çalıştırma, dal ve PR açma); `main` korumalı olduğu için her değişiklik bir insanın onayıyla birleşti (A9, B6).
 
 ### 4.1. İş Paketi 4 — Kod İskeleti ve Mimari Karar Kayıtları
 
 | Alan | İçerik |
 | :--- | :--- |
 | **Tarih** | 12.11.2026 |
-| **YZ aracı** | Anthropic Claude (Claude Code) |
-| **İlgili üyeler** | Ahmet Selim Dostabakan (yönlendirme); inceleme: `[PR'ı inceleyen üye]` |
-| **Görevin YZ kullanım sınırı** | Yeşil (kod geliştirme ve teknik dokümantasyon). Mimari kararların kabulü ve kod incelemesi ekibe aittir. |
+| **YZ aracı** | Anthropic Claude (Claude Code, ajan) |
+| **İlgili üyeler** | Ahmet Selim Dostabakan (yönlendirme); inceleme: Kerem Erden (#10) |
+| **Görevin YZ kullanım sınırı** | Yeşil (kod geliştirme, teknik dokümantasyon). Mimari kararların kabulü ve kod incelemesi ekibe aittir. |
+| **Üretilen çıktı** | Veri modeli, saat sağlayıcısı, veritabanı katmanı, hata türleri, ilk testler; ADR-001 – ADR-008; servis sözleşmesi (2.3); dal koruması (#10, #12) |
 
-**Süreç özeti:** YZ'ye onaylı Faz 1 ve Faz 2 raporları, veri modeli, kalite kapıları ve önceki mimari kararlar verildi. YZ veri modelini, saat sağlayıcısını, veritabanı katmanını ve testlerini yazdı; kalite kapılarını yerelde çalıştırdı; Streamlit yapılandırma seçeneğini kurulu sürümün kendi belgesinden kontrol ederek Faz 2'deki yanlış değeri (RV3-01) tespit etti.
-
-| Boyut | Puan | Gerekçe |
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
 | :--- | :---: | :--- |
-| **D** | `[ekip]` | |
-| **I** | `[ekip]` | |
-| **R** | `[ekip]` | PR incelemesinden sonra yazılacak. |
+| **D** | 4 | Ortak bağlam (A1 – A4, A6). Mimari seçenekler (2.1) ve reddedilen alternatifler ADR'lerde yazıldı (A8: karar ekipte). |
+| **I** | 4 | YZ, Streamlit'in kurulu sürüm belgesine bakarak Faz 2'deki yanlış `showErrorDetails` değerini buldu (RV3-01). İnceleyen dört bulgu (KR-01 – KR-04) çıkardı; bulgular önce yerelde yeniden üretildi, sonra düzeltildi (B1, B3). Farklı modeller karşılaştırılmadı (B4 eksik). |
+| **R** | 4 | İnceleyen iskeleti kendi ortamında çalıştırıp kalite kapılarını tekrarladı ve SQLite'ın tür ile uzunluk dayatmadığını canlı denemeyle gösterdi (C3, C4). Her bulgu için test eklendi. İnceleme yorumunun taslağı YZ ile hazırlandı (İP-8). |
 
----
+**Skor (ekip kararı):** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3**. *(YZ önerisi: D 4 · I 4 · R 4 → 51.)*
+
+### 4.2. İş Paketi 5 — UC-07 Servis Katmanı ve `CLAUDE.md`
+
+| Alan | İçerik |
+| :--- | :--- |
+| **Tarih** | 12.11.2026 |
+| **YZ aracı** | Anthropic Claude (Claude Code, ajan) |
+| **İlgili üyeler** | Ahmet Selim Dostabakan (yönlendirme); inceleme: Kerem Erden (#11, #13, #17) |
+| **Görevin YZ kullanım sınırı** | Yeşil |
+| **Üretilen çıktı** | `services/reports.py` ve testleri (TC-24 – TC-29); `CLAUDE.md` |
+
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
+| :--- | :---: | :--- |
+| **D** | 4 | Ortak bağlam; gün sınırları ve yarı açık aralık ADR-004/005 ile önceden tanımlıydı (A2, A6). |
+| **I** | 4 | İnceleyenin önerileri (KR-05 – KR-07) uygulandı; N+1 bulgusu önce ölçülerek yeniden üretildi (B1, B2). |
+| **R** | 4 | İnceleyen test planında olmayan bir durumu (yıl geçişindeki hafta) ayrıca denedi (C3, C4). **Eksik / süreç notu:** Düzeltme commit'i #11 birleştikten sonra geldiği için main'e girmedi; durum fark edilip #17 ile taşındı (3.4). |
+
+**Skor (ekip kararı):** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3**. *(YZ önerisi: D 4 · I 4 · R 4 → 51.)*
+
+### 4.3. İş Paketi 6 — UC-01 – UC-06 Servis Katmanı
+
+| Alan | İçerik |
+| :--- | :--- |
+| **Tarih** | 12.11.2026 |
+| **YZ aracı** | Anthropic Claude (Claude Code, ajan) |
+| **İlgili üyeler** | Kerem Erden (yönlendirme); inceleme: Ahmet Selim Dostabakan (#15, #16). UC-01 – UC-04 ve UC-06'nın sahipleri bu işe katılmadı (bkz. Not). |
+| **Görevin YZ kullanım sınırı** | Yeşil. CAPTCHA biçimi (ADR-006 açık konusu) YZ tarafından önerildi; UC-01 sahibiyle teyidi açık. |
+| **Üretilen çıktı** | `auth.py`, `customers.py`, `vehicles.py`, `visits.py`, `tasks.py`, `completion.py`, kurulum betiği ve testleri (şu an 162 test; #15 ve #16 birleştiğinde 142) |
+
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
+| :--- | :---: | :--- |
+| **D** | 4 | Ortak bağlam; her UC için BR ve TC'ler kabul ölçütü olarak verildi (A2, A6). Güvenlik beklentileri (R-01, R-02, KR-03) açıkça tanımlıydı (A4, A9). |
+| **I** | 4 | Testler koddan önce yazıldı ve kırmızı görüldü. **Mutasyon testi:** Kod 22 yerden kasten bozuldu; ilk turda 4 mutant yaşadı (float yasağı, `user is not None` koruması, TC-32 üst sınırı, bir eşdeğer mutant). Üçü için test eklendi, eşdeğer mutantın gerekçesi yazıldı (B1, B3). YZ'nin kendi rapor metnine yazdığı ekip içi ayrım ifadesi push'tan önce düzeltildi (B3, gizlilik). B4 eksik. |
+| **R** | 4 | Kalite kapıları yerelde ve CI'da; TC-23 iki gerçek veritabanı bağlantısıyla sınandı; mutasyon testi (C3). **Ortak inceleme (13.11.2026):** ekip, servislerin kurallarını uygulama üzerinden yaklaşık 30 dakika elle sınadı: hatalı giriş ve CAPTCHA (UC-01), müşteri ekleme (UC-02), plaka normalizasyonu ve tekillik (UC-03), ziyaret açma (UC-04), iş ekleme ve tutar (UC-05), ✓ ve geri alma (UC-06); iki bulgu üretti (KR-08, KR-09) (C3, C4). **Süreç notu:** #15'in ilk incelemesi PR açıklamasının yeniden yazımıydı; ikinci onay ve #16 onayı YZ'nin hazırladığı metinle verildi (İP-8). Kod satır satır okunmadı; doğrulama çalıştırma ve elle test üzerinden yapıldı (C6: üyeler kendi UC dosyalarını sözlü savunma için okuyor). |
+
+**Skor (ekip kararı):** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3**. *(13.11.2026: ortak inceleme kayıtlara geçtikten sonra R 3 → 4.)* *(YZ önerisi: D 4 · I 4 · R 3 → 38.)*
+
+**Not (dengeli katkı):** UC-01 – UC-04 sahipleri GitHub organizasyonunda olmadığı ve UC-06 sahibi bu dönemde ulaşılamadığı için servis katmanları Kerem Erden yönlendirmesiyle yazıldı. Arayüz ve kullanıcı kabul testi (TC-31) sahiplerinin katkısına açıktır.
+
+### 4.4. İş Paketi 7 — Arayüz (Streamlit ekranları) ve KR-08, KR-09
+
+| Alan | İçerik |
+| :--- | :--- |
+| **Tarih** | 12 – 13.11.2026 |
+| **YZ aracı** | Anthropic Claude (Claude Code, ajan; gerçek tarayıcı denemesi için Playwright) |
+| **İlgili üyeler** | Kerem Erden (yönlendirme); inceleme: Ahmet Selim Dostabakan (#18, #19, #20); ortak inceleme: Kerem Erden ve Ahmet Selim Dostabakan |
+| **Görevin YZ kullanım sınırı** | Yeşil. BR-01 değişikliği (tam TL) ekip kararıdır. |
+| **Üretilen çıktı** | Giriş, müşteri/araç, servis ve işler, rapor ekranları; 34 arayüz testi (AppTest) |
+
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
+| :--- | :---: | :--- |
+| **D** | 4 | Ortak bağlam; ekranların yalnızca servisleri çağırması (ADR-001) ve hata gösterimi (ADR-007) sınır olarak verildi (A2, A4). |
+| **I** | 5 | YZ'nin ilk taslağındaki iki hata testlerle bulundu ve düzeltildi (başarısız girişin çift sayılması, CAPTCHA alanının geç çıkması). Ortak incelemede ekip iki kullanılabilirlik bulgusu çıkardı (KR-08, KR-09) ve kuruşun kaldırılması kararını verdi (B3, A8). Plaka listesi için YZ'nin ilk çözümü (tam eşleşme, ardından bulanık süzgeç) ekip örneğiyle (`06 b`) reddedildi; süzgeç seçenekleri gerçek tarayıcıda karşılaştırıldı (B2, B4 kısmen: model değil yöntem karşılaştırması). |
+| **R** | 4 | Her ekran AppTest ile ve gerçek tarayıcıda uçtan uca çalıştırıldı (C3). **Ortak inceleme (13.11.2026):** temiz kurulum, tüm testler, uygulama ekran paylaşımında yaklaşık 30 dakika birlikte denendi; inceleyenin senaryoları ve gözlemleri #18 ve #19 onay metinlerinde kayıtlı; Windows'taki kurulum hatası bulunup belgelendi; KR-08 ve KR-09 düzeltmeleri #20'de yeniden denendi (C3, C4). Denemelerde yalnızca uydurma müşteri, plaka ve telefon bilgileri kullanıldı (NFR-07, A7). **Süreç notu:** #18 ve #19'un ilk onayları içerik denetimi olmadan verilmişti; metinler ortak denemeden sonra gözlemlerle güncellendi (3.4). |
+
+**Skor (ekip kararı):** D = 4, I = 5, R = 4 → DIR = Floor(0,8 × 80) = **64** → **Bant 4**. *(13.11.2026: ortak inceleme kayıtlara geçtikten sonra R 3 → 4.)* *(YZ önerisi: D 4 · I 5 · R 3 → 48. (I için 5'in dayanağı: ekip örneğiyle YZ çözümünün iki kez reddedilmesi ve alternatiflerin karşılaştırılması; ekip 4'ü de seçebilir.))*
+
+### 4.5. İş Paketi 8 — Kod İncelemesi Desteği
+
+| Alan | İçerik |
+| :--- | :--- |
+| **Tarih** | 12 – 13.11.2026 |
+| **YZ aracı** | Anthropic Claude (Claude Cowork oturumu: Kerem Erden; Claude Code oturumu: Kerem Erden) |
+| **İlgili üyeler** | Kerem Erden (#10, #11 incelemeleri); Ahmet Selim Dostabakan (#15 – #20 onayları) |
+| **Görevin YZ kullanım sınırı** | Sarı (koşullu). İnceleme yorumunun taslağı YZ'den alınabilir; yorumdaki her doğrulama iddiası inceleyenin kendi yaptığı işleme dayanmalıdır. |
+| **Üretilen çıktı** | #10 ve #11 inceleme yorumlarının taslağı; #15, #16, #17, #18, #20 onay metinlerinin taslağı ve inceleyenin çalıştıracağı komut listesi; #19 için doldurulacak şablon |
+
+| Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
+| :--- | :---: | :--- |
+| **D** | 4 | **Eksik:** Hazır onay metni yöntemi YZ'nin kendi önerisiydi; ekipten metnin nasıl yazılacağı sorulmadı ve “yalnızca inceleyenin yaptığı işlemler yazılır” sınırı başta konmadı (A4 eksik). YZ, metinlere henüz yapılmamış doğrulama cümleleri (“çalıştırdım”, “denedim”) yazdı ve yalnızca yanına çalıştırılacak komutları ekledi. |
+| **I** | 3 | #10 ve #11'de YZ'nin bulguları inceleyen tarafından kendi ortamında tekrarlandı (B1). Ekip, #18 – #19'dan sonra hazır metin yönteminin hatalı olduğunu tespit edip reddetti (B3); yerine ekran paylaşımlı ortak inceleme yapıldı ve iki gerçek bulgu çıktı (KR-08, KR-09). Kural kalıcı hâle getirildi: `CLAUDE.md`'ye “Claude inceleme ve onay metni yazmaz, yalnızca kontrol listesi verir” eklendi (B6, insan onay noktası). |
+| **R** | 4 | **Süreç notu:** #18'de ilk onay PR açıldıktan 51 saniye sonra ve CI bitmeden, #19'da şablon doldurulmadan gönderildi; bu ilk metinler gerçekleşmemiş doğrulamalar içeriyordu. İçerik denetimi 13.11.2026'daki ortak incelemede yapıldı, iki bulgu üretti (KR-08, KR-09) ve inceleyen #18 ile #19'un onay metinlerini kendi gözlemleriyle güncelledi (C4, C6). #20 onayında inceleyen kendi cümlesini ekledi. |
+
+**Skor (ekip kararı):** D = 4, I = 3, R = 4 → DIR = Floor(0,8 × 48) = **38** → **Bant 3**. *(YZ önerisi: D 3 · I 4 · R 2 → 19 (Bant 2); #18 ve #19 onay metinleri inceleyenin kendi gözlemleriyle düzeltilirse R 3 → 28. Bu paket Faz 3'ün en zayıf noktasıdır. Hatalı yöntemi YZ önerdi; ancak DIR insanın doğrulamasını ölçer ve onayları gönderen inceleyendir, bu yüzden YZ'nin hatası R'yi yükseltmez. Puanın dayanağı, ekibin hatayı fark edip yöntemi değiştirmesi ve kaydı düzeltmesidir.)*
+
+### 4.6. Özet Beyan Tablosu
+
+| Üretilen artifact & YZ aracı | Kullanım amacı | İnsan müdahalesi ve düzeltme | Doğrulama yöntemi |
+| :--- | :--- | :--- | :--- |
+| İskelet, ADR / Claude Code | Veri modeli, katmanlar, mimari kayıtlar | KR-01 – KR-04 bulguları ve düzeltmeleri | İnceleyenin kendi ortamında çalıştırması, canlı deneme, CI |
+| UC-07 servisi / Claude Code | Dönemsel rapor | KR-05 – KR-07 | Yıl geçişi haftasının ek denemesi, sorgu sayısı ölçümü |
+| UC-01 – UC-06 servisleri / Claude Code | İş kuralları | Mutasyonla bulunan test açıkları kapatıldı; gizlilik ifadesi düzeltildi | 162 test, mutasyon testi, CI, ortak inceleme |
+| Arayüz / Claude Code, Playwright | Ekranlar | KR-08 (tam TL, ekip kararı), KR-09 (plaka önerisi); iki hata testlerle düzeltildi | AppTest, gerçek tarayıcı, ekran paylaşımlı ortak inceleme |
+| İnceleme yorumları / Claude Cowork, Claude Code | Yorum taslağı | Hazır metin yerine kontrol listesi ve şablona geçildi | İlk #18 ve #19 onayları doğrulama içermiyordu; ortak incelemeden sonra inceleyen metinleri kendi gözlemleriyle güncelledi (3.4) |
 
 ## 5. Kaynaklar (Faz 3)
 
@@ -197,4 +286,7 @@ Her use case sahibinin uygulayacağı fonksiyon imzaları aşağıdadır. Bu bir
 2. **SQLAlchemy 2.1 belgeleri**, ORM bildirimsel eşleme ve `TypeDecorator`.
 3. **Streamlit belgeleri**, yapılandırma seçeneği `client.showErrorDetails` ve `streamlit.testing.v1.AppTest`.
 4. **argon2-cffi belgeleri** ve **OWASP Password Storage Cheat Sheet**.
-5. **Anthropic Claude (Claude Code)**, 12.11.2026; kullanım Bölüm 4'te beyan edilmiştir.
+5. **Anthropic Claude (Claude Code, Claude Cowork)**, 12 – 13.11.2026; kullanım Bölüm 4'te beyan edilmiştir.
+6. **Streamlit belgeleri**, `st.selectbox` (`filter_mode`) ve `streamlit.testing.v1.AppTest`.
+7. **Playwright belgeleri**, Chromium ile tarayıcı otomasyonu.
+8. **DeMillo, R. A., Lipton, R. J., & Sayward, F. G. (1978).** Hints on Test Data Selection: Help for the Practicing Programmer. *Computer, 11*(4), 34–41. Mutasyon testinin kaynağı. `[ekip: birincil kaynaktan doğrulanacak, C1]`

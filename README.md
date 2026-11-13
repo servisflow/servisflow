@@ -54,9 +54,7 @@ Raporlar, **tüm araçlardaki ✓ yapılmış işleri** `completed_at` tarihine 
 
 ## 👥 Ekip
 
-> Görev dağılımı **öneridir**; ekipçe onaylandıktan sonra kesinleşecektir.
-
-| Üye | İsim | Proje rolü | Use Case |
+| Üye | İsim | Proje rolü | Sahibi olduğu use case |
 | :--- | :--- | :--- | :--- |
 | 1 | Ahmet Karavuş | Kimlik Doğrulama ve Güvenlik Geliştiricisi | UC-01 |
 | 2 | Alperhan Karşı | İş Analisti / Gereksinim Mühendisi | UC-02 |
@@ -66,7 +64,19 @@ Raporlar, **tüm araçlardaki ✓ yapılmış işleri** `completed_at` tarihine 
 | 6 | Mehmet Ünsalan | Backend / Beyaz Kutu Testleri | UC-06 |
 | 7 | Ahmet Selim Dostabakan | Ekip Lideri / QA ve Test Lideri | UC-07 |
 
-Her üye kendi use case'inin geliştirilmesine ek olarak test, kod inceleme ve DIR beyanına katkıda bulunur.
+### Use case sorumluları (Faz 3 itibarıyla)
+
+| Use case | Sahibi (yönerge: kişi başı en az 1 UC) | Geliştiren | İnceleyen (PR onayı) |
+| :--- | :--- | :--- | :--- |
+| UC-01 | Ahmet Karavuş | Kerem Erden (servis #15, giriş ekranı #18) | Ahmet Selim Dostabakan (#15, #18) |
+| UC-02 | Alperhan Karşı | Kerem Erden (servis #15, ekran #19) | Ahmet Selim Dostabakan (#15, #19) |
+| UC-03 | Mehmet Kenan Dilberoğlu | Kerem Erden (servis #15, ekran #19, plaka önerisi #20) | Ahmet Selim Dostabakan (#15, #19, #20) |
+| UC-04 | Ilgın Çutok | Kerem Erden (servis #15, ekran #19) | Ahmet Selim Dostabakan (#15, #19) |
+| UC-05 | Kerem Erden | Kerem Erden (servis #15, ekran #19, tam TL #20) | Ahmet Selim Dostabakan (#15, #19, #20) |
+| UC-06 | Mehmet Ünsalan | Kerem Erden (servis #16, ekran #19) | Ahmet Selim Dostabakan (#16, #19) |
+| UC-07 | Ahmet Selim Dostabakan | Ahmet Selim Dostabakan (servis #11, #17); Kerem Erden (rapor ekranı #19) | Kerem Erden (#11, #17); Ahmet Selim Dostabakan (#19) |
+
+Her use case'in bir sahibi vardır ve sahiplik değişmedi. Kodu fiilen yazan ve inceleyen üyeler ayrıca gösterilir; ayrıntılı kayıt Faz 3 Raporu 3.3 ve 3.4'tedir. UC-01 – UC-04 sahipleri Faz 3 sırasında GitHub organizasyonuna eklenmediği, UC-06 sahibi de bu dönemde ulaşılamadığı için bu use case'leri Kerem Erden geliştirdi (YZ destekli).
 
 ## 🔄 Veri ilişkileri
 
