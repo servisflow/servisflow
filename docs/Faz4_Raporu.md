@@ -239,9 +239,9 @@ Ek olarak uygulama yerelde `streamlit run streamlit_app.py` ile, sır dosyasınd
 | :--- | :---: | :--- |
 | **D** | 4 | Yöntem (Streamlit Community Cloud) ekip kararı (A8). Gizlilik sınırları önceden kondu: parola depoya girmez, testlerde yalnızca uydurma veri kullanılır (A7). |
 | **I** | 4 | Ekip, YZ'nin TC-31 planını değiştirdi: uygulayan geliştirici yerine ekip dışı katılımcı oldu (B3). Yayın ekranındaki yanlış ana dosya yolu yayından önce düzeltildi. OAuth kısıtlamasında kısıtlama kaldırılmadı, yalnızca Streamlit'e izin verildi (en az yetki). H4-02 önce testle yeniden üretildi, sonra düzeltildi (B1). Farklı modeller karşılaştırılmadı (B4 eksik). |
-| **R** | 4 | Ekip dışı katılımcı gerçek bir hata buldu (H4-02) (C3). Düzeltme, ekran paylaşımında Ahmet Selim Dostabakan ve Mehmet Ünsalan'ın yönlendirmesiyle uygulamada yeniden denendi (C4). Canlı sitede giriş ekranı ve sırlardaki hesapla giriş doğrulandı. **Eksik:** Canlı sitede tam akış (müşteri → rapor) denenmedi. |
+| **R** | 5 | Ekip dışı katılımcı gerçek bir hata buldu (H4-02) (C3). Düzeltme, ekran paylaşımında Ahmet Selim Dostabakan ve Mehmet Ünsalan'ın yönlendirmesiyle uygulamada yeniden denendi (C4). Canlı sitede giriş ekranı ve sırlardaki hesapla giriş doğrulandı; yayından sonra tam akış (müşteri → rapor) canlı sitede ekip ve TC-31 katılımcısı tarafından denendi (Kerem Erden'in beyanı) (C3). |
 
-**Skor (ekip kararı):** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3**. *(YZ önerisi: D 4 · I 4 · R 4 → 51. Canlı sitede tam akış denenirse R 5 → 64.)*
+**Skor (ekip kararı):** D = 4, I = 4, R = 5 → DIR = Floor(0,8 × 80) = **64** → **Bant 4**. *(YZ önerisi: D 4 · I 4 · R 4 → 51; canlı sitede tam akışın denendiği kayda geçtikten sonra R 4 → 5.)*
 
 ---
 
