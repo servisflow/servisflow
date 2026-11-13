@@ -214,3 +214,27 @@ def test_tc32_giristen_sonraki_hatalar_bu_girisin_listesine_karismaz(
     clock.advance(timedelta(minutes=5))
     _fail(session, clock)  # oturum açıkken başkasının denemesi
     assert auth.failed_attempts_since_last_login(session, "sorumlu") == [before]
+
+
+# --- Bulut kurulumu: sırlardan hesap (Faz 4 - iv) ----------------------------
+
+
+def test_ensure_owner_hesap_yoksa_olusturur(session, clock):
+    assert auth.ensure_owner(session, "sorumlu", PAROLA) is True
+    assert (
+        auth.authenticate(session, clock, "sorumlu", PAROLA, False).username
+        == "sorumlu"
+    )
+
+
+def test_ensure_owner_hesap_varsa_dokunmaz(session, clock, owner):
+    """Sırlardaki parola değişse bile var olan hesap ezilmez."""
+    assert auth.ensure_owner(session, "baska", "baska-parola-123") is False
+    assert session.query(User).count() == 1
+    assert auth.authenticate(session, clock, "sorumlu", PAROLA, False).id == owner.id
+
+
+def test_ensure_owner_gecersiz_parolayi_reddeder(session):
+    with pytest.raises(ValidationError):
+        auth.ensure_owner(session, "sorumlu", "kisa")
+    assert session.query(User).count() == 0

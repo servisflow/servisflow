@@ -51,9 +51,13 @@ def _plate_search() -> None:
 
 
 def _edit_form(row: dict) -> None:
-    with st.form(f"duzenle_{row['id']}"):
-        name = st.text_input("Ad soyad", value=row["name"], key="duz_ad")
-        phone = st.text_input("Telefon", value=row["phone"] or "", key="duz_tel")
+    # Anahtarlar müşteri kimliğini içerir. Sabit anahtarlı alan Streamlit'te
+    # değerini korur ve `value` yok sayılır; başka müşteri seçilince form
+    # öncekinde kalıyor, "Güncelle" onun bilgisini yazıyordu (H4-02, TC-31).
+    cid = row["id"]
+    with st.form(f"duzenle_{cid}"):
+        name = st.text_input("Ad soyad", value=row["name"], key=f"duz_ad_{cid}")
+        phone = st.text_input("Telefon", value=row["phone"] or "", key=f"duz_tel_{cid}")
         if st.form_submit_button("Güncelle"):
             run(
                 lambda s: customers.update_customer(s, row["id"], name, phone),
@@ -64,9 +68,10 @@ def _edit_form(row: dict) -> None:
 def _vehicle_form(row: dict) -> None:
     with st.form(f"arac_{row['id']}"):
         st.markdown("**Araç ekle**")
-        plate = st.text_input("Plaka", key="arac_plaka")
-        brand = st.text_input("Marka", key="arac_marka")
-        model = st.text_input("Model", key="arac_model")
+        # Yarım kalan araç bilgisi başka müşteriye taşınmasın (H4-02).
+        plate = st.text_input("Plaka", key=f"arac_plaka_{row['id']}")
+        brand = st.text_input("Marka", key=f"arac_marka_{row['id']}")
+        model = st.text_input("Model", key=f"arac_model_{row['id']}")
         if st.form_submit_button("Aracı kaydet"):
             run(
                 lambda s: vehicles.register_vehicle(s, row["id"], plate, brand, model),

@@ -16,6 +16,8 @@ htmlcov/
 *.db
 *.sqlite3
 .env
+# Streamlit sırları (bulutta sır ayarına girilir, depoya girmez)
+.streamlit/secrets.toml
 
 # Editör / işletim sistemi
 .vscode/

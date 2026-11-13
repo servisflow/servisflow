@@ -64,8 +64,8 @@ streamlit run src/servisflow/ui/app.py
 CI (`.github/workflows/ci.yml`) ile aynı kontroller; PR açmadan önce yerelde çalıştır:
 
 ```bash
-black --check src tests
-flake8 src tests
+black --check src tests streamlit_app.py
+flake8 src tests streamlit_app.py
 bandit -r src --severity-level high
 pip-audit -r requirements.txt -r requirements-dev.txt
 xenon src --max-absolute B --max-modules B --max-average A

@@ -31,6 +31,27 @@ PAGES = {
 }
 
 
+def bootstrap_owner() -> None:
+    """Bulut kurulumu: sırlarda `[owner]` varsa ve hesap yoksa hesabı oluşturur.
+
+    Streamlit Community Cloud'da kabuk olmadığı için `create_owner` betiği
+    çalışmaz; veritabanı yeniden başlatmada silinebildiği için hesap her
+    açılışta sırlardan geri gelir. Sır yoksa (yerel kurulum) hiçbir şey yapmaz.
+    Parola depoya girmez, yalnızca bulutun sır ayarındadır (Faz 4 - iv).
+    """
+    try:
+        owner = st.secrets["owner"]
+        username, password = owner["username"], owner["password"]
+    except (FileNotFoundError, KeyError):
+        return
+    try:
+        with session_scope() as session:
+            if auth.ensure_owner(session, username, password):
+                logger.info("Sorumlu hesabı sırlardan oluşturuldu.")
+    except ServisFlowError as exc:
+        logger.error("Sırlardaki sorumlu hesabı geçersiz: %s", exc)
+
+
 def _captcha_needed() -> bool:
     name = st.session_state.get(LAST_NAME_KEY)
     if not name:
@@ -121,6 +142,7 @@ def main() -> None:
     st.set_option("client.showErrorDetails", "none")
     st.set_page_config(page_title="ServisFlow")
     try:
+        bootstrap_owner()
         if st.session_state.get(USER_KEY) is None:
             login_page()
         else:
