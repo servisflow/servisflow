@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.2 — McCabe ölçümü ve iyileştirmeler (#22) ile TC-30 tamam; kullanıcı testi ve devreye alma sürüyor
+- **Doküman Durumu:** Taslak v0.3 — McCabe (#22) ve TC-30 (#23) tamam; devreye alma yöntemi (Streamlit Community Cloud) ve TC-31 planı eklendi; yayın ve kullanıcı testi sürüyor
 - **Başlangıç:** 13.11.2026 · **Teslim:** Hafta 12 (izlence)
 
 | Yönerge maddesi | Bu belgedeki karşılığı |
@@ -34,7 +34,7 @@ Faz 3 Raporu (v0.3) ve kod üzerinde açık kalan maddeler:
 
 ### 2.1. Test Senaryolarının Karşılanma Durumu
 
-Faz 2 test planındaki 32 senaryonun 31'i otomatik testlerle karşılanıyor (pytest; arayüz için Streamlit AppTest). Toplam 249 test, `ui` hariç satır ve dal kapsaması %100 (NFR-02).
+Faz 2 test planındaki 32 senaryonun 31'i otomatik testlerle karşılanıyor (pytest; arayüz için Streamlit AppTest). Toplam 256 test (devreye alma testleri dahil, Bölüm 4.2), `ui` hariç satır ve dal kapsaması %100 (NFR-02).
 
 | Teknik | Senaryolar | Otomatik test dosyaları |
 | :--- | :--- | :--- |
@@ -50,7 +50,30 @@ Ek olarak Faz 3'te mutasyon testi yapıldı (22 mutant; yaşayan 4 mutanttan 3'�
 
 ### 2.2. Kullanıcı Kabul Testi (TC-31)
 
-`[ekip: yürütülecek]` Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi baştan sona kaydeder (müşteri → araç → ziyaret → iş → ✓ → rapor). Ölçüt: ≤ 3 dakika, yardımsız (NFR-06). Her katılımcı için süre, takıldığı adımlar ve önerileri kaydedilecek.
+Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi baştan sona kaydeder (müşteri → araç → ziyaret → iş → ✓ → rapor). Ölçüt: ≤ 3 dakika, yardımsız (NFR-06).
+
+**Plan (ekip kararı):**
+
+- **Uygulayan:** Kerem Erden · **Gözlemciler:** Ahmet Selim Dostabakan, Mehmet Ünsalan · **Onaylayan:** Mehmet Ünsalan
+- **Ortam:** Bulutta yayınlanan sürüm (Bölüm 4); böylece test aynı zamanda devreye alınan sürümü doğrular.
+- **Veri:** Yalnızca uydurma veriler (gerçek müşteri, plaka veya telefon girilmez).
+- **Kısıt:** Uygulayan, geliştirme ekibinden ve sistemi tanıyan bir kişidir. Bu nedenle “yardımsız ≤ 3 dakika” ölçütü iyimser sonuç verebilir; sistemi ilk kez gören bir işletme sahibiyle yapılan bir test kadar güçlü değildir.
+
+**Görev kağıdı** (süre 2. adımda başlar, 8. adımda durur):
+
+| # | Görev | Beklenen | Gözlenen | Yardım gerekti mi? |
+| :---: | :--- | :--- | :--- | :---: |
+| 1 | `sorumlu` hesabıyla giriş yap | Ana sayfa açılır | `[ekip]` | `[ekip]` |
+| 2 | Yeni müşteri ekle: “Ali Deneme”, 05001112233 | “Müşteri kaydedildi.” | `[ekip]` | `[ekip]` |
+| 3 | Bu müşteriye araç ekle: 34 ABC 123, Fiat Egea | “Araç kaydedildi.”, araç tabloda | `[ekip]` | `[ekip]` |
+| 4 | Servis ve işler ekranında plaka listesine önce `34a`, sonra `34 a` yazıp aracı seç | `34 a` ile araç listede çıkar; `34a` sonucu not edilir (RV4-02) | `[ekip]` | `[ekip]` |
+| 5 | Şikâyet “Frenden ses geliyor” ile ziyaret aç | “Ziyaret açıldı”, tarih sistemden gelir | `[ekip]` | `[ekip]` |
+| 6 | İki iş ekle: “Ön balata değişimi” 1500 TL, “Yağ değişimi” 1200 TL | Açık işler: 2.700 TL | `[ekip]` | `[ekip]` |
+| 7 | Balata işini ✓ ile tamamla | Açık 1.200 TL · Tamamlanan 1.500 TL | `[ekip]` | `[ekip]` |
+| 8 | Rapor ekranında bugünün günlük toplamına bak | 1.500 TL | `[ekip]` | `[ekip]` |
+| 9 | Çıkış yap | Giriş ekranına dönülür | `[ekip]` | `[ekip]` |
+
+**Sonuç:** Süre `[ekip]` · Ölçüt karşılandı mı `[ekip]` · Takılınan adımlar ve öneriler `[ekip]` · Gözlemci notları `[ekip]`
 
 ### 2.3. Bulunan Hatalar ve Düzeltmeler
 
@@ -64,6 +87,7 @@ Ek olarak Faz 3'te mutasyon testi yapıldı (22 mutant; yaşayan 4 mutanttan 3'�
 | PR | Konu | Yazan | İnceleyen | Bulgular |
 | :--- | :--- | :--- | :--- | :--- |
 | #22 | McCabe ölçümü ve iyileştirme, rapor taslağı | Kerem Erden (YZ destekli) | Mehmet Ünsalan | Kerem Erden'in bilgisayarında ekran paylaşımıyla birlikte çalıştırıldı: 247 test geçti; `radon cc` en yüksek 6, `render` 9 → 3, `search_customers` 8 → 6. Onaylandı ve birleştirildi. |
+| #23 | TC-30: veritabanına erişilemezken genel hata mesajı | Kerem Erden (YZ destekli) | Mehmet Ünsalan | Kerem Erden'in bilgisayarında ekran paylaşımıyla birlikte çalıştırıldı: `tests/test_ui_errors.py` 2 test geçti; veritabanı yolu bilerek bozulmuş uygulamada sayfada yalnızca Türkçe genel mesaj göründü, Traceback yoktu; hata ayrıntısı (SQLAlchemy `OperationalError`, e3q8) yalnızca terminalde göründü. Onaylandı ve birleştirildi. |
 
 ---
 
@@ -119,7 +143,34 @@ Davranışın değişmediği, değişiklik öncesi ve sonrası aynı 247 testin 
 
 ## 4. Devreye Alma (Faz 4 - iv)
 
-`[ekip: yöntem seçilecek]` Mevcut durum: kurulum ve çalıştırma adımları README'de; hesap `python -m servisflow.create_owner` ile oluşturuluyor; Windows'ta `pip install -e .` hatası (WinError 145) ve geçici çözümü belgelendi. Eski veritabanı notu (RV4-01) eklenecek.
+### 4.1. Yöntem
+
+Ekip kararıyla iki yol birlikte sunulur:
+
+- **Yerel kurulum:** README'deki adımlar; hesap `python -m servisflow.create_owner` ile açılır. Windows'ta `pip install -e .` hatası (WinError 145) ve geçici çözümü belgelendi. Eski veritabanı notu (RV4-01) `[ekip]`.
+- **Bulut (Streamlit Community Cloud):** Uygulama GitHub deposundan yayınlanır ve bir web adresinden açılır. Ücretsizdir; `main` dalına her birleştirmeden sonra yeni sürüm yayınlanır. Demo ve kullanıcı testi (TC-31) bu sürümle yapılır.
+
+### 4.2. Bulut İçin Koddaki Değişiklikler
+
+| Sorun | Çözüm | Doğrulama |
+| :--- | :--- | :--- |
+| Bulut depoyu paket olarak kurmaz; `import servisflow` başarısız olur. | Kök dizinde `streamlit_app.py`: `src` klasörünü içe aktarma yoluna ekler ve asıl uygulamayı çalıştırır. | `test_ui_deploy`: giriş noktası giriş ekranını hatasız açar. |
+| Bulutta kabuk yoktur; `create_owner` betiği çalıştırılamaz. | `auth.ensure_owner` + `app.bootstrap_owner`: bulutun sır (Secrets) ayarında `[owner]` varsa ve hiç hesap yoksa hesap oluşturulur. Var olan hesap ezilmez. Sır yoksa (yerel) hiçbir şey yapılmaz. | `test_auth` (3 test), `test_ui_deploy` (3 test): hesap oluşur ve giriş yapılır; yeniden çizimde ikinci hesap açılmaz; sır yokken hesap oluşmaz; geçersiz parola kullanıcıya gösterilmez, günlüğe parolasız yazılır. |
+| Parola depoya girmemeli. | Parola yalnızca bulutun sır ayarında; yerel sır dosyası `.streamlit/secrets.toml` `.gitignore`'da. | `git status` sır dosyasını göstermiyor. |
+| Giriş noktası CI dışında kalmamalı. | CI'daki black ve flake8 adımlarına `streamlit_app.py` eklendi. | CI `kalite` işi |
+
+Ek olarak uygulama yerelde `streamlit run streamlit_app.py` ile, sır dosyasından gelen hesapla başlatıldı ve gerçek tarayıcıda (Playwright) giriş yapıldı.
+
+### 4.3. Bilinen Kısıtlar
+
+- **Kalıcı olmayan veritabanı:** Bulutta SQLite dosyası uygulamanın geçici diskindedir. Uygulama uyuyup yeniden başladığında veya yeniden yayınlandığında kayıtlar silinir; hesap sırlardan yeniden oluşur. Gerçek bir işletmede kalıcı bir veritabanı (örneğin barındırılan PostgreSQL) veya yerel kurulum gerekir; bu, MVP kapsamı dışındadır.
+- **Herkese açık adres:** Giriş ekranına herkes ulaşabilir; ekranların geri kalanı oturum ister (FR-01) ve 3 hatalı denemeden sonra CAPTCHA çıkar. Yine de yalnızca uydurma veri girilir.
+- **Uyku:** Uygulama bir süre kullanılmazsa uyur; ilk açılış birkaç saniye sürer.
+- **Günlükler:** Sunucu günlüğü (ör. TC-30 hata ayrıntısı) bulutta “Manage app” panelinde görünür; kullanıcı ekranına gitmez.
+
+### 4.4. Yayın Kaydı
+
+`[ekip: yayınlayan üye, tarih, adres, ilk açılış gözlemi]`
 
 ---
 
@@ -140,6 +191,22 @@ Davranışın değişmediği, değişiklik öncesi ve sonrası aynı 247 testin 
 | **D** | `[ekip]` | |
 | **I** | `[ekip]` | |
 | **R** | `[ekip]` | PR incelemesinden sonra yazılacak. |
+
+### 5.2. İş Paketi 10 — Devreye Alma (Bulut) ve TC-31 Hazırlığı
+
+| Alan | İçerik |
+| :--- | :--- |
+| **Tarih** | 13.11.2026 |
+| **YZ aracı** | Anthropic Claude (Claude Code, ajan) |
+| **İlgili üyeler** | Kerem Erden (yönlendirme, yöntem seçimi ekip kararı); inceleme: `[PR'ı inceleyen üye]` |
+| **Görevin YZ kullanım sınırı** | Yeşil (kod, test, teknik dokümantasyon). Yayın işlemini ve kullanıcı testini ekip yapar. |
+| **Üretilen çıktı** | `streamlit_app.py`, sırlardan hesap oluşturma ve testleri, README bulut bölümü, Bölüm 4 ve TC-31 görev kağıdı taslağı |
+
+| Boyut | Puan | Gerekçe |
+| :--- | :---: | :--- |
+| **D** | `[ekip]` | |
+| **I** | `[ekip]` | |
+| **R** | `[ekip]` | PR incelemesi ve buluttaki ilk yayın gözleminden sonra yazılacak. |
 
 ---
 

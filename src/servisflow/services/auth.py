@@ -64,6 +64,19 @@ def create_owner(session: Session, username: str, password: str) -> User:
     return user
 
 
+def ensure_owner(session: Session, username: str, password: str) -> bool:
+    """Hiç hesap yoksa sorumlu hesabını oluşturur; varsa dokunmaz (Faz 4 - iv).
+
+    Bulut kurulumunda kabuk yoktur, `create_owner` betiği çalıştırılamaz.
+    Var olan hesap ezilmez: sırlardaki parola değişse bile mevcut parola geçerli
+    kalır. Hesap oluşturulduysa True döner.
+    """
+    if session.scalar(select(func.count()).select_from(User)):
+        return False
+    create_owner(session, username, password)
+    return True
+
+
 def _last_success_id(session: Session, username: str) -> int:
     last = session.scalar(
         select(func.max(LoginAttempt.id)).where(

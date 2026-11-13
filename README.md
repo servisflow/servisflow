@@ -163,11 +163,28 @@ Tarayıcıda `http://localhost:8501` açılır: giriş → **Müşteriler ve ara
 
 > **Windows notu:** `pip install -e .` *WinError 145 (The directory is not empty)* ile durursa sorun koddan değil, geçici klasörü kilitleyen antivirüsten kaynaklanır. `python -m pip install --upgrade pip setuptools` sonrası komutu tekrarlayın; acil durumda `$env:PYTHONPATH = "src"` ile paket kurulmadan çalıştırılabilir.
 
+### ☁️ Bulutta çalıştırma (Streamlit Community Cloud)
+
+Uygulama [Streamlit Community Cloud](https://share.streamlit.io) üzerinde de çalışır (Faz 4 - iv):
+
+1. share.streamlit.io'ya GitHub hesabıyla girin → **Create app** → depo `servisflow/servisflow`, dal `main`, ana dosya `streamlit_app.py`.
+2. **Advanced settings** → Python 3.12; **Secrets** alanına sorumlu hesabını yazın (parola depoya girmez):
+
+   ```toml
+   [owner]
+   username = "sorumlu"
+   password = "en-az-8-karakterlik-parola"
+   ```
+
+3. **Deploy**. İlk açılışta hesap sırlardan oluşturulur; giriş ekranı gelir.
+
+> **Bilinen kısıt:** Bulutta veritabanı kalıcı değildir; uygulama uyuyup yeniden başladığında veya yeniden yayınlandığında kayıtlar silinir, hesap sırlardan yeniden oluşur. Adres herkese açıktır; **gerçek müşteri bilgisi girmeyin**, yalnızca uydurma verilerle deneyin.
+
 Kalite kapılarını yerelde çalıştırma (CI'daki adımların aynısı):
 
 ```bash
-black --check src tests                                  # biçim
-flake8 src tests                                         # stil
+black --check src tests streamlit_app.py                 # biçim
+flake8 src tests streamlit_app.py                        # stil
 bandit -r src --severity-level high                      # güvenlik (kod)
 pip-audit -r requirements.txt -r requirements-dev.txt    # güvenlik (bağımlılık)
 xenon src --max-absolute B --max-modules B --max-average A   # McCabe ≤ 10
