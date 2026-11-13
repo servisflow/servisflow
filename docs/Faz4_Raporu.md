@@ -196,7 +196,7 @@ Ek olarak uygulama yerelde `streamlit run streamlit_app.py` ile, sır dosyasınd
 
 | Alan | Kayıt |
 | :--- | :--- |
-| **Adres** | https://x8mxn6qmysbyfrcbzy5mks.streamlit.app/ |
+| **Adres** | https://servisflow.streamlit.app/ |
 | **Tarih** | 14.11.2026 |
 | **Yayınlayan** | Kerem Erden |
 | **Ayarlar** | Depo `servisflow/servisflow`, dal `main`, ana dosya `streamlit_app.py`; sorumlu hesabı bulutun sır ayarında |

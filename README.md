@@ -165,7 +165,7 @@ Tarayıcıda `http://localhost:8501` açılır: giriş → **Müşteriler ve ara
 
 ### ☁️ Bulutta çalıştırma (Streamlit Community Cloud)
 
-**Canlı sürüm:** https://x8mxn6qmysbyfrcbzy5mks.streamlit.app/ (yalnızca uydurma verilerle deneyin; veriler kalıcı değildir)
+**Canlı sürüm:** https://servisflow.streamlit.app/ (yalnızca uydurma verilerle deneyin; veriler kalıcı değildir)
 
 Kendi kopyanızı yayınlamak için (Faz 4 - iv):
 
