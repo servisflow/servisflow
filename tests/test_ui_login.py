@@ -65,7 +65,21 @@ def test_dogru_giris_ana_ekrana_gecer(db_url):
     at = _login(_app())
     assert not at.exception
     assert at.session_state["user_id"] is not None
-    assert "menüden" in at.info[0].value
+    assert at.title[0].value == "Genel bakış"
+    assert [m.label for m in at.metric] == [
+        "Bugün tamamlanan",
+        "Bu hafta",
+        "Bu ay",
+        "Açık işler (0)",
+    ]
+    assert at.metric[3].value == "0 TL"
+
+
+def test_hizli_islem_ilgili_ekrani_acar(db_url):
+    at = _login(_app())
+    at = [b for b in at.button if b.label == "Ziyaret aç, iş gir"][0].click().run()
+    assert at.session_state["menu"] == "Servis ve işler"
+    assert at.title[0].value == "Servis ve işler"
 
 
 def test_yanlis_parola_genel_mesaj_ve_tek_kayit(db_url):

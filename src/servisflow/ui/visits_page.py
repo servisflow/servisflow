@@ -13,6 +13,7 @@ from servisflow.services.reports import vehicle_history
 from servisflow.ui.common import (
     act,
     amount_from_input,
+    page_header,
     run,
     show_flash,
     tl,
@@ -63,8 +64,12 @@ def _history(session, vehicle_id: int) -> list[dict]:
 
 def _new_visit_form(vehicle_id: int) -> None:
     with st.form("yeni_ziyaret", clear_on_submit=True):
-        complaint = st.text_area("Şikâyet / açıklama (isteğe bağlı)", key="sikayet")
-        if st.form_submit_button("Yeni servis ziyareti aç"):
+        complaint = st.text_area(
+            "Şikâyet / açıklama (isteğe bağlı)", key="sikayet", height=80
+        )
+        if st.form_submit_button(
+            "Yeni servis ziyareti aç", icon=":material/add_circle:", type="primary"
+        ):
             act(
                 lambda s: visits.open_visit(s, SystemClock(), vehicle_id, complaint),
                 "Ziyaret açıldı; tarih ve saat sistemce atandı.",
@@ -72,21 +77,25 @@ def _new_visit_form(vehicle_id: int) -> None:
 
 
 def _task_row(task: dict) -> None:
-    mark, title, amount, button = st.columns([1, 6, 3, 3])
-    mark.markdown("✅" if task["done"] else "☐")
+    mark, title, amount, button = st.columns([2, 6, 3, 3], vertical_alignment="center")
+    mark.markdown(
+        ":green-badge[:material/check: Tamamlandı]"
+        if task["done"]
+        else ":orange-badge[:material/schedule: Açık]"
+    )
     title.markdown(
         f"**{task['title']}**" + (f"  \n{task['note']}" if task["note"] else "")
     )
-    amount.markdown(tl(task["amount"]))
+    amount.markdown(f"**{tl(task['amount'])}**")
     if task["done"]:
         button.caption(task["completed"])
-        if button.button("Geri al", key=f"geri_{task['id']}"):
+        if button.button("Geri al", key=f"geri_{task['id']}", icon=":material/undo:"):
             act(
                 lambda s: completion.undo_completion(s, SystemClock(), task["id"]),
                 "✓ geri alındı.",
             )
         return
-    if button.button("✓ Tamamla", key=f"tik_{task['id']}"):
+    if button.button("✓ Tamamla", key=f"tik_{task['id']}", type="primary"):
         act(
             lambda s: completion.complete_task(s, SystemClock(), task["id"]),
             "İş tamamlandı.",
@@ -129,7 +138,7 @@ def _new_task_form(visit_id: int) -> None:
             key=f"yeni_is_tutar_{visit_id}",
         )
         note = st.text_input("Not (isteğe bağlı)", key=f"yeni_is_not_{visit_id}")
-        if st.form_submit_button("İşi ekle"):
+        if st.form_submit_button("İşi ekle", type="primary", icon=":material/add:"):
             act(
                 lambda s: tasks.add_task(
                     s, SystemClock(), visit_id, title, amount_from_input(amount), note
@@ -140,7 +149,7 @@ def _new_task_form(visit_id: int) -> None:
 
 def _visit_block(visit: dict, latest: bool) -> None:
     with st.container(border=True):
-        st.markdown(f"#### Ziyaret · {visit['opened']}")
+        st.markdown(f"#### :material/event: Ziyaret · {visit['opened']}")
         if visit["complaint"]:
             st.caption(visit["complaint"])
         st.markdown(
@@ -148,13 +157,16 @@ def _visit_block(visit: dict, latest: bool) -> None:
             f"Tamamlanan: **{tl(visit['done_total'])}**"
         )
         for task in visit["tasks"]:
+            st.divider()
             _task_row(task)
         if latest:
             _new_task_form(visit["id"])
 
 
 def render() -> None:
-    st.header("Servis ve işler")
+    page_header(
+        "Servis ve işler", "Aracı seçin, ziyaret açın, işleri girip ✓ ile tamamlayın"
+    )
     show_flash()
     labels = run(_vehicle_labels) or {}
     # Liste yazdıkça tarayıcıda süzülür; "prefix" kipi etiketin başına bakar.
@@ -172,8 +184,9 @@ def render() -> None:
     if vehicle_id is None:
         st.caption("Araç Müşteriler ve araçlar ekranından eklenir.")
         return
-    st.subheader(labels[vehicle_id])
-    _new_visit_form(vehicle_id)
+    st.subheader(labels[vehicle_id], anchor=False)
+    with st.expander("Yeni servis ziyareti", icon=":material/add:", expanded=True):
+        _new_visit_form(vehicle_id)
     history = run(lambda s: _history(s, vehicle_id)) or []
     if not history:
         st.caption("Bu araç için henüz ziyaret yok.")
