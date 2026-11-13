@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.1 — McCabe ölçümü ve ilk iyileştirmeler tamam; testlerin tamamlanması, kullanıcı testi ve devreye alma sürüyor
+- **Doküman Durumu:** Taslak v0.2 — McCabe ölçümü ve iyileştirmeler (#22) ile TC-30 tamam; kullanıcı testi ve devreye alma sürüyor
 - **Başlangıç:** 13.11.2026 · **Teslim:** Hafta 12 (izlence)
 
 | Yönerge maddesi | Bu belgedeki karşılığı |
@@ -34,7 +34,7 @@ Faz 3 Raporu (v0.3) ve kod üzerinde açık kalan maddeler:
 
 ### 2.1. Test Senaryolarının Karşılanma Durumu
 
-Faz 2 test planındaki 32 senaryonun 30'u otomatik testlerle karşılanıyor (pytest; arayüz için Streamlit AppTest). Toplam 247 test, `ui` hariç satır ve dal kapsaması %100 (NFR-02).
+Faz 2 test planındaki 32 senaryonun 31'i otomatik testlerle karşılanıyor (pytest; arayüz için Streamlit AppTest). Toplam 249 test, `ui` hariç satır ve dal kapsaması %100 (NFR-02).
 
 | Teknik | Senaryolar | Otomatik test dosyaları |
 | :--- | :--- | :--- |
@@ -43,8 +43,8 @@ Faz 2 test planındaki 32 senaryonun 30'u otomatik testlerle karşılanıyor (py
 | Durum geçişi ve karar tablosu | TC-17 – TC-21 | `test_tasks`, `test_completion`, `test_ui_visits` |
 | Beyaz kutu | TC-02, TC-13 | `test_auth`, `test_visits` |
 | Kara kutu (sistem) | TC-03, TC-14, TC-22, TC-24, TC-25, TC-27, TC-28, TC-32 | `test_ui_login`, `test_ui_customers`, `test_ui_reports`, `test_visits`, `test_reports`, `test_auth` |
-| Hata tahmini | TC-23 | `test_completion` (iki gerçek veritabanı bağlantısı) |
-| **Açık** | **TC-30** (veritabanı erişilemezken genel hata mesajı), **TC-31** (kullanıcı kabul testi) | — |
+| Hata tahmini | TC-23, TC-30 | `test_completion` (iki gerçek veritabanı bağlantısı), `test_ui_errors` (erişilemeyen veritabanı) |
+| **Açık** | **TC-31** (kullanıcı kabul testi) | — |
 
 Ek olarak Faz 3'te mutasyon testi yapıldı (22 mutant; yaşayan 4 mutanttan 3'ü için test eklendi, 1'i eşdeğer) ve uygulama gerçek tarayıcıda (Playwright) uçtan uca çalıştırıldı.
 
@@ -56,7 +56,14 @@ Ek olarak Faz 3'te mutasyon testi yapıldı (22 mutant; yaşayan 4 mutanttan 3'�
 
 | No | Hata | Bulan | Düzeltme |
 | :--- | :--- | :--- | :--- |
+| H4-01 | TC-30: veritabanına erişilemezken uygulama Streamlit'in İngilizce hata kutusunu gösteriyordu (“This app has encountered an error… click on 'Manage app'”). Güvenlik gereği zaten karşılanıyordu: tarayıcıya yığın izi gitmiyordu (`stack_trace` boş), ayrıntı yalnızca sunucu konsolundaydı. Sorun kullanılabilirlikti: teknik, İngilizce ve uygulamayla ilgisiz bir yönerge. | TC-30 testi (önce kırmızı) | Veritabanı hataları (`SQLAlchemyError`) `main()` içinde yakalanıyor: kullanıcıya Türkçe genel mesaj, ayrıntı `logging` ile sunucu günlüğüne (ADR-007). İki test: giriş ekranı ve oturum açıkken işlem sırasında; ikisi de yığın izi, dosya yolu ve SQL ayrıntısının sayfada olmadığını denetler. |
 | `[ekip]` | | | |
+
+### 2.4. Kod İnceleme Kayıtları (Faz 4)
+
+| PR | Konu | Yazan | İnceleyen | Bulgular |
+| :--- | :--- | :--- | :--- | :--- |
+| #22 | McCabe ölçümü ve iyileştirme, rapor taslağı | Kerem Erden (YZ destekli) | Mehmet Ünsalan | Kerem Erden'in bilgisayarında ekran paylaşımıyla birlikte çalıştırıldı: 247 test geçti; `radon cc` en yüksek 6, `render` 9 → 3, `search_customers` 8 → 6. Onaylandı ve birleştirildi. |
 
 ---
 
