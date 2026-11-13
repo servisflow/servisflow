@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.3 — McCabe (#22) ve TC-30 (#23) tamam; devreye alma yöntemi (Streamlit Community Cloud) eklendi; TC-31 yürütüldü (14.11.2026), bulunan H4-02 düzeltildi; bulut yayını sürüyor
+- **Doküman Durumu:** Taslak v0.4 — McCabe (#22) ve TC-30 (#23) tamam; TC-31 yürütüldü, bulunan H4-02 düzeltildi (#24); uygulama Streamlit Community Cloud'da yayında (14.11.2026)
 - **Başlangıç:** 13.11.2026 · **Teslim:** Hafta 12 (izlence)
 
 | Yönerge maddesi | Bu belgedeki karşılığı |
@@ -111,6 +111,7 @@ Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi 
 | :--- | :--- | :--- | :--- | :--- |
 | #22 | McCabe ölçümü ve iyileştirme, rapor taslağı | Kerem Erden (YZ destekli) | Mehmet Ünsalan | Kerem Erden'in bilgisayarında ekran paylaşımıyla birlikte çalıştırıldı: 247 test geçti; `radon cc` en yüksek 6, `render` 9 → 3, `search_customers` 8 → 6. Onaylandı ve birleştirildi. |
 | #23 | TC-30: veritabanına erişilemezken genel hata mesajı | Kerem Erden (YZ destekli) | Mehmet Ünsalan | Kerem Erden'in bilgisayarında ekran paylaşımıyla birlikte çalıştırıldı: `tests/test_ui_errors.py` 2 test geçti; veritabanı yolu bilerek bozulmuş uygulamada sayfada yalnızca Türkçe genel mesaj göründü, Traceback yoktu; hata ayrıntısı (SQLAlchemy `OperationalError`, e3q8) yalnızca terminalde göründü. Onaylandı ve birleştirildi. |
+| #24 | Devreye alma (bulut), TC-31 sonucu, H4-02 düzeltmesi | Kerem Erden (YZ destekli) | Mehmet Ünsalan | Kerem Erden'in ekran paylaşımıyla, Ahmet Selim Dostabakan ile birlikte yönlendirilerek incelendi: `test_ui_customers` ve `test_ui_deploy` 14 test geçti; H4-02 uygulamada denendi: başka müşteri seçildiğinde form seçilen müşterinin bilgilerini gösteriyor, Murat seçiliyken “Güncelle” Ahmet'in kaydını bozmadı. Onaylandı ve birleştirildi. |
 
 ---
 
@@ -193,7 +194,14 @@ Ek olarak uygulama yerelde `streamlit run streamlit_app.py` ile, sır dosyasınd
 
 ### 4.4. Yayın Kaydı
 
-`[ekip: yayınlayan üye, tarih, adres, ilk açılış gözlemi]`
+| Alan | Kayıt |
+| :--- | :--- |
+| **Adres** | https://x8mxn6qmysbyfrcbzy5mks.streamlit.app/ |
+| **Tarih** | 14.11.2026 |
+| **Yayınlayan** | Kerem Erden |
+| **Ayarlar** | Depo `servisflow/servisflow`, dal `main`, ana dosya `streamlit_app.py`; sorumlu hesabı bulutun sır ayarında |
+| **Karşılaşılan engel** | İlk denemede GitHub “not authorized” hatası verdi: `servisflow` organizasyonunda üçüncü taraf uygulama (OAuth App) erişim kısıtlaması açıktı. Kısıtlama tümden kaldırılmadı; yalnızca Streamlit'e organizasyon erişimi verildi (en az yetki ilkesi). Erişimi veren: `[ekip]` |
+| **İlk açılış gözlemi** | `[ekip: giriş ekranı, sırlardaki hesapla giriş, denenen işlem]` |
 
 ---
 
