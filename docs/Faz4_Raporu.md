@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** Taslak v0.5 — DIR İP-9 ve İP-10 ekip puanları işlendi; McCabe (#22) ve TC-30 (#23) tamam; TC-31 yürütüldü, bulunan H4-02 düzeltildi (#24); uygulama Streamlit Community Cloud'da yayında (14.11.2026)
+- **Doküman Durumu:** Taslak v0.6 — RV4-01 kapandı; DIR İP-9 ve İP-10 ekip puanları işlendi; McCabe (#22) ve TC-30 (#23) tamam; TC-31 yürütüldü, bulunan H4-02 düzeltildi (#24); uygulama Streamlit Community Cloud'da yayında (14.11.2026)
 - **Başlangıç:** 13.11.2026 · **Teslim:** Hafta 12 (izlence)
 
 | Yönerge maddesi | Bu belgedeki karşılığı |
@@ -20,7 +20,7 @@ Faz 3 Raporu (v0.3) ve kod üzerinde açık kalan maddeler:
 
 | No | Konu | Kaynak | Durum |
 | :--- | :--- | :--- | :--- |
-| RV4-01 | `create_all` var olan veritabanına yeni kısıt eklemez; eski yerel `servisflow.db` dosyaları silinmeli. Göç (migration) aracı kapsam dışı. | #12, #20 incelemeleri | Açık; devreye alma talimatına yazılacak (Bölüm 4) |
+| RV4-01 | `create_all` var olan veritabanına yeni kısıt eklemez; eski yerel `servisflow.db` dosyaları silinmeli. Göç (migration) aracı kapsam dışı. | #12, #20 incelemeleri | Kapandı: README'ye not eklendi (eski `servisflow.db` silinir; bulutta veritabanı her yeniden başlatmada yenilenir). |
 | RV4-02 | Plaka seçim listesinde boşluksuz yazım (`06b`) eşleşmiyor; yalnızca boşluklu yazım (`06 b`) çalışıyor. | KR-09 | TC-31'de gözlenmedi: boşluksuz `54tty` yazımında araç listede çıktı. Kapandı. |
 | RV4-03 | ADR-006 CAPTCHA biçimi (toplama sorusu) UC-01 sahibiyle teyit edilmedi. | #15 incelemesi | Açık |
 | RV4-04 | Kaynakçadaki mutasyon testi makalesi birincil kaynaktan doğrulanmadı. | Faz 3, Kaynaklar | Açık (`[ekip]`) |
@@ -95,7 +95,7 @@ Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi 
 - **Yardım:** İstenmedi.
 - **NFR-06 ölçütü** (≤ 3 dakika, yardımsız): Karşılandı.
 - **Bulgu:** H4-02 (2.3). Müşteri ekranında başka müşteri seçildiğinde düzenleme formu ilk seçilen müşterinin bilgilerinde kalıyordu.
-- **Onay:** Mehmet Ünsalan, `[ekip: PR onayı]`.
+- **Onay:** Mehmet Ünsalan (#24 onayı, 2.4).
 
 ### 2.3. Bulunan Hatalar ve Düzeltmeler
 
@@ -103,7 +103,6 @@ Senaryo: İşletme sahibi profilindeki bir kişi, ustanın bildirdiği bir işi 
 | :--- | :--- | :--- | :--- |
 | H4-01 | TC-30: veritabanına erişilemezken uygulama Streamlit'in İngilizce hata kutusunu gösteriyordu (“This app has encountered an error… click on 'Manage app'”). Güvenlik gereği zaten karşılanıyordu: tarayıcıya yığın izi gitmiyordu (`stack_trace` boş), ayrıntı yalnızca sunucu konsolundaydı. Sorun kullanılabilirlikti: teknik, İngilizce ve uygulamayla ilgisiz bir yönerge. | TC-30 testi (önce kırmızı) | Veritabanı hataları (`SQLAlchemyError`) `main()` içinde yakalanıyor: kullanıcıya Türkçe genel mesaj, ayrıntı `logging` ile sunucu günlüğüne (ADR-007). İki test: giriş ekranı ve oturum açıkken işlem sırasında; ikisi de yığın izi, dosya yolu ve SQL ayrıntısının sayfada olmadığını denetler. |
 | H4-02 | Müşteri ekranında başka bir müşteri seçildiğinde düzenleme formu (ad, telefon) ilk seçilen müşterinin bilgilerini göstermeye devam ediyordu. Bu durumda “Güncelle”ye basılırsa seçili müşterinin kaydının üzerine önceki müşterinin adı ve telefonu yazılıyordu (veri bozulması). Neden: Form alanlarının anahtarı sabitti (`duz_ad`). Streamlit sabit anahtarlı alanın değerini korur ve yeni `value` değerini yok sayar. | TC-31, ekip dışı katılımcı | Alan anahtarları müşteri kimliğini içeriyor (`duz_ad_<id>`); araç ekleme alanları da öyle (yarım kalan girdi başka müşteriye taşınmasın diye). Önce hatayı yeniden üreten iki test yazıldı (kırmızı): biri formun seçilen müşteriyi göstermesini, öteki “Güncelle”nin başka müşterinin bilgisini yazmamasını denetliyor. Düzeltmeden sonra ikisi de yeşil. Diğer ekranlardaki düzenleme formları zaten iş/ziyaret kimliğiyle anahtarlanmıştı. |
-| `[ekip]` | | | |
 
 ### 2.4. Kod İnceleme Kayıtları (Faz 4)
 
@@ -171,7 +170,7 @@ Davranışın değişmediği, değişiklik öncesi ve sonrası aynı 247 testin 
 
 Ekip kararıyla iki yol birlikte sunulur:
 
-- **Yerel kurulum:** README'deki adımlar; hesap `python -m servisflow.create_owner` ile açılır. Windows'ta `pip install -e .` hatası (WinError 145) ve geçici çözümü belgelendi. Eski veritabanı notu (RV4-01) `[ekip]`.
+- **Yerel kurulum:** README'deki adımlar; hesap `python -m servisflow.create_owner` ile açılır. Windows'ta `pip install -e .` hatası (WinError 145) ve geçici çözümü belgelendi. Eski veritabanı dosyası için not README'ye eklendi (RV4-01).
 - **Bulut (Streamlit Community Cloud):** Uygulama GitHub deposundan yayınlanır ve bir web adresinden açılır. Ücretsizdir; `main` dalına her birleştirmeden sonra yeni sürüm yayınlanır. Demo ve kullanıcı testi (TC-31) bu sürümle yapılır.
 
 ### 4.2. Bulut İçin Koddaki Değişiklikler

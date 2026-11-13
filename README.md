@@ -161,6 +161,8 @@ streamlit run src/servisflow/ui/app.py
 
 Tarayıcıda `http://localhost:8501` açılır: giriş → **Müşteriler ve araçlar** → **Servis ve işler** (ziyaret, iş, ✓) → **Rapor**.
 
+> **Eski veritabanı notu:** Tablolar yalnızca veritabanı dosyası yokken oluşturulur; sonradan eklenen sütunlar ve kısıtlar (örneğin tam TL kuralı) eski bir `servisflow.db` dosyasına işlenmez (veritabanı göç aracı kapsam dışı). Uygulama `no such column` hatası verirse ya da proje eski bir sürümden güncellendiyse dosya eskidir. Dosyayı silip `python -m servisflow.create_owner` ile hesabı yeniden açın; içindeki kayıtlar silinir.
+
 > **Windows notu:** `pip install -e .` *WinError 145 (The directory is not empty)* ile durursa sorun koddan değil, geçici klasörü kilitleyen antivirüsten kaynaklanır. `python -m pip install --upgrade pip setuptools` sonrası komutu tekrarlayın; acil durumda `$env:PYTHONPATH = "src"` ile paket kurulmadan çalıştırılabilir.
 
 ### ☁️ Bulutta çalıştırma (Streamlit Community Cloud)
@@ -195,7 +197,7 @@ pytest --cov                                             # testler + satır/dal 
 
 Her push ve pull request'te bu adımlar [GitHub Actions](.github/workflows/ci.yml) tarafından otomatik çalıştırılır.
 
-📄 Faz 1 raporu: [`docs/Faz1_Raporu.md`](docs/Faz1_Raporu.md) · Faz 2 raporu: [`docs/Faz2_Raporu.md`](docs/Faz2_Raporu.md) · Faz 3 raporu (taslak): [`docs/Faz3_Raporu.md`](docs/Faz3_Raporu.md)
+📄 Faz 1 raporu: [`docs/Faz1_Raporu.md`](docs/Faz1_Raporu.md) · Faz 2 raporu: [`docs/Faz2_Raporu.md`](docs/Faz2_Raporu.md) · Faz 3 raporu: [`docs/Faz3_Raporu.md`](docs/Faz3_Raporu.md) · Faz 4 raporu: [`docs/Faz4_Raporu.md`](docs/Faz4_Raporu.md) · Final rapor (taslak): [`docs/Faz5_Final_Raporu.md`](docs/Faz5_Final_Raporu.md)
 
 ## 🗓️ Ders fazları
 
