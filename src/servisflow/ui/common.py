@@ -2,6 +2,7 @@
 
 from collections.abc import Callable
 from decimal import Decimal
+from pathlib import Path
 from typing import TypeVar
 
 import streamlit as st
@@ -18,9 +19,18 @@ from servisflow.services import vehicles
 from servisflow.services.errors import ServisFlowError
 
 T = TypeVar("T")
+ASSETS = Path(__file__).parent / "assets"
+LOGO = str(ASSETS / "logo.svg")
+ICON = str(ASSETS / "icon.svg")
 DB_ERROR_MESSAGE = (
     "Bir sorun oluştu, işlem yapılamadı. Lütfen biraz sonra tekrar deneyin."
 )
+
+
+def page_header(title: str, subtitle: str) -> None:
+    """Her ekranın başlığı ve tek satırlık açıklaması."""
+    st.title(title, anchor=False)
+    st.caption(subtitle)
 
 
 @st.cache_resource

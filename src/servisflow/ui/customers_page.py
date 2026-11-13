@@ -4,7 +4,7 @@ import streamlit as st
 
 from servisflow.services import customers, vehicles
 from servisflow.services.clock import SystemClock
-from servisflow.ui.common import plate_matches, run
+from servisflow.ui.common import page_header, plate_matches, run
 
 
 def _customer_data(customer) -> dict:
@@ -26,11 +26,11 @@ def _customer_data(customer) -> dict:
 
 
 def _new_customer_form() -> None:
-    with st.expander("Yeni müşteri"):
+    with st.expander("Yeni müşteri", icon=":material/person_add:"):
         with st.form("yeni_musteri"):
             name = st.text_input("Ad soyad", key="yeni_ad")
             phone = st.text_input("Telefon (isteğe bağlı)", key="yeni_tel")
-            if st.form_submit_button("Kaydet"):
+            if st.form_submit_button("Kaydet", type="primary"):
                 run(
                     lambda s: customers.create_customer(s, SystemClock(), name, phone),
                     "Müşteri kaydedildi.",
@@ -39,7 +39,9 @@ def _new_customer_form() -> None:
 
 def _plate_search() -> None:
     plate = st.text_input(
-        "Plakayla araç bul (ilk karakterler yeterli)", key="plaka_ara"
+        "Plakayla araç bul (ilk karakterler yeterli)",
+        key="plaka_ara",
+        icon=":material/directions_car:",
     )
     if not plate.strip():
         return
@@ -72,7 +74,7 @@ def _vehicle_form(row: dict) -> None:
         plate = st.text_input("Plaka", key=f"arac_plaka_{row['id']}")
         brand = st.text_input("Marka", key=f"arac_marka_{row['id']}")
         model = st.text_input("Model", key=f"arac_model_{row['id']}")
-        if st.form_submit_button("Aracı kaydet"):
+        if st.form_submit_button("Aracı kaydet", icon=":material/add:"):
             run(
                 lambda s: vehicles.register_vehicle(s, row["id"], plate, brand, model),
                 "Araç kaydedildi.",
@@ -80,23 +82,34 @@ def _vehicle_form(row: dict) -> None:
 
 
 def render() -> None:
-    st.header("Müşteriler ve araçlar")
+    page_header("Müşteriler ve araçlar", "Müşteri kaydı, arama ve araç ekleme")
     _new_customer_form()
-    _plate_search()
-    st.divider()
-
-    text = st.text_input("Müşteri ara (ad veya telefon)", key="musteri_ara")
+    left, right = st.columns(2)
+    with left.container(border=True):
+        text = st.text_input(
+            "Müşteri ara (ad veya telefon)",
+            key="musteri_ara",
+            icon=":material/search:",
+        )
+    with right.container(border=True):
+        _plate_search()
     rows = run(
         lambda s: [_customer_data(c) for c in customers.search_customers(s, text)]
     )
     if not rows:
         st.caption("Kayıt bulunamadı.")
         return
-    _customer_table(rows)
+    with st.container(border=True):
+        _customer_table(rows)
     row = _select_customer(rows)
-    _edit_form(row)
-    _vehicle_table(row)
-    _vehicle_form(row)
+    left, right = st.columns(2)
+    with left.container(border=True):
+        st.markdown("**:material/edit: Müşteri bilgileri**")
+        _edit_form(row)
+    with right.container(border=True):
+        st.markdown("**:material/directions_car: Araçlar**")
+        _vehicle_table(row)
+        _vehicle_form(row)
 
 
 def _customer_table(rows: list[dict]) -> None:
@@ -110,6 +123,7 @@ def _customer_table(rows: list[dict]) -> None:
             for r in rows
         ],
         hide_index=True,
+        use_container_width=True,
     )
 
 
@@ -130,7 +144,11 @@ def _vehicle_table(row: dict) -> None:
         return
     st.dataframe(
         [
-            {"Plaka": v["plate"], "Marka": v["brand"], "Model": v["model"]}
+            {
+                "Plaka": vehicles.format_plate(v["plate"]),
+                "Marka": v["brand"],
+                "Model": v["model"],
+            }
             for v in row["vehicles"]
         ],
         hide_index=True,

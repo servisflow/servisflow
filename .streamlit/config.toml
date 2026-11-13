@@ -2,3 +2,28 @@
 # Not: false değeri artık "stacktrace" demektir ve yığın izini gösterir.
 [client]
 showErrorDetails = "none"
+toolbarMode = "minimal"
+
+# Görünüm: açık zemin, lacivert yan menü, turuncu vurgu (logo rengi).
+[theme]
+base = "light"
+primaryColor = "#C2410C"
+backgroundColor = "#F8FAFC"
+secondaryBackgroundColor = "#F1F5F9"
+textColor = "#0F172A"
+borderColor = "#E2E8F0"
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap, sans-serif"
+headingFontWeights = 700
+headingFontSizes = ["2.1rem", "1.45rem", "1.2rem"]
+metricValueFontSize = "1.75rem"
+metricValueFontWeight = 600
+baseRadius = "0.75rem"
+paddingTop = "2.5rem"
+showWidgetBorder = true
+dataframeHeaderBackgroundColor = "#F1F5F9"
+
+[theme.sidebar]
+backgroundColor = "#0F172A"
+secondaryBackgroundColor = "#1E293B"
+textColor = "#E2E8F0"
+borderColor = "#1E293B"

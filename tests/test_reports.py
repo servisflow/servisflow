@@ -165,6 +165,15 @@ def test_tamamlanan_isler_dokumu_sirali_ve_acik_isler_haric(session, vehicle):
     assert reports.completed_tasks(session, *bounds) == [earlier, later]
 
 
+def test_acik_isler_sayi_ve_tutar_tamamlananlar_haric(session, vehicle):
+    assert reports.open_work(session) == (0, 0)
+    visit = add_visit(session, vehicle, ist(2026, 10, 22, 9, 0))
+    add_task(session, visit, 1600, ist(2026, 10, 22, 9, 0))
+    add_task(session, visit, 1200, ist(2026, 10, 22, 9, 0))
+    add_task(session, visit, 500, ist(2026, 10, 22, 9, 0), ist(2026, 10, 22, 12, 0))
+    assert reports.open_work(session) == (2, 280000)
+
+
 # --- Araç geçmişi -----------------------------------------------------------
 
 

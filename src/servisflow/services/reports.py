@@ -76,6 +76,20 @@ def completed_tasks(
     return list(session.scalars(query))
 
 
+def open_work(session: Session) -> tuple[int, int]:
+    """Henüz tamamlanmamış (TODO) işlerin sayısı ve toplam tutarı (kuruş).
+
+    Ana sayfadaki özet içindir; brüt iş bedeline girmez (BR-05).
+    """
+    count, total = session.execute(
+        select(
+            func.count(ServiceTask.id),
+            func.coalesce(func.sum(ServiceTask.amount_kurus), 0),
+        ).where(ServiceTask.status != TASK_DONE)
+    ).one()
+    return int(count), int(total)
+
+
 def vehicle_history(session: Session, vehicle_id: int) -> list[ServiceVisit]:
     """Aracın ziyaretleri işleriyle birlikte, en yeniden en eskiye (FR-07).
 
