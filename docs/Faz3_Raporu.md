@@ -2,9 +2,9 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** v0.3 — yedi use case ve arayüz birleşti; DIR puanları ekipçe verildi · `main` dal koruması 12.11.2026'da açıldı
+- **Doküman Durumu:** v0.4 — ortak geliştirme oturumlarının katılımcıları ve test sayıları düzeltildi (v0.3: yedi use case ve arayüz birleşti; DIR puanları ekipçe verildi · `main` dal koruması 12.11.2026'da açıldı)
 - **Başlangıç:** 12.11.2026 · **Teslim:** Hafta 9 (izlence)
-- **Koordinasyon:** Üye 5 (Kerem Erden, Yazılım Mimarı) · Üye 7 (Ahmet Selim Dostabakan, QA) · Üye 6 (Mehmet Ünsalan)
+- **Koordinasyon:** Üye 5 (Kerem Erden, Yazılım Mimarı) · Üye 7 (Ahmet Selim Dostabakan, QA) · Üye 6 (Mehmet Ünsalan) · Üye 4 (Ilgın Çutok)
 
 | Yönerge maddesi | Bu belgedeki karşılığı |
 | :--- | :--- |
@@ -220,9 +220,9 @@ Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 rapor
 | :--- | :--- |
 | **Tarih** | 12.11.2026 |
 | **YZ aracı** | Anthropic Claude (Claude Code, ajan) |
-| **İlgili üyeler** | Kerem Erden (yönlendirme); inceleme: Ahmet Selim Dostabakan (#15, #16). UC-01 – UC-04 ve UC-06'nın sahipleri bu işe katılmadı (bkz. Not). |
+| **İlgili üyeler** | Kerem Erden (yönlendirme); inceleme: Ahmet Selim Dostabakan (#15, #16). Geliştirme sesli toplantılarda birlikte yürütüldü: Kerem Erden, Ahmet Selim Dostabakan, Mehmet Ünsalan (UC-06 sahibi) ve Ilgın Çutok (UC-04 sahibi) (bkz. Not). |
 | **Görevin YZ kullanım sınırı** | Yeşil. CAPTCHA biçimi (ADR-006 açık konusu) YZ tarafından önerildi; UC-01 sahibiyle teyidi açık. |
-| **Üretilen çıktı** | `auth.py`, `customers.py`, `vehicles.py`, `visits.py`, `tasks.py`, `completion.py`, kurulum betiği ve testleri (şu an 162 test; #15 ve #16 birleştiğinde 142) |
+| **Üretilen çıktı** | `auth.py`, `customers.py`, `vehicles.py`, `visits.py`, `tasks.py`, `completion.py`, kurulum betiği ve testleri (#15 birleştiğinde 178, #16 birleştiğinde 188 test) |
 
 | Boyut | Puan | Kontrol listesi dayanaklı gerekçe |
 | :--- | :---: | :--- |
@@ -232,7 +232,7 @@ Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 rapor
 
 **Skor (ekip kararı):** D = 4, I = 4, R = 4 → DIR = Floor(0,8 × 64) = **51** → **Bant 3**. *(13.11.2026: ortak inceleme kayıtlara geçtikten sonra R 3 → 4.)* *(YZ önerisi: D 4 · I 4 · R 3 → 38.)*
 
-**Not (dengeli katkı):** UC-01 – UC-04 sahipleri GitHub organizasyonunda olmadığı ve UC-06 sahibi bu dönemde ulaşılamadığı için servis katmanları Kerem Erden yönlendirmesiyle yazıldı. Arayüz ve kullanıcı kabul testi (TC-31) sahiplerinin katkısına açıktır.
+**Not (katkı ve çalışma biçimi):** Servis katmanları ve arayüz, Kerem Erden'in yönettiği sesli toplantılarda birlikte geliştirildi; toplantılara Ahmet Selim Dostabakan, Mehmet Ünsalan ve Ilgın Çutok katıldı (Kerem Erden'in beyanı). Kodu tek kişinin yazıp ekibin birlikte yönlendirdiği ve incelediği bu yöntem toplu programlamadır (mob programming). Commit'ler ve PR'lar Kerem Erden'in hesabından gönderildiği için GitHub'da yalnızca onun adı görünür. UC-01 – UC-03 sahipleri (Ahmet Karavuş, Alperhan Karşı, Mehmet Kenan Dilberoğlu) GitHub organizasyonunda olmadığından bu oturumlara katılmadı. Arayüz ve kullanıcı kabul testi (TC-31) sahiplerinin katkısına açıktır.
 
 ### 4.4. İş Paketi 7 — Arayüz (Streamlit ekranları) ve KR-08, KR-09
 
@@ -276,7 +276,7 @@ Ortak bağlam (tüm paketler, A1 – A4, A6): YZ'ye onaylı Faz 1 ve Faz 2 rapor
 | :--- | :--- | :--- | :--- |
 | İskelet, ADR / Claude Code | Veri modeli, katmanlar, mimari kayıtlar | KR-01 – KR-04 bulguları ve düzeltmeleri | İnceleyenin kendi ortamında çalıştırması, canlı deneme, CI |
 | UC-07 servisi / Claude Code | Dönemsel rapor | KR-05 – KR-07 | Yıl geçişi haftasının ek denemesi, sorgu sayısı ölçümü |
-| UC-01 – UC-06 servisleri / Claude Code | İş kuralları | Mutasyonla bulunan test açıkları kapatıldı; gizlilik ifadesi düzeltildi | 162 test, mutasyon testi, CI, ortak inceleme |
+| UC-01 – UC-06 servisleri / Claude Code | İş kuralları | Mutasyonla bulunan test açıkları kapatıldı; gizlilik ifadesi düzeltildi | 188 test, mutasyon testi, CI, ortak inceleme |
 | Arayüz / Claude Code, Playwright | Ekranlar | KR-08 (tam TL, ekip kararı), KR-09 (plaka önerisi); iki hata testlerle düzeltildi | AppTest, gerçek tarayıcı, ekran paylaşımlı ortak inceleme |
 | İnceleme yorumları / Claude Cowork, Claude Code | Yorum taslağı | Hazır metin yerine kontrol listesi ve şablona geçildi | İlk #18 ve #19 onayları doğrulama içermiyordu; ortak incelemeden sonra inceleyen metinleri kendi gözlemleriyle güncelledi (3.4) |
 
