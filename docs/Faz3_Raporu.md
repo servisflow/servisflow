@@ -2,7 +2,7 @@
 
 - **Proje Adı:** ServisFlow — Araç Bazlı Servis İş Takibi ve Dönemsel Brüt İş Bedeli Raporlama
 - **Ders:** Yazılım Kalite Standartları (YAZ401)
-- **Doküman Durumu:** v0.4 — ortak geliştirme oturumlarının katılımcıları ve test sayıları düzeltildi (v0.3: yedi use case ve arayüz birleşti; DIR puanları ekipçe verildi · `main` dal koruması 12.11.2026'da açıldı)
+- **Doküman Durumu:** v0.4 — ortak geliştirme oturumlarının katılımcıları ve test sayıları düzeltildi; Faz 2 geri bildirimi (RV3-06) eklendi (v0.3: yedi use case ve arayüz birleşti; DIR puanları ekipçe verildi · `main` dal koruması 12.11.2026'da açıldı)
 - **Başlangıç:** 12.11.2026 · **Teslim:** Hafta 9 (izlence)
 - **Koordinasyon:** Üye 5 (Kerem Erden, Yazılım Mimarı) · Üye 7 (Ahmet Selim Dostabakan, QA) · Üye 6 (Mehmet Ünsalan) · Üye 4 (Ilgın Çutok)
 
@@ -25,7 +25,7 @@ Faz 2 çıktıları, kod iskeleti yazılırken gerçek araçlarla karşılaştı
 | **RV3-03** | Veri modeli, RV-07 | `LoginAttempt` tablosunda denemenin hangi kullanıcı adıyla yapıldığı tutulmuyordu; var olmayan bir kullanıcı adıyla yapılan denemeler (R-02) kaydedilemiyordu. | Orta | `LoginAttempt.username` alanı eklendi. |
 | **RV3-04** | KK-2 | KK-2 “ilgili issue bağlı” şartını koyuyor, ancak depoda hiç issue yoktu. | Orta | İskelet (#2) ve her use case (#3 – #9) için birer issue açıldı (Bölüm 3.3). |
 | **RV3-05** | Kurulum, KK-4 | Paket kurulabilir tanımlanmamıştı; Streamlit uygulaması `servisflow` paketini içe aktaramıyordu. | Orta | `pyproject.toml`'a derleme sistemi eklendi; kurulum `pip install -e .` ile yapılır. |
-| **RV3-06** | Faz 2 sunumu | Öğretim elemanının Faz 2 sunumundaki geri bildirimi | — | `[Ekip tarafından eklenecek]` |
+| **RV3-06** | Faz 2 sunumu | Öğretim elemanı, DIR beyanlarının rapor içinde kalmayıp ayrı bir dosya olarak yazılmasını istedi. | Orta | YZ kullanım beyanları ders şablonuyla (Yapay Zekâ Kullanım Beyanı) her faz için ayrı form olarak hazırlandı; raporlardaki DIR bölümleri özet olarak kaldı. |
 
 ---
 
